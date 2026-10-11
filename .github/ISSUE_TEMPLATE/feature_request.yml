@@ -1,0 +1,23 @@
+name: Feature or design proposal
+description: Discuss an application need or a proposed contract change.
+title: "[Proposal]: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Application need
+      description: Describe the concrete use case and what the current behavior prevents.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain the result you need and any alternatives you considered.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Compatibility and verification
+      description: Note affected API/runtime/build boundaries and how the proposal could be verified.

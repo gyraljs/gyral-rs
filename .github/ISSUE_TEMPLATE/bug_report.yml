@@ -1,0 +1,43 @@
+name: Bug report
+description: Report a reproducible Rust integration, rendering, or example defect.
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report vulnerabilities privately through the repository's Security tab.
+        Use synthetic data and omit credentials, cookies, and private content.
+  - type: input
+    id: revision
+    attributes:
+      label: Revision and affected package
+      description: Include the commit hash and library or example name.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS/target, Rust, Node/pnpm, Gyral versions, and local or Docker build.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction
+      description: Provide minimal steps, commands, and relevant configuration.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and evidence
+      description: Include redacted errors or check results; exclude private props and data.
+    validations:
+      required: true

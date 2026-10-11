@@ -6,6 +6,8 @@ contract and verification evidence before extending the packages.
 ## Repository map
 
 - [README](README.md): package purpose and first run.
+- [Contributing](CONTRIBUTING.md): public reports, local tracking, checks, and DCO sign-off.
+- [Security policy](SECURITY.md) and [conduct](CODE_OF_CONDUCT.md): private reporting and community expectations.
 - [Architecture](ARCHITECTURE.md): dependency direction and request lifecycle.
 - [Design decisions](docs/design/index.md): the bundle contract and accepted defaults.
 - [Runtime limits](docs/design/runtime-limits.md): deadlines, heap budgeting, cancellation, and shutdown.

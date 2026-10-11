@@ -80,7 +80,7 @@ def npm_bom(packages=None):
 
 def source_files():
     roots = ['.agents', '.cargo', '.config', '.github', '.sqlx', 'crates', 'docs', 'examples', 'tools']
-    names = ['.dockerignore', '.gitignore', '.node-version', 'AGENTS.md', 'ARCHITECTURE.md', 'Cargo.toml', 'Cargo.lock', 'Dockerfile', 'Dockerfile.client', 'LICENSE', 'Makefile', 'README.md', 'THIRD_PARTY_NOTICES.md', 'clippy.toml', 'deny.toml', 'package.json', 'pnpm-lock.yaml', 'rust-toolchain.toml', 'rustfmt.toml', 'skills.lock.json']
+    names = ['.dockerignore', '.gitignore', '.node-version', 'AGENTS.md', 'ARCHITECTURE.md', 'CONTRIBUTING.md', 'SECURITY.md', 'CODE_OF_CONDUCT.md', 'Cargo.toml', 'Cargo.lock', 'Dockerfile', 'Dockerfile.client', 'LICENSE', 'Makefile', 'README.md', 'THIRD_PARTY_NOTICES.md', 'clippy.toml', 'deny.toml', 'package.json', 'pnpm-lock.yaml', 'rust-toolchain.toml', 'rustfmt.toml', 'skills.lock.json']
     files = [ROOT / name for name in names]
     for directory in roots:
         for path in (ROOT / directory).rglob('*'):

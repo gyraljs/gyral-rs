@@ -37,7 +37,9 @@ for name in ('@gyral/core', '@gyral/ssr'):
 if 'file:vendor/' in javascript_lock or 'file:vendor/' in json.dumps(javascript):
     errors.append('JavaScript dependencies still reference removed vendor archives')
 
-documents = [ROOT / "AGENTS.md", ROOT / "README.md", ROOT / "ARCHITECTURE.md", ROOT / "THIRD_PARTY_NOTICES.md", *sorted((ROOT / "docs").rglob("*.md"))]
+documents = [ROOT / name for name in ("AGENTS.md", "README.md", "ARCHITECTURE.md", "THIRD_PARTY_NOTICES.md", "CONTRIBUTING.md", "SECURITY.md", "CODE_OF_CONDUCT.md")]
+documents.extend(sorted((ROOT / "docs").rglob("*.md")))
+documents.extend(sorted((ROOT / ".github").rglob("*.md")))
 links = 0
 for document in documents:
     if not document.is_file():

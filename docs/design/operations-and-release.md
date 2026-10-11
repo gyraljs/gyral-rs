@@ -136,8 +136,9 @@ The three library crates share version 0.1.0. Consumers currently use a reviewed
 source checkout and Cargo path dependencies. All crates retain `publish = false`;
 examples are integration material, not separate published packages. A later
 crates.io release must publish the domain dependency as well as the two public
-libraries and explicitly change that policy. Vendored Gyral build inputs are
-supplied with the source archive; no npm availability is required.
+libraries and explicitly change that policy. Gyral build inputs come from the
+published npm 0.3.1 packages, pinned with SHA-512 registry integrity in the frozen
+lockfile. An empty build cache requires access to the registry.
 
 Before 1.0, incompatible public API or documented telemetry-label changes require
 a minor version increase. Compatible fixes use a patch increase. Package versions

@@ -14,6 +14,11 @@ independent synthesis; Steven Pinker's copyrighted book is not included.
 The [harness reference](docs/references/openai-harness-engineer.md) was supplied
 by the owner. It preserves Ryan Lopopolo's attribution and OpenAI source URL.
 
+The [Code of Conduct](CODE_OF_CONDUCT.md) follows the
+[Gyral organization's copy](https://github.com/gyraljs/gyral/blob/main/CODE_OF_CONDUCT.md)
+of Contributor Covenant 2.1. Its upstream attribution, enforcement guidelines,
+and public community reporting contact are preserved.
+
 Local binary release artifacts collect available Cargo dependency license/notice
 texts. The target-conditional OTLP TLS certificate-data package `webpki-root-certs` 1.0.9 uses
 [CDLA-Permissive-2.0](https://cdla.dev/permissive-2-0/); its agreement is included
