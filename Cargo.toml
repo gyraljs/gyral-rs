@@ -16,7 +16,7 @@ gyral-renderer-domain = { path = "crates/domain", version = "=0.1.0" }
 gyral-renderer = { path = "crates/gyral-renderer", version = "=0.1.0" }
 gyral-axum = { path = "crates/gyral-axum", version = "=0.1.0" }
 deno_core = { version = "=0.412.0", features = ["include_icu_data"] }
-serde = { version = "=1.0.228", features = ["derive"] }
+serde = { version = "=1.0.229", features = ["derive"] }
 serde_json = "=1.0.149"
 thiserror = "=2.0.19"
 tokio = { version = "=1.53.1", features = ["rt", "macros", "sync", "time", "net", "signal"] }
