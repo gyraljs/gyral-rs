@@ -33,7 +33,7 @@ opentelemetry-otlp = { version = "=0.33.1", default-features = false, features =
 tracing-opentelemetry = "=0.34.0"
 proptest = "=1.11.0"
 base64 = "=0.22.1"
-sha2 = "=0.10.9"
+sha2 = "=0.11.0"
 askama = { version = "=0.16.1", default-features = false, features = ["derive", "std"] }
 gyral-example-notes-domain = { path = "examples/notes-domain", version = "=0.1.0" }
 gyral-example-notes-app = { path = "examples/notes-app", version = "=0.1.0" }
