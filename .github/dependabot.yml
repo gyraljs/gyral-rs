@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 5
+    groups:
+      ci-actions:
+        patterns:
+          - "*"
   - package-ecosystem: cargo
     directory: /
     schedule:
@@ -14,7 +18,19 @@ updates:
       embedded-runtime:
         patterns:
           - deno_core
+          - deno_v8
+          - deno_ops
+          - serde_v8
           - v8
+      rustcrypto:
+        patterns:
+          - hmac
+          - sha2
+      serde:
+        patterns:
+          - serde
+          - serde_derive
+          - serde_json
   - package-ecosystem: npm
     directory: /
     schedule:

@@ -70,7 +70,7 @@ restricted JavaScript APIs do not make it an untrusted-code sandbox. Read the
 
 ## Quick start
 
-Install Rust 1.99.0, Node 24.15.0, pnpm 10.33.2, Python 3.11 or later, and GNU
+Install Rust 1.99.0, Node 24.21.0, pnpm 12.11.2, Python 3.11 or later, and GNU
 Make. Use the [development guide](docs/development.md) for the additional tools
 required by the full test gate.
 
@@ -78,7 +78,7 @@ required by the full test gate.
 git clone https://github.com/gyraljs/gyral-rs.git
 cd gyral-rs
 corepack enable
-corepack prepare pnpm@10.33.2 --activate
+corepack prepare pnpm@12.11.2 --activate
 pnpm install --frozen-lockfile
 ```
 

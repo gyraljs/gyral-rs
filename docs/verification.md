@@ -1,5 +1,57 @@
 # Verification evidence
 
+## Dependency refresh — October 11, 2026
+
+A registry review updated all eight outdated direct Rust dependencies and both
+JavaScript build/test dependencies. The following pins were verified on Linux
+x86_64 with Rust 1.99.0:
+
+| Set | Verified versions |
+| --- | --- |
+| Rust data and errors | Serde 1.0.229, serde_json 1.0.154, thiserror 2.0.21 |
+| Runtime and properties | Tokio 1.53.2, proptest 1.12.0 |
+| Encoding and cryptography | base64 0.23.1, SHA-2 0.11.0, HMAC 0.13.0 |
+| JavaScript tools | esbuild 0.28.2, Playwright 1.64.0, pnpm 12.11.2, Node 24.21.0 |
+| Verification tools | cargo-nextest 0.9.148, SQLx CLI 0.9.0 |
+| CI actions | checkout 7.0.1, setup-node 7.1.0, cache 6.1.0, upload-artifact 7.0.2; each pinned to its full commit hash |
+
+Gyral 0.3.1, deno_core 0.412.0, Axum 0.8.9, and SQLx 0.9.0 were already current
+in the reviewed registries. The resolved V8 150.4.0 archive retains its reviewed
+digest. Cargo refreshed compatible transitive versions; older versions required
+by upstream consumers remain, including SQLx's SHA-2 0.10.9.
+
+`make ci` passed: **65 nextest tests**, **four doctests**, strict Clippy, formatting,
+Rust docs, frozen npm installation, architecture/skill/link policy, artifact and
+operating checks, both example builds, all Chromium/WebKit suites, four release-tool
+regressions, SQL metadata, and dependency policy. One explicit runtime-measurement
+test was skipped. SQLx CLI 0.9.0 also passed its empty-database preparation check
+separately. The new fixed-vector test confirms that the combined SHA-2/HMAC upgrade
+preserves the CSRF protocol bytes, using a value computed independently with
+Python's standard-library HMAC.
+
+The domain mutation run examined **89 mutations**: **75 caught**, **14 unable to
+compile**, and **none survived**. The self-review found no new domain dependency,
+untyped error, unchecked cast, panic path, or unbounded operation.
+
+Both production images passed their smoke checks. The Askama image retained native
+CRUD, SQLite persistence and cookie ownership across container replacement; its
+dependency graph excludes V8. The SSR image passed verified assets, CSP, readiness,
+metrics, opaque errors, and joined signal shutdown. `make release-evidence` passed
+archive checksums, connected inventories, native integrity, license texts, source
+policy, and extracted-binary checks. Source artifacts include the pnpm configuration.
+
+`make load` passed the existing synthetic budgets: **2,080 successful requests**
+over 60.07 seconds, **34.63 requests/second**, **175.56 ms p95**, **208.22 ms p99**,
+**40.35 MiB peak RSS**, and **0.65 MiB RSS growth**. Other build and background
+activity was present. This is regression evidence for the fixture, not an app SLO.
+
+No RustSec exception was added. The existing compile-time `paste` maintenance
+exception remains because the current embedded runtime still requires it.
+Logs remain under ignored `.local/dependency-*.log` paths. These checks did not
+publish crates, deploy an application, or change a development database.
+
+## Earlier scaffold evidence
+
 The earlier evidence below was collected locally on October 11, 2026, on Linux x86_64. It used vendored
 Gyral `0.3.1-next.9`, `deno_core` 0.412.0, and resolved V8 150.4.0. Tools were
 Rust 1.99.0, Node 24.15.0, pnpm 10.33.2, cargo-nextest 0.9.143,

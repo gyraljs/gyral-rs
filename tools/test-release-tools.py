@@ -39,6 +39,7 @@ class BuildInputs(unittest.TestCase):
     def test_source_distribution_excludes_local_data_and_generated_files(self):
         paths = [path.relative_to(ROOT) for path in release.source_files()]
         self.assertIn(Path('Cargo.lock'), paths)
+        self.assertIn(Path('pnpm-workspace.yaml'), paths)
         self.assertIn(Path('tools/v8-archive.json'), paths)
         self.assertFalse(any(set(path.parts) & {'.beads', '.git', '.local', 'target', 'node_modules', 'dist', '__pycache__'} for path in paths))
         self.assertFalse(any(path.name.endswith(('.sqlite', '.cdx.json', '.pem', '.key')) for path in paths))
