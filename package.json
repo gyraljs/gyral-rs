@@ -2,7 +2,7 @@
   "name": "gyral-rs-examples",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.33.2",
+  "packageManager": "pnpm@12.11.2",
   "engines": { "node": ">=24 <25" },
   "scripts": {
     "build:example": "node tools/build-example.mjs",
@@ -16,10 +16,7 @@
     "@gyral/ssr": "0.3.1"
   },
   "devDependencies": {
-    "esbuild": "0.25.12",
-    "playwright": "1.63.0"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": ["esbuild"]
+    "esbuild": "0.28.2",
+    "playwright": "1.64.0"
   }
 }

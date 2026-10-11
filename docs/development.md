@@ -1,19 +1,18 @@
 # Local development
 
 Run commands from the repository root. Rust is pinned to 1.99.0, edition 2024;
-Node 24.15.0 and pnpm 10.33.2 build the example bundles. Python 3.11+ runs policy
-checks. Install cargo-nextest 0.9.143, cargo-deny 0.20.2, cargo-audit 0.22.2,
-cargo-cyclonedx 0.5.9, and SQLx CLI 0.8.3 for
-the full gate. The tested CLI forwards preparation to this workspace's SQLx 0.9.0
-query macros.
+Node 24.21.0 and pnpm 12.11.2 build the example bundles. Python 3.11+ runs policy
+checks. Install cargo-nextest 0.9.148, cargo-deny 0.20.2, cargo-audit 0.22.2,
+cargo-cyclonedx 0.5.9, and SQLx CLI 0.9.0 for
+the full gate. The CLI and query macros use the same SQLx 0.9.0 release.
 
 ```sh
 rustup show
 corepack enable
-corepack prepare pnpm@10.33.2 --activate
-cargo install cargo-nextest --version 0.9.143 --locked
+corepack prepare pnpm@12.11.2 --activate
+cargo install cargo-nextest --version 0.9.148 --locked
 cargo install cargo-deny --version 0.20.2 --locked
-cargo install sqlx-cli --version 0.8.3 --locked --no-default-features --features sqlite
+cargo install sqlx-cli --version 0.9.0 --locked --no-default-features --features sqlite
 cargo install cargo-audit --version 0.22.2 --locked
 cargo install cargo-cyclonedx --version 0.5.9 --locked
 pnpm install --frozen-lockfile
@@ -25,6 +24,32 @@ Do not replace another project's toolchain or databases. Beads state is local;
 fresh checkouts initialize their own tracker using the command in [AGENTS.md](../AGENTS.md).
 `bd init` may create a local metadata commit. Do not interpret it as permission
 to commit implementation files or configure a remote.
+
+## Dependency updates
+
+Exact manifest versions and lockfiles make native builds and generated bundles
+repeatable. They record a tested release set; they do not update themselves when
+new versions appear. Review current registry releases, update the exact pins,
+refresh both lockfiles, then run `make ci`, `make client-docker-smoke`,
+`make release-evidence`, and `make load` before adopting the new set.
+
+Dependabot checks Cargo and npm weekly and CI actions monthly. Related packages
+share a proposal: SHA-2 with HMAC, the Serde family, the embedded runtime, and
+the Gyral packages. CI actions also share a proposal. SHA-2 and HMAC must use
+compatible digest traits; an isolated major upgrade can fail even when the
+combined upgrade works. HMAC 0.13 constructs keys through `KeyInit`, as shown
+in its [official examples](https://docs.rs/hmac/0.13.0/hmac/).
+Review `deno_core`, its V8 dependency, and the verified
+native archive together. An older transitive version may be required by an
+upstream package; use `cargo tree --invert <package>` to find its owner rather
+than forcing an incompatible override.
+
+pnpm 12 reads build permissions from [pnpm-workspace.yaml](../pnpm-workspace.yaml).
+Only esbuild may run an installation script. Its default one-day release-age
+gate remains enabled; the two exact Gyral 0.3.1 versions are exempt because
+their owner-approved npm release was already verified. Future Gyral versions
+still pass through that gate. Docker builds, source distributions, and the
+release fingerprint include this configuration.
 
 ## Commands
 

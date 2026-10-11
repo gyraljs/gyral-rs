@@ -7,7 +7,7 @@ use axum::{
     response::{IntoResponse, Response},
 };
 use gyral_example_notes_domain::NotebookKey;
-use hmac::{Hmac, Mac as _};
+use hmac::{Hmac, KeyInit as _, Mac as _};
 use sha2::Sha256;
 use std::sync::Arc;
 
@@ -156,4 +156,27 @@ pub(super) async fn session_middleware(
         response.headers_mut().append(header::SET_COOKIE, value);
     }
     response
+}
+
+#[cfg(test)]
+#[allow(
+    clippy::expect_used,
+    reason = "fixtures establish valid notebook and HMAC inputs"
+)]
+mod tests {
+    use super::{NotebookKey, NotebookPolicy};
+
+    #[test]
+    fn csrf_proof_matches_independent_sha256_hmac_vector() {
+        let policy = NotebookPolicy([11; 32]);
+        let owner = NotebookKey::try_from("a".repeat(64))
+            .expect("invariant: fixture is a lowercase 32-byte capability");
+        let session = policy
+            .session(owner)
+            .expect("invariant: HMAC accepts the fixed-size key");
+        // Python's standard-library hmac over the protocol prefix and capability.
+        let expected = "27d42a097ba1d650bc5e384c5d044270da2b9ea52de3176e1b5372934af80d8d";
+        assert_eq!(session.proof, expected);
+        assert!(policy.verify(&session.owner, expected).is_ok());
+    }
 }

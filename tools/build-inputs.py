@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def fingerprint():
-    names = ['Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml', 'Dockerfile', '.cargo/config.toml', 'package.json', 'pnpm-lock.yaml', 'tools/build-example.mjs', 'tools/v8-archive.json']
+    names = ['Cargo.toml', 'Cargo.lock', 'rust-toolchain.toml', 'Dockerfile', '.cargo/config.toml', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'tools/build-example.mjs', 'tools/v8-archive.json']
     paths = [ROOT / name for name in names]
     for directory in ['crates', 'examples']:
         paths.extend(path for path in (ROOT / directory).rglob('*') if path.is_file() and (path.suffix == '.rs' or path.name == 'Cargo.toml' or 'web' in path.relative_to(ROOT).parts))
