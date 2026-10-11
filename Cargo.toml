@@ -32,7 +32,7 @@ opentelemetry_sdk = { version = "=0.33.1", default-features = false, features = 
 opentelemetry-otlp = { version = "=0.33.1", default-features = false, features = ["trace", "http-proto", "reqwest-blocking-client", "reqwest-rustls"] }
 tracing-opentelemetry = "=0.34.0"
 proptest = "=1.11.0"
-base64 = "=0.22.1"
+base64 = "=0.23.1"
 sha2 = "=0.10.9"
 askama = { version = "=0.16.1", default-features = false, features = ["derive", "std"] }
 gyral-example-notes-domain = { path = "examples/notes-domain", version = "=0.1.0" }
