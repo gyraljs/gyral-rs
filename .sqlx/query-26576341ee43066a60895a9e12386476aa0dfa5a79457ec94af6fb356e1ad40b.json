@@ -1,0 +1,26 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO notes(owner, title, body) SELECT ?, ?, ? WHERE (SELECT count(*) FROM notes WHERE owner = ?) < 200 RETURNING id",
+  "describe": {
+    "columns": [
+      {
+        "name": "id",
+        "ordinal": 0,
+        "type_info": "Integer",
+        "origin": {
+          "Table": {
+            "table": "notes",
+            "name": "id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "26576341ee43066a60895a9e12386476aa0dfa5a79457ec94af6fb356e1ad40b"
+}

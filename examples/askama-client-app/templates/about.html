@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+  <header class="intro">
+    <p class="eyebrow">Two rendering choices</p>
+    <h1>A Rust page with browser widgets</h1>
+    <p class="lede">Askama renders the document. Gyral renders the components.</p>
+  </header>
+  <section aria-labelledby="request-heading">
+    <h2 id="request-heading">What happens on a request?</h2>
+    <ol>
+      <li>Axum parses the page parameters in Rust.</li>
+      <li>Askama renders HTML, including custom-element tags and escaped attributes.</li>
+      <li>The browser loads the component bundle, registers the elements, and performs their first render.</li>
+    </ol>
+    <p>The Rust server executes no JavaScript. These components use client rendering: there is no Gyral-rendered content for them to hydrate.</p>
+    <p>The other example in this repository embeds Gyral SSR through <code>deno_core</code>. It sends component contents immediately and hydrates them in the browser.</p>
+    <p>Keep essential content and ordinary forms in Askama when using this approach. Browser widgets become available after their JavaScript loads.</p>
+    <p><a href="/">Return to the demo</a></p>
+  </section>
+  <section class="note-document" aria-labelledby="forms-heading">
+    <h2 id="forms-heading">Try ordinary pages and forms</h2>
+    <p>The notes app lists, saves, edits, and deletes records through native links and forms. Rust checks notebook ownership, CSRF tokens, and fields, then saves changes in SQLite and redirects to a page.</p>
+    <p>Gyral adds a preview beside the editor. The title and textarea stay in Askama’s HTML, so saving still works when JavaScript is disabled or blocked. The preview reads text already typed when it loads.</p>
+    <p><a href="/notes">Open your browser’s notebook</a></p>
+  </section>
+{% endblock %}

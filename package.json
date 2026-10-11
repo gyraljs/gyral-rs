@@ -1,0 +1,25 @@
+{
+  "name": "gyral-rs-examples",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.2",
+  "engines": { "node": ">=24 <25" },
+  "scripts": {
+    "build:example": "node tools/build-example.mjs",
+    "build:client-example": "node tools/build-client-example.mjs",
+    "build:examples": "pnpm build:example && pnpm build:client-example",
+    "test:browser": "node tools/browser-smoke.mjs",
+    "test:client-browser": "node tools/client-browser-smoke.mjs"
+  },
+  "dependencies": {
+    "@gyral/core": "0.3.1",
+    "@gyral/ssr": "0.3.1"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12",
+    "playwright": "1.63.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["esbuild"]
+  }
+}

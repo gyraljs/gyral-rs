@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="intro">
+  <p class="eyebrow">Your browser’s notebook</p>
+  <div class="heading-row"><h1>Your notes</h1><a class="button" href="/notes/new">New note</a></div>
+  <p>Save a few sample notes. This browser’s cookie opens this notebook; keep it to return to your notes.</p>
+</section>
+{% if notes.is_empty() %}
+<section class="panel empty"><h2>A place to begin</h2><p>Your notebook is empty. Create a note to try saving, editing, and deleting through ordinary pages and forms.</p><a href="/notes/new">Write your first note</a></section>
+{% else %}
+<ul class="note-list" aria-label="Saved notes">
+{% for note in notes %}
+  <li class="panel"><h2><a href="/notes/{{ note.id.value() }}"><bdi>{{ note.content.title.as_str() }}</bdi></a></h2><p class="note-excerpt">{{ note.content.body.as_str() }}</p></li>
+{% endfor %}
+</ul>
+{% endif %}
+<p class="small">Local example · Up to 200 notes per notebook · Use synthetic content.</p>
+{% endblock %}

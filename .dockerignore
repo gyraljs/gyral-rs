@@ -1,0 +1,9 @@
+.git
+.beads
+.local
+.agents
+node_modules
+target
+examples/axum-app/dist
+examples/askama-client-app/dist
+.env*

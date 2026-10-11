@@ -1,0 +1,12 @@
+disallowed-methods = [
+  { path = "std::time::SystemTime::now", reason = "Inject application time; see docs/engineering.md." },
+  { path = "rand::random", reason = "Inject randomness at the application boundary.", allow-invalid = true },
+  { path = "uuid::Uuid::new_v4", reason = "Inject identifiers at the application boundary." },
+  { path = "futures::future::join_all", reason = "Use bounded concurrency." },
+  { path = "futures::future::try_join_all", reason = "Use bounded concurrency." },
+  { path = "tokio::sync::mpsc::unbounded_channel", reason = "Renderer queues must be bounded." },
+  { path = "std::process::exit", reason = "Return from main so cleanup can run." },
+]
+disallowed-types = [
+  { path = "anyhow::Error", reason = "Libraries expose named error enums." },
+]

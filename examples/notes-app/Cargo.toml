@@ -1,0 +1,20 @@
+[package]
+name = "gyral-example-notes-app"
+description = "Transaction workflows for the Askama notes example; not a Gyral package"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+gyral-example-notes-domain.workspace = true
+thiserror.workspace = true
+async-trait.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+tokio.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,27 @@
+[advisories]
+unmaintained = "all"
+yanked = "deny"
+ignore = [
+  { id = "RUSTSEC-2024-0436", reason = "V8 150.4.0 uses the unmaintained paste macro at compile time; removal is tracked in gyral-rs-83t. See docs/security.md." },
+]
+
+[licenses]
+allow = ["MIT", "Apache-2.0", "Apache-2.0 WITH LLVM-exception", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Unicode-3.0", "Zlib", "CC0-1.0", "MPL-2.0"]
+
+# The TLS trust-anchor data ships with its agreement in local release artifacts.
+[[licenses.exceptions]]
+crate = "webpki-root-certs@=1.0.9"
+allow = ["CDLA-Permissive-2.0"]
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+deny = [
+  { crate = "im", reason = "Use a maintained immutable collection when needed." },
+  { crate = "fp-core", reason = "Do not emulate higher-kinded types." },
+  { crate = "higher", reason = "Do not emulate higher-kinded types." },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

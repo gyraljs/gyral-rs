@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+  <header class="intro">
+    <p class="eyebrow">Axum + Askama + Gyral</p>
+    <h1>Hello, <bdi>{{ name }}</bdi></h1>
+    <p class="lede">A page from Rust. A little interaction from your browser.</p>
+    <p>This greeting and the form below come from Askama. They work before the component bundle loads.</p>
+  </header>
+  <div class="panels">
+    <section aria-labelledby="server-heading">
+      <p class="eyebrow">Server page</p>
+      <h2 id="server-heading">Choose the next page</h2>
+      <p>Submit this ordinary HTML form to ask Rust for another page. The counter starts fresh each time.</p>
+      <form method="get" action="/">
+        <label for="name">Your name</label>
+        <input id="name" name="name" value="{{ name }}" autocomplete="name" required minlength="2" maxlength="128" aria-describedby="name-help">
+        <p class="hint" id="name-help">Use 2–64 characters. This demo saves no data.</p>
+        <label for="start">Starting count</label>
+        <input id="start" name="start" type="number" min="0" max="99" step="1" value="{{ start }}" required>
+        <button type="submit">Load page</button>
+      </form>
+    </section>
+    <section aria-labelledby="browser-heading">
+      <p class="eyebrow">Browser component</p>
+      <h2 id="browser-heading">Try a local counter</h2>
+      <gyral-client-greeting name="{{ name }}"><p>Gyral will greet <bdi>{{ name }}</bdi> when JavaScript is available.</p></gyral-client-greeting>
+      <gyral-client-counter start="{{ start }}">
+        <p class="counter-fallback">Starting count: <strong>{{ start }}</strong>. Interactive controls appear when JavaScript loads.</p>
+      </gyral-client-counter>
+      <p class="hint">These components receive ordinary attributes. Rust sends their tags; your browser creates their contents.</p>
+    </section>
+  </div>
+{% endblock %}

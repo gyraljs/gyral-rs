@@ -1,0 +1,4 @@
+[profile.default]
+# Native V8 interruption is tested across OS threads; kill a regressed test
+# process rather than allowing runaway JavaScript to hang the suite.
+slow-timeout = { period = "10s", terminate-after = 2, grace-period = "1s" }

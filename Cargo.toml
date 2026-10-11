@@ -1,0 +1,73 @@
+[workspace]
+members = ["crates/domain", "crates/gyral-renderer", "crates/gyral-axum", "examples/axum-app", "examples/askama-client-app", "examples/notes-domain", "examples/notes-app"]
+resolver = "3"
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+gyral-renderer-domain = { path = "crates/domain", version = "=0.1.0" }
+gyral-renderer = { path = "crates/gyral-renderer", version = "=0.1.0" }
+gyral-axum = { path = "crates/gyral-axum", version = "=0.1.0" }
+deno_core = { version = "=0.412.0", features = ["include_icu_data"] }
+serde = { version = "=1.0.228", features = ["derive"] }
+serde_json = "=1.0.149"
+thiserror = "=2.0.19"
+tokio = { version = "=1.53.1", features = ["rt", "macros", "sync", "time", "net", "signal"] }
+tracing = "=0.1.44"
+tracing-subscriber = { version = "=0.3.23", features = ["env-filter", "json"] }
+axum = "=0.8.9"
+tower = { version = "=0.5.3", features = ["util"] }
+tower-http = { version = "=0.7.1", features = ["fs", "trace", "catch-panic", "timeout", "limit"] }
+metrics = "=0.24.6"
+metrics-exporter-prometheus = { version = "=0.18.3", default-features = false }
+opentelemetry = { version = "=0.33.1", default-features = false, features = ["trace"] }
+opentelemetry_sdk = { version = "=0.33.1", default-features = false, features = ["trace"] }
+opentelemetry-otlp = { version = "=0.33.1", default-features = false, features = ["trace", "http-proto", "reqwest-blocking-client", "reqwest-rustls"] }
+tracing-opentelemetry = "=0.34.0"
+proptest = "=1.11.0"
+base64 = "=0.22.1"
+sha2 = "=0.10.9"
+askama = { version = "=0.16.1", default-features = false, features = ["derive", "std"] }
+gyral-example-notes-domain = { path = "examples/notes-domain", version = "=0.1.0" }
+gyral-example-notes-app = { path = "examples/notes-app", version = "=0.1.0" }
+sqlx = { version = "=0.9.0", default-features = false, features = ["runtime-tokio", "sqlite", "macros", "migrate"] }
+getrandom = { version = "=0.4.3", features = ["std"] }
+hmac = "=0.12.1"
+async-trait = "=0.1.92"
+tempfile = "=3.27.0"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "deny"
+missing_debug_implementations = "warn"
+unreachable_pub = "warn"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
+unreachable = "deny"
+indexing_slicing = "deny"
+wildcard_enum_match_arm = "deny"
+match_wildcard_for_single_variants = "deny"
+as_conversions = "deny"
+cast_possible_truncation = "deny"
+cast_sign_loss = "deny"
+missing_errors_doc = "deny"
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+overflow-checks = true
+
+[profile.release-debug]
+inherits = "release"
+debug = 1
+strip = "none"

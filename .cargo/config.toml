@@ -1,0 +1,3 @@
+[env]
+SQLX_OFFLINE = "true"
+RUSTY_V8_ARCHIVE = { value = ".local/v8/librusty_v8_simdutf_release_x86_64-unknown-linux-gnu.a.gz", relative = true, force = true }

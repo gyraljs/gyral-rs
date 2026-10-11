@@ -1,0 +1,71 @@
+{
+  "format": 1,
+  "skills": [
+    {
+      "name": "rust-fp",
+      "source": "git@github.com:mikezupper/rust-fp-skill.git",
+      "commit": "2d340872748fdfaa948645742619c5b0dd1d62f6",
+      "source_dirty": false,
+      "files": {
+        ".agents/skills/rust-fp/LICENSE": "05ab5c04ef06fd820fa6fe2e4ebbb53ff6c37e903e008ab63978fb1d4c7c84b2",
+        ".agents/skills/rust-fp/README.md": "622e398da9d72acab81328860ed8b1874081735ba5a3d9bd0add06eb4853bf72",
+        ".agents/skills/rust-fp/SKILL.md": "74582f66906f30e3b70370c44624514b7273a76ebc5dd363b6fe9dfc3d8e7aba",
+        ".agents/skills/rust-fp/references/app-shapes.md": "65588b36a8adfc813b41bfc3656e6570d8e405df4c24a82ce96016d402b3c25f",
+        ".agents/skills/rust-fp/references/boundaries.md": "4d160c38f9e6bf7b96e051b6ab73ffcfa6f513d8403a79ebb3fce010a8350b02",
+        ".agents/skills/rust-fp/references/code-review.md": "79293bfc1c76442dcdc78cc515052b3cba799f862e9cd0050189c5cbde1bebcc",
+        ".agents/skills/rust-fp/references/concurrency.md": "06fa8cb92483d56fc65bc8b16cdb9eb82dafb234a1ba96ab0fa7fa7fc480888d",
+        ".agents/skills/rust-fp/references/database.md": "e61a1df6958dad1c539a93d5dd6028ae04f346810130f98250ea4474ff83caca",
+        ".agents/skills/rust-fp/references/di-context.md": "4cb76ab14c75f2ccb870eec2f6469d82b97828a1bf49ede3c5d00f8f2d94d86c",
+        ".agents/skills/rust-fp/references/domain-types.md": "7afb731db7e0757483f105168cc35c3d172446c0d3155354a952e3bfb0cfa397",
+        ".agents/skills/rust-fp/references/pattern-matching.md": "6e3d6e6022a85791ca9d1d6ccbcedd1a77a22445a0059545e4a04881a449b07f",
+        ".agents/skills/rust-fp/references/production.md": "ad93d317be9079ee20451216c301378e23a44b833517f4ea43ffbc9982529c09",
+        ".agents/skills/rust-fp/references/rop-errors.md": "e443cb807c46a890eac4d4772e9d24a63440cafda5d0f8538f3d5085915174c7",
+        ".agents/skills/rust-fp/references/sagas.md": "8a3ec98f0a1c19c3a4d438bdc1528ce7244e0a41c894ef91dfca65fbf3ec9dc2",
+        ".agents/skills/rust-fp/references/scaffold.md": "5fc77ee50aa7a00f1e50a2085662878e83414f811e777f910c14b831d124c62a",
+        ".agents/skills/rust-fp/references/testing.md": "9e87727f5c9362e62ae40de9a38579ef9d97622d3080af69fe3cce051840e263"
+      }
+    },
+    {
+      "name": "sense-of-style",
+      "source": "git@github.com:mikezupper/the-sense-of-style-writing-skill.git",
+      "commit": "e93499a48ef1d5759a3d571a661ea8f25a886615",
+      "source_dirty": false,
+      "files": {
+        ".agents/skills/sense-of-style/LICENSE": "d6963045fb4e9eb8e5aca90f90018f881c9716b31fdbb8581f4d33e24ee0fec2",
+        ".agents/skills/sense-of-style/README.md": "85838b1353074eb460c4114cd018b7ac0508f92ec4d92ae1293786ce3c26dfe6",
+        ".agents/skills/sense-of-style/SKILL.md": "c0537c5702b579b3e1098a977fa26b00a728f1d70be2ff4abb0e6178d25d9539",
+        ".agents/skills/sense-of-style/agents/openai.yaml": "7e1dbcb217b502fcd063ee4878775d9f68fc42465ff2c885b2ac2377824203d8",
+        ".agents/skills/sense-of-style/references/reader-and-voice.md": "f19d817a8ab40d8c91e2d164b3563dc975e856f953d7dda29e6daee480b977c1",
+        ".agents/skills/sense-of-style/references/revision-and-examples.md": "d25528c6065839f73f8e2fe7488d8eb30a394c2abc069a9ff595a813a3843a3a",
+        ".agents/skills/sense-of-style/references/sentences-and-usage.md": "19eaa523d50ec2d616b436fd0604e2f8c4e0f2b6745ccc96462378fe3130d632",
+        ".agents/skills/sense-of-style/references/sources.md": "67845e251466bee5d46672a0957978669e158de0ad25f6942ce63c62050ce105",
+        ".agents/skills/sense-of-style/references/structure-and-coherence.md": "e26ec39c8159daa9ab5711e50bbc183fbefa4e66989fb2896de9c66107289d06",
+        ".agents/skills/sense-of-style/references/writing-categories.md": "0bf817adec286aece7c9b1602361def599d71c309afd841d4d69a4b9e167d370"
+      }
+    },
+    {
+      "name": "beads",
+      "source": "git@github.com:mikezupper/beads-skill.git",
+      "commit": "283dbe17de66e3169761c8c32ce6b497c05e2fd5",
+      "source_dirty": true,
+      "files": {
+        ".agents/skills/beads/BEADS_VERSION.md": "2ba84ecf16023fdb836285b3d13eb874df21d1c07c2f97802a9bf3cffc72065a",
+        ".agents/skills/beads/LICENSE": "d6963045fb4e9eb8e5aca90f90018f881c9716b31fdbb8581f4d33e24ee0fec2",
+        ".agents/skills/beads/NOTICE.md": "6f5b990ea387f0a78ce6b24b8a85a53f3e27a538e465b79028a14fba5eee1ba7",
+        ".agents/skills/beads/SKILL.md": "abd602c97f99acedbfb44fa7ad038ce833673ef20f0e9d4e5debbc3588d3f978",
+        ".agents/skills/beads/references/01-installation-and-init.md": "8d993e02898efce6e0dffd6469b4ee68d04215fa2407c5e4b1474581654e4a66",
+        ".agents/skills/beads/references/02-core-concepts.md": "854893e7a53b07d3dadf38fd815e80bcdf889bcfa947e5f758ec317b35478ea2",
+        ".agents/skills/beads/references/03-dependencies-and-ready.md": "da1d7e73e24957c4b735cc4e39a85bba54d295b6c6cf11b2a1c01f4fe55439f1",
+        ".agents/skills/beads/references/04-cli-reference.md": "908046477c899301811bd5897f0037555919cfa832e23111246c5e8658d20d77",
+        ".agents/skills/beads/references/05-workflows.md": "6afdecfe1baf31fa03b9238ebcac51e41d7992ea7a4c8d519543cac51e7d6ea5",
+        ".agents/skills/beads/references/06-agent-playbook.md": "2af3cadd6f74a436e3fc795e079bf203f4c53a2020cc3a0222a37433163b5397",
+        ".agents/skills/beads/references/07-multi-agent.md": "cfe2a49ec219ca49d370ec81b9d416b10c2b5bd39d2db0678c464f17a657aa66",
+        ".agents/skills/beads/references/08-sync-and-storage.md": "04865894c0ba91d3b2abfdec0f678ddb284fe10cbb2a02e7ff1df58eb0243958",
+        ".agents/skills/beads/references/09-configuration.md": "a658b2d4b1644018fc405c0547ed78a93ea8bd9fbe262c91d01e16adec8c0756",
+        ".agents/skills/beads/references/10-harness-integration.md": "1c015239787664a81f193f405ce720360613fc181202ca448c9707e06ce6cbb3",
+        ".agents/skills/beads/references/11-troubleshooting.md": "388cc7ed9898d068a1dee0621b75da227a83e6e456cc460f1cd9a55bf376e0d8",
+        ".agents/skills/beads/references/12-json-and-scripting.md": "82486f5bfafe95afa54175eb9a3788794d4621f7a4c90be7b8b449043f2103ce"
+      }
+    }
+  ]
+}

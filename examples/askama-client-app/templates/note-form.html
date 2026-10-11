@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="intro"><p class="eyebrow">Your browser’s notebook</p><h1>{{ title }}</h1><p>Write plain text. Saving opens the saved note on a new page.</p></section>
+{% if !title_error.is_empty() || !body_error.is_empty() || !submission_error.is_empty() %}
+<section class="error-summary" aria-labelledby="errors-heading" role="alert">
+  <h2 id="errors-heading">Check your note</h2><p>Your changes have not been saved.</p>
+  {% if !submission_error.is_empty() %}<p>{{ submission_error }}</p>{% endif %}
+  {% if !title_error.is_empty() || !body_error.is_empty() %}
+  <ul>{% if !title_error.is_empty() %}<li><a href="#note-title">{{ title_error }}</a></li>{% endif %}{% if !body_error.is_empty() %}<li><a href="#note-body">{{ body_error }}</a></li>{% endif %}</ul>
+  {% endif %}
+</section>
+{% endif %}
+<div class="editor-layout">
+  <form class="panel note-form" id="note-editor" method="post" action="{{ action }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="note-title">Title</label>
+    <input id="note-title" name="title" value="{{ note_title }}" required aria-describedby="title-help{% if !title_error.is_empty() %} title-error{% endif %}"{% if !title_error.is_empty() %} aria-invalid="true"{% endif %} dir="auto">
+    <p class="help" id="title-help">1–100 characters. Surrounding spaces are removed when saved.</p>
+    {% if !title_error.is_empty() %}<p class="field-error" id="title-error">{{ title_error }}</p>{% endif %}
+    <label for="note-body">Note</label>
+    <textarea id="note-body" name="body" rows="12" aria-describedby="body-help{% if !body_error.is_empty() %} body-error{% endif %}"{% if !body_error.is_empty() %} aria-invalid="true"{% endif %} dir="auto">{{ body }}</textarea>
+    <p class="help" id="body-help">Up to 4,000 characters. Newlines and tabs are welcome. HTML remains plain text.</p>
+    {% if !body_error.is_empty() %}<p class="field-error" id="body-error">{{ body_error }}</p>{% endif %}
+    <div class="actions"><button type="submit">Save note</button><a href="{{ cancel }}">Cancel</a></div>
+  </form>
+  <aside class="panel preview-panel" aria-labelledby="preview-heading">
+    <h2 id="preview-heading">Live preview</h2>
+    <gyral-note-preview form-id="note-editor" initial-title="{{ note_title }}" initial-body="{{ body }}">
+      <p class="preview-fallback">The preview appears when JavaScript loads. You can save your note at any time.</p>
+    </gyral-note-preview>
+    <p class="help">The preview is unsaved. Choose Save note to keep your changes.</p>
+  </aside>
+</div>
+{% endblock %}

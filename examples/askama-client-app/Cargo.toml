@@ -1,0 +1,35 @@
+[package]
+name = "gyral-askama-client-example"
+description = "Askama pages with Gyral components rendered only in the browser"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+askama.workspace = true
+axum.workspace = true
+gyral-renderer-domain.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tower-http.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+gyral-example-notes-domain.workspace = true
+gyral-example-notes-app.workspace = true
+sqlx.workspace = true
+getrandom.workspace = true
+hmac.workspace = true
+async-trait.workspace = true
+
+[dev-dependencies]
+proptest.workspace = true
+tower.workspace = true
+tempfile.workspace = true
+
+[lints]
+workspace = true

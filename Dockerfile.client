@@ -1,0 +1,40 @@
+# syntax=docker/dockerfile:1
+FROM node:24.15.0-bookworm-slim@sha256:4e6b70dd6cbfc88c8157ba19aa3d9f9cce6ba4703576d55459e45efcbc9c5f5d AS web
+WORKDIR /build
+RUN corepack enable
+COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+COPY tools/build-client-example.mjs ./tools/build-client-example.mjs
+COPY examples/askama-client-app/web ./examples/askama-client-app/web
+RUN pnpm build:client-example
+
+FROM rust:1.99.0-bookworm@sha256:59037199c44290f2befcdd58dcc540164763fc296950255aaefeef096a1866b0 AS rust
+WORKDIR /build
+COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
+COPY .cargo ./.cargo
+COPY .sqlx ./.sqlx
+COPY crates ./crates
+COPY examples/axum-app/Cargo.toml ./examples/axum-app/Cargo.toml
+COPY examples/axum-app/src ./examples/axum-app/src
+COPY examples/askama-client-app/Cargo.toml ./examples/askama-client-app/Cargo.toml
+COPY examples/askama-client-app/src ./examples/askama-client-app/src
+COPY examples/askama-client-app/templates ./examples/askama-client-app/templates
+COPY examples/askama-client-app/migrations ./examples/askama-client-app/migrations
+COPY examples/notes-domain ./examples/notes-domain
+COPY examples/notes-app ./examples/notes-app
+RUN cargo tree --locked -p gyral-askama-client-example --edges normal > /tmp/client-dependencies && if grep -E '(deno_core|v8 v|gyral-renderer v|gyral-axum v)' /tmp/client-dependencies; then exit 1; fi
+RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/build/client-target CARGO_TARGET_DIR=/build/client-target cargo build --release --locked -p gyral-askama-client-example && cp client-target/release/gyral-askama-client-example /usr/local/bin/gyral-askama-client-example
+
+FROM debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251 AS app
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/* && groupadd --gid 10001 gyral && useradd --uid 10001 --gid gyral --no-create-home gyral
+WORKDIR /app
+RUN mkdir /app/data && chown 10001:10001 /app/data
+COPY --from=rust /usr/local/bin/gyral-askama-client-example /usr/local/bin/gyral-askama-client-example
+COPY --from=web /build/examples/askama-client-app/dist ./dist
+ENV GYRAL_CLIENT_BIND=0.0.0.0:3038 GYRAL_CLIENT_DIST=/app/dist GYRAL_NOTES_DB=/app/data/notes.sqlite
+VOLUME ["/app/data"]
+USER 10001:10001
+EXPOSE 3038
+STOPSIGNAL SIGTERM
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s CMD curl --fail --silent http://127.0.0.1:3038/health > /dev/null
+CMD ["gyral-askama-client-example"]

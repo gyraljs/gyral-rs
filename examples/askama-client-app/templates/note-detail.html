@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<a href="/notes">← All notes</a>
+<article class="panel note-document">
+  <p class="eyebrow">Saved note</p>
+  <h1><bdi>{{ note.content.title.as_str() }}</bdi></h1>
+  <div class="note-body" dir="auto">{{ note.content.body.as_str() }}</div>
+</article>
+<nav class="actions" aria-label="Note actions"><a class="button" href="/notes/{{ note.id.value() }}/edit">Edit note</a><a href="/notes/{{ note.id.value() }}/delete">Delete note…</a></nav>
+{% endblock %}

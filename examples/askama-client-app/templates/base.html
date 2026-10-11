@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Rust renders these pages with Askama. Gyral renders the interactive components in your browser.">
+  <title>{{ title }} — gyral-rs examples</title>
+  <link rel="stylesheet" href="{{ assets.css.path }}" integrity="{{ assets.css.integrity }}" crossorigin="anonymous">
+  <script type="module" src="{{ assets.script.path }}" integrity="{{ assets.script.integrity }}" crossorigin="anonymous"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="/">gyral-rs <span>examples</span></a>
+    <nav aria-label="Primary">
+      <a href="/notes"{% if section == "notes" %} aria-current="page"{% endif %}>Notes</a>
+      <a href="/"{% if section == "demo" %} aria-current="page"{% endif %}>Demo</a>
+      <a href="/about"{% if section == "about" %} aria-current="page"{% endif %}>How it works</a>
+    </nav>
+  </header>
+  <main id="main" tabindex="-1">{% block content %}{% endblock %}</main>
+  <footer><p>Synthetic data · Rust pages · Browser components</p></footer>
+</body>
+</html>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Sense of Style Writing"
+  short_description: "Clear nonfiction that preserves the author's voice"
+  default_prompt: "Use $sense-of-style-writing to establish my writing category, audience, and purpose, then help me draft or revise while preserving my voice."
