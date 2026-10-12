@@ -44,7 +44,8 @@ jobs:
       - run: make prepare-native
       - run: make ci
       - run: make package
-      # Skips each crate until it has a published baseline, then runs automatically.
+      # Skips each crate until it has a published 0.1.0 or later baseline (gyral 0.0.1
+      # only holds the name), then runs automatically.
       - run: python3 tools/release.py semver
       - run: make release-evidence
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -75,8 +76,8 @@ jobs:
       - name: Find crates not yet on crates.io
         id: pending
         run: echo "crates=$(python3 tools/release.py pending | paste -sd ' ' -)" >> "$GITHUB_OUTPUT"
-      # A first publish cannot use Trusted Publishing because the crates do not exist
-      # yet. The optional environment secret covers that case; otherwise use OIDC.
+      # A first publish cannot use Trusted Publishing because three of the crates do not
+      # exist yet. The optional environment secret covers that case; otherwise use OIDC.
       - name: Choose crates.io authentication
         id: credential
         if: steps.pending.outputs.crates != ''

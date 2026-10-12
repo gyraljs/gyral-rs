@@ -151,8 +151,10 @@ move together. The JavaScript bundle ABI and artifact format have separate expli
 versions: a Rust release must not silently reinterpret old metadata. Gyral release
 changes require a new compatibility fixture and matching server/client artifacts.
 There is no published baseline yet. The release workflow runs cargo-semver-checks
-for each crate that has a published version and skips the others, so the check
-starts automatically once 0.1.0 exists. Document intentional breaks in the
+for each crate whose latest published version is 0.1.0 or later and skips the
+others: three crates are unpublished, and `gyral` has only the owner's 0.0.1
+name-holding placeholder, which has no API to compare. The check starts
+automatically once 0.1.0 exists. Document intentional breaks in the
 changelog. Do not claim semver validation against an unpublished baseline.
 
 ## Native archive and release evidence

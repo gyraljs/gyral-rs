@@ -51,7 +51,23 @@ workflow runs it against crates.io baselines and skips crates with none.
 actionlint 1.7.7 reported no findings in either workflow. Each action is pinned to
 the commit that its tag resolves to through the GitHub API: checkout 7.0.1,
 setup-node 7.1.0, cache 6.1.0, upload-artifact 7.0.2, download-artifact 8.0.1,
-and `rust-lang/crates-io-auth-action` 1.0.5. Neither workflow has run on GitHub.
+and `rust-lang/crates-io-auth-action` 1.0.5. The release workflow has not run on
+GitHub.
+
+The first CI push run of this branch failed in `make release-evidence`: the source
+archive omitted `CHANGELOG.md`, so `tools/check.py` inside the extracted archive
+reported it missing while `AGENTS.md` and `README.md` linked to it. The archive now
+includes it, and a release-tool regression asserts that every repository document
+the policy check requires is in the source list. The owner has since published a
+`gyral` 0.0.1 name-holding placeholder; `tools/release.py semver` skips a crate whose
+published versions are all below 0.1.0, and a second new regression covers that.
+
+After rebasing onto the Gyral 0.3.3 update, `make ci` passed again: **65 nextest
+tests**, **ten doctests**, policy over 29 documents and four publishable crates,
+**five release-tool regressions**, all Chromium/WebKit suites, `cargo deny`, and
+`cargo audit`. `make package` produced the same four packages and sizes as above,
+and `make release-evidence` passed: container smoke, evidence build, and the
+release smoke, including the policy check in the extracted source archive.
 
 ## Gyral 0.3.3 update — October 12, 2026
 
