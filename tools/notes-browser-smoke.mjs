@@ -86,7 +86,10 @@ try {
         if (mode === 'blocked') await page.route(`${url}${scriptPath}`, route => route.abort());
         await page.goto(`${url}/notes`);
         assert.ok(await page.getByText('Your notebook is empty.', { exact: false }).isVisible());
+        // A link click returns once navigation commits, before the new page is
+        // parsed. Wait for its load event before a non-retrying check.
         await page.getByRole('link', { name: 'New note', exact: true }).click();
+        await page.waitForURL(`${url}/notes/new`);
         assert.ok(await page.locator('.preview-fallback').isVisible());
         await page.getByLabel('Title', { exact: true }).fill(`Native ${name} ${mode}`);
         await page.getByLabel('Note', { exact: true }).fill('Saved without a client renderer.\nSecond line.');
@@ -108,6 +111,7 @@ try {
         await page.getByRole('link', { name: 'All notes', exact: false }).click();
         await page.getByRole('link', { name: 'Corrected note', exact: true }).click();
         await page.getByRole('link', { name: 'Delete note…', exact: true }).click();
+        await page.waitForURL(/\/notes\/\d+\/delete$/);
         assert.equal(await page.locator('h1').textContent(), 'Delete this note?');
         const deleted = page.waitForResponse(r => r.request().method() === 'POST');
         await page.getByRole('button', { name: 'Delete note', exact: true }).click();
