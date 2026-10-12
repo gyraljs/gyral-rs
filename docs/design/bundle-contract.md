@@ -37,6 +37,23 @@ The example passes the Gyral SSR result through unchanged. It uses Declarative
 Shadow DOM and Gyral's hydration seeds. Do not handcraft those seeds in Rust or
 put server authentication secrets into client-visible props.
 
+## Gyral 0.3.1 server rendering inside the bundle
+
+Render with `renderToString` from `@gyral/ssr` and return its string. Gyral's
+`renderPage` returns a Fetch `Response`; ABI 1 expects a string, and the
+embedded runtime provides no Fetch API. The bundle therefore writes its own
+document shell, including the `<head>` elements that `renderPage` would manage.
+
+Gyral 0.3.1 isolates component failures during server rendering: a component
+whose `init` or view throws renders its `error` view (or nothing), is marked
+`data-gyral-error`, and the rest of the page still renders. In that case
+`renderToString` resolves, and Rust receives a successful page. Pass
+`onError: 'throw'` when any component failure should reject the render instead;
+the renderer then returns `RenderError::JavaScript` and the Axum adapter answers
+with its opaque 500. The example uses `onError: 'throw'` on every page. A function
+`onError` keeps the partial page and lets the bundle record each failure. See
+Gyral's [error handling guide](https://gyral.dev/docs/error-handling/#on-the-server).
+
 ## Build metadata
 
 The example build produces `server.js`, `manifest.json`, and

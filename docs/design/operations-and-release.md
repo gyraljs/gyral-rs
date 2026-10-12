@@ -185,8 +185,9 @@ repeatable; compiler output and SBOM timestamps need not be reproducible.
 The inventories cover repository build inputs, not every operating-system package
 or JavaScript build/test tool. Container and toolchain inventories are separate
 requirements for an application distribution. Nothing is uploaded or published
-by this command. CI prepares the same evidence as workflow artifacts after checks;
-hosted execution remains unverified until that workflow actually runs.
+by this command. CI prepares the same evidence as workflow artifacts after checks.
+The workflow has passed on GitHub's hosted `ubuntu-24.04` runner; the
+[verification record](../verification.md) names the run.
 
 Gyral core and SSR now use the published npm release `0.3.1`. The frozen pnpm
 lockfile supplies SHA-512 integrity for registry archives. `npm-production.cdx.json`

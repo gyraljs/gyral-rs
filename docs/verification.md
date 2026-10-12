@@ -50,6 +50,19 @@ exception remains because the current embedded runtime still requires it.
 Logs remain under ignored `.local/dependency-*.log` paths. These checks did not
 publish crates, deploy an application, or change a development database.
 
+The [CI workflow](../.github/workflows/ci.yml) then passed on GitHub's hosted
+`ubuntu-24.04` runner for both the pull request and the merged commit `85dc860`
+(run 38177598445, 24 minutes 42 seconds). That run executed `make ci`,
+`make client-docker-smoke`, `make release-evidence`, and `make load`, and
+uploaded the evidence archive as a workflow artifact. It published nothing.
+
+A review on October 12, 2026 repeated `make check`, `make test`, `cargo deny check`,
+and strict Rust docs locally: 65 nextest tests passed with one skipped, four doctests
+passed, and cargo-deny reported only duplicate-version warnings. The refresh adds
+duplicates that upstream crates still require: `deno_core` uses base64 0.22, and
+SQLx uses SHA-2 0.10 with its digest stack. Cargo also resolved `crypto-common`
+0.1.6 rather than 0.1.7 because 0.1.7 requires exactly `generic-array` 0.14.7.
+
 ## Earlier scaffold evidence
 
 The earlier evidence below was collected locally on October 11, 2026, on Linux x86_64. It used vendored
@@ -83,6 +96,10 @@ Local reports are retained in the ignored `.local` directory. Commands and their
 purpose are documented in [development](development.md).
 
 ## Askama client example
+
+This evidence also predates the npm migration described under
+[published Gyral](#published-gyral-and-runtime-evaluation); the example now
+uses the published 0.3.1 release.
 
 The separate `gyral-askama-client-example` pins Askama 0.16.1 and the same
 vendored Gyral release. Its browser entry is 74,926 bytes and its external page
@@ -218,8 +235,9 @@ split chunks, dynamic styles, streams, or future framework releases. Startup
 hashes do not authenticate a build author. Asset retention during rolling
 releases has not been verified.
 
-Prepared GitHub Actions configuration has not run on a hosted runner. No remote
-repository, package publication, image push, or deployment was created. Beads
+The evidence in this section predates the public repository. GitHub Actions has
+since passed on a hosted runner, as recorded in the dependency refresh above. No
+package publication, image push, or deployment has been made. Beads
 tracks the resource, compatibility, and operating evidence under
 `gyral-rs-xun`, optional snapshot/pool evaluation under `gyral-rs-xun.4`, and
 advisory removal under `gyral-rs-83t`.
