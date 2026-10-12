@@ -81,7 +81,9 @@ Pure domain tests use property-based checks; application workflows use port
 fakes; persistence and lifecycle boundaries use real integration checks. Do not
 add tests that merely repeat an implementation or assert incidental formatting.
 
-Dependency upgrades preserve exact pins and lockfile integrity. A native upgrade
+Dependency upgrades preserve lockfile integrity. Published libraries use caret
+requirements, except the exact `deno_core` pin; examples and tools keep exact
+pins. The [release runbook](docs/releasing.md) explains why. A native upgrade
 also needs a reviewed V8 archive size/digest and compatible target evidence.
 Changing the Gyral version requires matching server/browser artifacts and a
 compatibility fixture. Update documentation when behavior or architecture changes.

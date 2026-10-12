@@ -3,15 +3,17 @@
 The host Rust application authorizes a page request and loads its data. It passes
 a validated `RenderRequest` to `gyral-renderer`, which executes the application's
 compiled Gyral components. `gyral-axum` returns the resulting HTML. Gyral in the
-browser hydrates the same components.
+browser hydrates the same components. Applications reach both through the `gyral`
+front-door crate.
 
 ```mermaid
 flowchart LR
-    App[Host app: authorize and load data] --> Renderer[gyral-renderer]
+    App[Host app: authorize and load data] --> Front[gyral]
+    Front --> Renderer[gyral-renderer]
+    Front -. axum feature .-> Axum
     Renderer --> Domain[gyral-renderer-domain]
     Renderer --> V8[deno_core / V8]
     Axum[gyral-axum] --> Renderer
-    App --> Axum
     V8 --> HTML[HTML and hydration state]
     HTML --> Browser[Gyral in the browser]
 ```
@@ -25,10 +27,18 @@ and supplies a `RenderService` capability and embedded implementation.
 `gyral-axum` depends on that capability and Axum. It does not choose routes, load
 data, or decide whether a caller is allowed to see a page.
 
-The example is the composition root. Its startup bounds file reads, parses the
-manifest, verifies server and browser bytes through `AppArtifacts`,
-initializes the V8 platform before worker threads start, creates the renderer,
-and wires Axum. `tools/check.py` verifies package dependency directions and
+`gyral` is the front door and contains no logic. Its root re-exports the
+`gyral-renderer` API, and its optional `axum` feature re-exports `gyral-axum` as
+`gyral::axum`. It depends only on those two crates, so the boundaries above stay
+in the building blocks. All four crates publish to crates.io with one shared
+version; the examples stay unpublished. The [release runbook](docs/releasing.md)
+covers publication order and dependency requirements.
+
+The SSR example is the composition root. It depends on `gyral` with the `axum`
+feature, which exercises the front door's re-exports. Its startup bounds file
+reads, parses the manifest, verifies server and browser bytes through
+`AppArtifacts`, initializes the V8 platform before worker threads start, creates
+the renderer, and wires Axum. `tools/check.py` verifies package dependency directions and
 checks the domain for direct I/O and runtime references.
 
 ## Askama pages with client rendering

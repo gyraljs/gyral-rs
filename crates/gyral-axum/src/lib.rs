@@ -120,3 +120,8 @@ pub async fn render_page(
 ) -> Result<RenderedPage, RenderRejection> {
     Ok(RenderedPage::new(renderer.render(request).await?))
 }
+
+/// Compiles the crate README examples as documentation tests.
+#[cfg(doctest)]
+#[doc = include_str!("../README.md")]
+struct ReadmeDoctests;

@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/domain", "crates/gyral-renderer", "crates/gyral-axum", "examples/axum-app", "examples/askama-client-app", "examples/notes-domain", "examples/notes-app"]
+members = ["crates/domain", "crates/gyral-renderer", "crates/gyral-axum", "crates/gyral", "examples/axum-app", "examples/askama-client-app", "examples/notes-domain", "examples/notes-app"]
 resolver = "3"
 
 [workspace.package]
@@ -9,31 +9,39 @@ rust-version = "1.99"
 license = "MIT"
 repository = "https://github.com/gyraljs/gyral-rs"
 homepage = "https://gyral.dev"
+# New members stay unpublished; the three libraries opt in explicitly.
 publish = false
 
 [workspace.dependencies]
-gyral-renderer-domain = { path = "crates/domain", version = "=0.1.0" }
-gyral-renderer = { path = "crates/gyral-renderer", version = "=0.1.0" }
-gyral-axum = { path = "crates/gyral-axum", version = "=0.1.0" }
+# Libraries publish these requirements. Ordinary dependencies use caret ranges whose
+# lower bound is the verified version; Cargo.lock still pins this repository's builds.
+gyral-renderer-domain = { path = "crates/domain", version = "0.1.0" }
+gyral-renderer = { path = "crates/gyral-renderer", version = "0.1.0" }
+gyral-axum = { path = "crates/gyral-axum", version = "0.1.0" }
+gyral = { path = "crates/gyral", version = "0.1.0" }
+# Exact: a deno_core release fixes the deno_v8 line, and with it the V8 major and
+# the reviewed native archive. See docs/releasing.md before changing it.
 deno_core = { version = "=0.412.0", features = ["include_icu_data"] }
-serde = { version = "=1.0.229", features = ["derive"] }
-serde_json = "=1.0.154"
-thiserror = "=2.0.21"
-tokio = { version = "=1.53.2", features = ["rt", "macros", "sync", "time", "net", "signal"] }
-tracing = "=0.1.44"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = "1.0.154"
+thiserror = "2.0.21"
+# Members add the runtime features they need; the renderer uses only these.
+tokio = { version = "1.53.2", features = ["rt", "macros", "sync", "time"] }
+tracing = "0.1.44"
+axum = "0.8.9"
+metrics = "0.24.6"
+base64 = "0.23.1"
+sha2 = "0.11.0"
+# Examples, dev-dependencies, and tools keep exact pins; they never reach consumers.
 tracing-subscriber = { version = "=0.3.23", features = ["env-filter", "json"] }
-axum = "=0.8.9"
 tower = { version = "=0.5.3", features = ["util"] }
 tower-http = { version = "=0.7.1", features = ["fs", "trace", "catch-panic", "timeout", "limit"] }
-metrics = "=0.24.6"
 metrics-exporter-prometheus = { version = "=0.18.3", default-features = false }
 opentelemetry = { version = "=0.33.1", default-features = false, features = ["trace"] }
 opentelemetry_sdk = { version = "=0.33.1", default-features = false, features = ["trace"] }
 opentelemetry-otlp = { version = "=0.33.1", default-features = false, features = ["trace", "http-proto", "reqwest-blocking-client", "reqwest-rustls"] }
 tracing-opentelemetry = "=0.34.0"
 proptest = "=1.12.0"
-base64 = "=0.23.1"
-sha2 = "=0.11.0"
 askama = { version = "=0.16.1", default-features = false, features = ["derive", "std"] }
 gyral-example-notes-domain = { path = "examples/notes-domain", version = "=0.1.0" }
 gyral-example-notes-app = { path = "examples/notes-app", version = "=0.1.0" }

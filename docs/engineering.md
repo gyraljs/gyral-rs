@@ -5,7 +5,8 @@ The owner requested functional Rust, reader-centered writing, Beads, and the
 implements these through a short [repository map](../AGENTS.md), linked designs,
 typed package boundaries, executable examples, and mechanical quality checks.
 The article's Markdown execution plans are replaced by Beads, as requested.
-No scheduled agents, remote publishing, or automatic merge behavior is configured.
+No scheduled agents or automatic merge behavior is configured. Publishing runs
+only through the manually started, reviewer-approved [release workflow](releasing.md).
 
 ## Pinned skills
 
@@ -40,10 +41,11 @@ production-requirement review, readiness, redacted logs/traces, metrics, signal
 shutdown, supported build policy, and sustained fixture budgets. This evidence
 does not certify an authenticated application or its deployment workload.
 
-The skill's library checklist is applied to unpublished packages: public enums
+The skill's library checklist is applied to the published libraries: public enums
 remain exhaustive across this workspace, and `RenderService` stays open for
-application fakes and alternative implementations. A published semver baseline does not exist yet. The initial
-pre-1.0 compatibility policy requires API comparisons once a baseline exists. The validated request is also the explicit JSON wire contract;
+application fakes and alternative implementations. A published semver baseline does not exist yet. The release
+workflow runs cargo-semver-checks against each crate's latest published version
+once one exists. The validated request is also the explicit JSON wire contract;
 Serde deserialization routes through its constructor. There are no payment or
 WASM workflows in this scaffold. The notes example demonstrates database
 workflows with pure domain types, injected transaction ports, hand-written

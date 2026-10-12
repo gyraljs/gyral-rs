@@ -1,0 +1,122 @@
+name: release
+# Publishes gyral-renderer-domain, gyral-renderer, gyral-axum, and gyral to crates.io,
+# then tags v<version> and attaches the release evidence. See docs/releasing.md.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release
+  cancel-in-progress: false
+jobs:
+  verify:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      # No dependency cache: release builds start from the lockfiles alone.
+      - name: Check version, changelog, and tag
+        id: version
+        run: |
+          version="$(python3 tools/release.py version)"
+          python3 tools/release.py notes > /dev/null
+          tagged="$(git ls-remote --tags origin "refs/tags/v$version" | cut -f1)"
+          if [ -n "$tagged" ] && [ "$tagged" != "$GITHUB_SHA" ]; then
+            echo "::error::v$version already tags $tagged, not $GITHUB_SHA"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - run: corepack enable
+      - run: rustup toolchain install 1.99.0 --profile minimal --component rustfmt --component clippy
+      - run: cargo install cargo-nextest --version 0.9.148 --locked && cargo install cargo-deny --version 0.20.2 --locked
+      - run: cargo install cargo-audit --version 0.22.2 --locked && cargo install cargo-cyclonedx --version 0.5.9 --locked
+      - run: cargo install sqlx-cli --version 0.9.0 --locked --no-default-features --features sqlite
+      - run: cargo install cargo-semver-checks --version 0.51.0 --locked
+      - run: pnpm install --frozen-lockfile && pnpm exec playwright install --with-deps chromium webkit
+      - run: make prepare-native
+      - run: make ci
+      - run: make package
+      # Skips each crate until it has a published baseline, then runs automatically.
+      - run: python3 tools/release.py semver
+      - run: make release-evidence
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-evidence
+          path: .local/release/${{ steps.version.outputs.version }}/
+          if-no-files-found: error
+
+  publish:
+    needs: verify
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    # Required reviewers approve here, after verification has passed.
+    environment: crates-io
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install 1.99.0 --profile minimal --component rustfmt --component clippy
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release-evidence
+          path: release-evidence
+      - name: Find crates not yet on crates.io
+        id: pending
+        run: echo "crates=$(python3 tools/release.py pending | paste -sd ' ' -)" >> "$GITHUB_OUTPUT"
+      # A first publish cannot use Trusted Publishing because the crates do not exist
+      # yet. The optional environment secret covers that case; otherwise use OIDC.
+      - name: Choose crates.io authentication
+        id: credential
+        if: steps.pending.outputs.crates != ''
+        env:
+          BOOTSTRAP_TOKEN: ${{ secrets.CRATES_IO_BOOTSTRAP_TOKEN }}
+        run: |
+          if [ -n "$BOOTSTRAP_TOKEN" ]; then
+            echo "::warning::Publishing with CRATES_IO_BOOTSTRAP_TOKEN; delete it after the first release"
+            echo "bootstrap=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "bootstrap=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: rust-lang/crates-io-auth-action@c6f97d42243bad5fab37ca0427f495c86d5b1a18 # v1.0.5
+        id: auth
+        if: steps.pending.outputs.crates != '' && steps.credential.outputs.bootstrap == 'false'
+      - name: Publish in dependency order
+        if: steps.pending.outputs.crates != ''
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token || secrets.CRATES_IO_BOOTSTRAP_TOKEN }}
+          CRATES: ${{ steps.pending.outputs.crates }}
+        # The verify job built these exact packages with `make package`. Skipping the
+        # rebuild keeps dependency build scripts out of the job that can mint tokens.
+        run: |
+          for crate in $CRATES; do
+            cargo publish --locked --no-verify --package "$crate"
+          done
+      - name: Tag and create the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.verify.outputs.version }}
+        run: |
+          tag="v$VERSION"
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            echo "Release $tag already exists; leaving it unchanged."
+            exit 0
+          fi
+          python3 tools/release.py notes > release-notes.md
+          (cd release-evidence && sha256sum --check SHA256SUMS)
+          gh release create "$tag" release-evidence/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "gyral-rs $VERSION" \
+            --notes-file release-notes.md

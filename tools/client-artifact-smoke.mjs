@@ -8,7 +8,7 @@ import { promisify } from 'node:util';
 
 const execute = promisify(execFile);
 const tree = (await execute('cargo', ['tree', '--locked', '-p', 'gyral-askama-client-example', '--edges', 'normal'], { timeout: 30_000 })).stdout;
-assert.doesNotMatch(tree, /\b(?:deno_core|v8|gyral-renderer|gyral-axum) v/, 'Client example must not link an embedded renderer');
+assert.doesNotMatch(tree, /\b(?:deno_core|v8|gyral|gyral-renderer|gyral-axum) v/, 'Client example must not link an embedded renderer');
 const dist = 'examples/askama-client-app/dist';
 const first = await readFile(`${dist}/manifest.json`);
 await execute(process.execPath, ['tools/build-client-example.mjs'], { timeout: 15_000 });

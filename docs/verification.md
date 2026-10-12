@@ -1,5 +1,58 @@
 # Verification evidence
 
+## crates.io release preparation — October 12, 2026
+
+The four library crates, `gyral-renderer-domain`, `gyral-renderer`, `gyral-axum`,
+and the new `gyral` front door, now carry registry metadata, READMEs whose Rust
+examples compile as doctests, a license copy, and an `include` list. Examples set
+`publish = false`. Library requirements became caret ranges, except `deno_core`
+`=0.412.0`; the [release runbook](releasing.md) records why. The renderer no longer
+asks Tokio for `net` and `signal`; the two example executables request them.
+The SSR example now depends on `gyral` with its `axum` feature. Nothing was
+published, and no crates.io token or GitHub setting was created or changed.
+
+`make ci` passed with Rust 1.99.0 on Linux x86_64: **65 nextest tests** with the
+usual runtime-measurement test skipped, **ten doctests** including every crate
+README, strict Clippy, formatting, Rust docs with all features, policy, artifact,
+client-artifact and operating checks, four release-tool regressions, all
+Chromium/WebKit SSR, client and notes suites, the notes schema check, `cargo deny`
+with duplicate-version warnings only, and `cargo audit` with the existing scoped
+exception.
+
+`make package` passed. `cargo publish --dry-run --workspace --locked` packaged and
+built each crate from its extracted contents in dependency order, then skipped the
+upload. The packages contain only `Cargo.toml`, `Cargo.lock`, the README, the
+license, and `src/**/*.rs`:
+
+| Crate | Files | Compressed |
+| --- | --- | --- |
+| `gyral-renderer-domain` | 9 | 10.6 KiB |
+| `gyral-renderer` | 13 | 37.0 KiB |
+| `gyral-axum` | 8 | 20.3 KiB |
+| `gyral` | 7 | 18.7 KiB |
+
+The docs.rs simulation extracted the four packages outside the checkout, so the
+repository's forced `RUSTY_V8_ARCHIVE` configuration did not apply. With
+`DOCS_RS=1`, no `RUSTY_V8_*` variables, Cargo offline, and an unreachable HTTP
+proxy, `cargo doc --all-features` documented every crate with warnings denied.
+The V8 build script used its bundled bindings and downloaded nothing. A clean
+target directory reproduced the result.
+
+A minimal-version check used stable Cargo 1.99 with `RUSTC_BOOTSTRAP=1` in a
+scratch copy. `-Z direct-minimal-versions` resolved every direct dependency to its
+lower bound, which equals the verified version; the four libraries then checked
+with all features, and the domain tests passed. Full `-Z minimal-versions` failed
+to compile the upstream transitive crate `wyz` against the oldest `tap` its manifest
+allows; no gyral-rs requirement was involved.
+
+cargo-semver-checks 0.51.0 ran with Rust 1.99.0 against `origin/main` as a Git
+baseline for the three existing crates: 202 checks passed for each. The release
+workflow runs it against crates.io baselines and skips crates with none.
+actionlint 1.7.7 reported no findings in either workflow. Each action is pinned to
+the commit that its tag resolves to through the GitHub API: checkout 7.0.1,
+setup-node 7.1.0, cache 6.1.0, upload-artifact 7.0.2, download-artifact 8.0.1,
+and `rust-lang/crates-io-auth-action` 1.0.5. Neither workflow has run on GitHub.
+
 ## Gyral 0.3.3 update — October 12, 2026
 
 Gyral 0.3.3 changes only `@gyral/mcp` (one `gyral-mcp` bin); the core and SSR code that

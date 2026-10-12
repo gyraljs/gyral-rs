@@ -63,5 +63,7 @@ pooling or snapshot comparisons. The [operating profile](design/operations-and-r
 load budgets, overload recovery, readiness, safe telemetry, and signal shutdown.
 It does not establish application latency/capacity, a process-memory cap, or a
 complete Gyral feature matrix. The initial source-distribution and pre-1.0
-compatibility policy is explicit; no published semver baseline exists. Future work lives
+compatibility policy is explicit; no published semver baseline exists until the
+first [release](releasing.md), after which the release workflow compares each
+crate's public API with it. Future work lives
 in Beads; [verification](verification.md) records the commands actually run.

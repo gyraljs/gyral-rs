@@ -203,3 +203,8 @@ impl RenderError {
         }
     }
 }
+
+/// Compiles the crate README examples as documentation tests.
+#[cfg(doctest)]
+#[doc = include_str!("../README.md")]
+struct ReadmeDoctests;

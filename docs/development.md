@@ -27,10 +27,13 @@ to commit implementation files or configure a remote.
 
 ## Dependency updates
 
-Exact manifest versions and lockfiles make native builds and generated bundles
-repeatable. They record a tested release set; they do not update themselves when
-new versions appear. Review current registry releases, update the exact pins,
-refresh both lockfiles, then run `make ci`, `make client-docker-smoke`,
+Lockfiles make native builds and generated bundles repeatable. Example and tool
+manifests also use exact versions. Published libraries use caret requirements
+whose lower bound is the verified version, plus an exact `deno_core` pin, so that
+consumers can resolve them alongside other crates; the
+[release runbook](releasing.md) records that decision. None of these update
+themselves when new versions appear. Review current registry releases, update
+the manifests, refresh both lockfiles, then run `make ci`, `make client-docker-smoke`,
 `make release-evidence`, and `make load` before adopting the new set.
 
 Dependabot checks Cargo and npm weekly and CI actions monthly. Related packages
@@ -59,7 +62,8 @@ release fingerprint include this configuration.
 | `make operating` | Isolated startup readiness, metrics/IDs, JSON/OTLP redaction, W3C parent correlation, and active-request SIGTERM/SIGINT shutdown. |
 | `make load` | Release fixture: ten-second warmup, sixty-second four-client profile, RSS/latency/queue budgets, burst shedding, and recovery. |
 | `make release-evidence` | Build/check the reference container and prepare local source/binary archives, SBOMs, lockfiles, descriptor, and checksums. |
-| `make policy` | Pinned skill hashes, registry lockfile integrity, local doc links, and crate boundaries. |
+| `make policy` | Pinned skill hashes, registry lockfile integrity, local doc links, crate boundaries, and publishing metadata. |
+| `make package` | `cargo publish --dry-run` for the four crates in dependency order, package content and size bounds, and an offline docs.rs build without the native archive. |
 | `make check` | Policy, Rust formatting, and strict Clippy across every target. |
 | `make test` | Build bundles, run nextest, and compile Rust documentation tests. |
 | `make build` | Build both examples' assets and Rust executables. |

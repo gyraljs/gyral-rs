@@ -12,8 +12,8 @@ globalThis.gyralRender = async ({ page, props }) => {
 After bundle evaluation, the renderer requires an unsigned integer version equal
 to `BUNDLE_ABI_VERSION` before invoking the render entrypoint. Absent, malformed,
 and unsupported declarations return `UnsupportedBundleAbi`. Older scaffold bundles
-must be rebuilt with the declaration. The packages are unpublished; this is the
-first enforced interface, not a promise of compatibility with later ABIs.
+must be rebuilt with the declaration. Version 0.1.0 is the first crates.io release;
+this is the first enforced interface, not a promise of compatibility with later ABIs.
 
 `page` is a logical identifier containing 1–64 ASCII letters, digits, hyphens,
 or underscores. `props` is a JSON object supplied by the Rust application after

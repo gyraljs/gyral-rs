@@ -132,22 +132,28 @@ container builds against Debian bookworm and runs with glibc 2.36 and libstdc++.
 Local binaries can inherit a newer host ABI; release evidence extracts its binary
 from the tested container rather than distributing the local compiler's output.
 
-The three library crates share version 0.1.0. Consumers currently use a reviewed
-source checkout and Cargo path dependencies. All crates retain `publish = false`;
-examples are integration material, not separate published packages. A later
-crates.io release must publish the domain dependency as well as the two public
-libraries and explicitly change that policy. Gyral build inputs come from the
-published npm 0.3.3 packages, pinned with SHA-512 registry integrity in the frozen
-lockfile. An empty build cache requires access to the registry.
+The four library crates share version 0.1.0 and are prepared for crates.io.
+Applications add `gyral`, the front door, which re-exports `gyral-renderer` and,
+with its `axum` feature, `gyral-axum`. Those building blocks and their pure
+`gyral-renderer-domain` dependency are published alongside it. Each library sets
+`publish = true`; examples set `publish = false` and remain integration material.
+The owner publishes with the [release runbook](../releasing.md); until 0.1.0 is
+on crates.io, consumers use a reviewed checkout and path dependencies. Published
+requirements are caret ranges, except the exact `deno_core` pin that the runbook
+justifies; `Cargo.lock` keeps this repository's builds exact. Gyral build inputs
+come from the published npm 0.3.3 packages, pinned with SHA-512 registry
+integrity in the frozen lockfile. An empty build cache requires access to the
+registry.
 
 Before 1.0, incompatible public API or documented telemetry-label changes require
 a minor version increase. Compatible fixes use a patch increase. Package versions
 move together. The JavaScript bundle ABI and artifact format have separate explicit
 versions: a Rust release must not silently reinterpret old metadata. Gyral release
 changes require a new compatibility fixture and matching server/client artifacts.
-There is no published baseline yet. Once one exists, compare exported Rust APIs
-against its source before release and document intentional breaks. Do not claim
-semver validation against an unpublished baseline.
+There is no published baseline yet. The release workflow runs cargo-semver-checks
+for each crate that has a published version and skips the others, so the check
+starts automatically once 0.1.0 exists. Document intentional breaks in the
+changelog. Do not claim semver validation against an unpublished baseline.
 
 ## Native archive and release evidence
 
@@ -163,7 +169,11 @@ for this feature set; `Cargo.lock` alone would not verify those native bytes.
 The pin establishes integrity against the reviewed release input. It is not a
 source audit, signature verification, or reproducible build of V8 itself.
 Other applications do not inherit this repository's `.cargo/config.toml`: they
-must adopt the preparation step and pin before compiling the renderer. Upgrading
+must adopt the preparation step and pin before compiling the renderer. The
+[renderer guide](../../crates/gyral-renderer/README.md#pin-the-native-v8-archive)
+gives them the lockfile, download, digest, and configuration steps. docs.rs needs
+no archive: it sets `DOCS_RS`, and the V8 build script then skips the native
+library; `make package` checks that path offline. Upgrading
 V8, the target, or its native feature set requires a new reviewed archive entry,
 configuration, and verification evidence.
 
@@ -185,7 +195,8 @@ repeatable; compiler output and SBOM timestamps need not be reproducible.
 The inventories cover repository build inputs, not every operating-system package
 or JavaScript build/test tool. Container and toolchain inventories are separate
 requirements for an application distribution. Nothing is uploaded or published
-by this command. CI prepares the same evidence as workflow artifacts after checks.
+by this command. CI prepares the same evidence as workflow artifacts after checks;
+the release workflow attaches it to the GitHub release for each tagged version.
 The workflow has passed on GitHub's hosted `ubuntu-24.04` runner; the
 [verification record](../verification.md) names the run.
 
