@@ -7,13 +7,13 @@ rust-version.workspace = true
 license.workspace = true
 repository.workspace = true
 homepage.workspace = true
-publish.workspace = true
+publish = false
 
 [dependencies]
-gyral-renderer.workspace = true
-gyral-axum.workspace = true
+# The example uses the front-door crate to prove its re-exports.
+gyral = { workspace = true, features = ["axum"] }
 axum.workspace = true
-tokio.workspace = true
+tokio = { workspace = true, features = ["net", "signal"] }
 serde_json.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true

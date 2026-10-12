@@ -43,9 +43,10 @@ ordinary form submissions still reach Rust with JavaScript disabled.
 ## Status and compatibility
 
 This is an experimental, pre-1.0 workspace with executable examples and recorded
-[verification evidence](docs/verification.md). The Rust crates are version 0.1.0,
-retain `publish = false`, and are not on crates.io. Consumers currently use Cargo
-path dependencies from a reviewed checkout. The examples install the exact
+[verification evidence](docs/verification.md). The Rust crates are version 0.1.0
+and are prepared for their first crates.io release; until the owner publishes
+them, consumers use Cargo path dependencies from a reviewed checkout. The
+[changelog](CHANGELOG.md) records each release. The examples install the exact
 published `@gyral/core` and `@gyral/ssr` **0.3.3** packages from npm.
 
 The supported embedded build is **Linux x86_64 GNU**, **Rust 1.99.0**, edition
@@ -56,6 +57,21 @@ and workload-specific deployment targets still need application-level evidence.
 The renderer accepts reviewed application bundles. Its resource controls and
 restricted JavaScript APIs do not make it an untrusted-code sandbox. Read the
 [security boundary](docs/security.md) before embedding it in a service.
+
+## Use it from your application
+
+Add the front-door crate, with the Axum adapter if you serve pages through Axum:
+
+```sh
+cargo add gyral serde_json
+cargo add gyral --features axum
+```
+
+`gyral` re-exports the renderer and its validated types at its root, and the
+adapter as `gyral::axum`. The [crate README](crates/gyral/README.md) shows a first
+request; the [SSR example](examples/axum-app) uses the same dependency. Building
+it links V8, so pin and verify the native archive as the
+[renderer guide](crates/gyral-renderer/README.md#pin-the-native-v8-archive) explains.
 
 ## Choose a rendering path
 
@@ -97,8 +113,9 @@ and joins its rendering workers.
 The first native build downloads the reviewed V8 archive. Before using raw Cargo
 commands that build the renderer, run `make prepare-native`; root Make targets
 prepare it automatically. Cargo configuration is local to this checkout, so
-applications using path dependencies must adopt the same native preparation and
-pin. See the [supported build policy](docs/design/operations-and-release.md).
+applications must adopt the same native preparation and pin; the
+[renderer guide](crates/gyral-renderer/README.md#pin-the-native-v8-archive) lists
+the steps. See the [supported build policy](docs/design/operations-and-release.md).
 
 ### Askama and native forms
 
@@ -125,21 +142,24 @@ or production identity service. See the [Askama design](docs/design/askama-clien
 
 ## Architecture
 
-The workspace has two application-facing libraries and one pure contract crate:
+Applications depend on one front-door crate. Three building blocks behind it
+keep the runtime, HTTP adapter, and pure contract separate:
 
 | Package | Responsibility |
 | --- | --- |
-| `gyral-renderer` | Execute a trusted bundle through a bounded embedded runtime and return validated HTML. |
-| `gyral-axum` | Map rendering results to Axum responses with private caching and opaque errors. |
-| `gyral-renderer-domain` | Define validated requests, limits, manifests, and HTML without runtime or HTTP dependencies. |
+| [`gyral`](crates/gyral) | Front door: re-exports the renderer API, and the Axum adapter as `gyral::axum` with the `axum` feature. |
+| [`gyral-renderer`](crates/gyral-renderer) | Execute a trusted bundle through a bounded embedded runtime and return validated HTML. |
+| [`gyral-axum`](crates/gyral-axum) | Map rendering results to Axum responses with private caching and opaque errors. |
+| [`gyral-renderer-domain`](crates/domain) | Define validated requests, limits, manifests, and HTML without runtime or HTTP dependencies. |
 
 ```mermaid
 flowchart LR
-    Host[Host Rust app: authorize and load data] --> Renderer[gyral-renderer]
+    Host[Host Rust app: authorize and load data] --> Front[gyral]
+    Front --> Renderer[gyral-renderer]
+    Front -. axum feature .-> Adapter
     Renderer --> Engine[deno_core / V8]
     Renderer --> Contract[Pure rendering contract]
-    Host --> Adapter[gyral-axum]
-    Adapter --> Renderer
+    Adapter[gyral-axum] --> Renderer
     Engine --> HTML[Component HTML and hydration state]
     HTML --> Browser[Gyral in the browser]
 ```
@@ -202,12 +222,15 @@ Install the pinned test tools and Chromium/WebKit as described in
 | `make browser` | SSR and hydration checks in Chromium and WebKit. |
 | `make client-browser` | Client-only rendering and notes, including forms without JavaScript. |
 | `make ci` | Complete local code, artifact, browser, SQL, operating, and dependency gate. |
+| `make package` | Publish dry-run of the four crates, package contents, and an offline docs.rs build. |
 | `make load` | Bounded release fixture regression profile; not an application capacity claim. |
 | `make evaluate-runtime` | Test-only startup snapshot and worker comparisons. |
 | `make release-evidence` | Tested container plus local archives, inventories, descriptor, and checksums. |
 
 [GitHub Actions](.github/workflows/ci.yml) runs the local gate, container checks,
-release assembly, and fixture load profile. Recorded results and their limits are
+release assembly, fixture load profile, and package checks. The owner publishes
+to crates.io through a manually started [release workflow](.github/workflows/release.yml)
+described in [releasing](docs/releasing.md). Recorded results and their limits are
 in [verification](docs/verification.md). Snapshot measurements live in
 [runtime evaluation](docs/design/runtime-evaluation.md); production rendering
 still evaluates a bundle in a fresh isolate for each request.

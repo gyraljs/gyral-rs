@@ -1,10 +1,16 @@
-.PHONY: policy check test build demo browser ci docker docker-smoke measure client-build client-demo client-browser client-docker client-docker-smoke prepare-native operating load release-evidence evaluate-runtime
+.PHONY: policy package check test build demo browser ci docker docker-smoke measure client-build client-demo client-browser client-docker client-docker-smoke prepare-native operating load release-evidence evaluate-runtime
 
 prepare-native:
 	python3 tools/prepare-v8.py
 
 policy:
 	python3 tools/check.py
+
+# Build each publishable crate from its packaged contents, bound what the registry
+# receives, and document every package offline the way docs.rs does.
+package: policy prepare-native
+	cargo publish --dry-run --workspace --locked
+	python3 tools/check-package.py
 
 check: policy prepare-native
 	cargo fmt --all -- --check
@@ -13,7 +19,7 @@ check: policy prepare-native
 test: prepare-native
 	pnpm build:examples
 	cargo nextest run --workspace --all-features --locked
-	cargo test --workspace --doc --locked
+	cargo test --workspace --doc --all-features --locked
 
 build: prepare-native
 	pnpm build:examples
@@ -28,7 +34,7 @@ browser: build
 ci:
 	pnpm install --frozen-lockfile
 	$(MAKE) check test build
-	RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps --locked
+	RUSTDOCFLAGS="-D warnings" cargo doc --workspace --no-deps --all-features --locked
 	node tools/artifact-smoke.mjs
 	node tools/client-artifact-smoke.mjs
 	node tools/operating-smoke.mjs

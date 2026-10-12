@@ -14,6 +14,7 @@ contract and verification evidence before extending the packages.
 - [Runtime evaluation](docs/design/runtime-evaluation.md): test-only snapshot and worker comparisons, evidence, and adoption limits.
 - [Assets and CSP](docs/design/assets-and-csp.md): verified builds, caching, policy, and compatibility scope.
 - [Operations and release](docs/design/operations-and-release.md): readiness, telemetry, signal drain, load budgets, native inputs, and distribution.
+- [Releasing](docs/releasing.md) and the [changelog](CHANGELOG.md): the owner's crates.io runbook, publication order, and dependency requirements.
 - [Askama client example](docs/design/askama-client.md): Rust templates with browser-only components and no embedded renderer.
 - [Development](docs/development.md): tools, commands, testing, and recovery.
 - [Engineering](docs/engineering.md): skill provenance and functional Rust interpretation.

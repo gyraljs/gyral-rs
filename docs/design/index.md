@@ -13,14 +13,14 @@ The scaffold uses these defaults:
 
 | Decision | Reason |
 | --- | --- |
-| Two application-facing crates and one internal domain crate | Keep the HTTP adapter small and enforce a pure core through Cargo dependencies. |
+| A `gyral` front door over two application-facing crates and one domain crate | Give applications one dependency while keeping the HTTP adapter small and the core pure through Cargo dependencies. |
 | Trusted app bundles supplied by each application | Execute the app's existing views while leaving authorization and data loading in Rust. |
 | One embedded worker and a fresh isolate per request | Establish request isolation before optimizing repeated rendering. |
 | Configurable deadlines, a managed-heap budget, and a dedicated watchdog | Interrupt JavaScript faults while preserving a fresh isolate for the next request. |
 | Complete HTML strings initially | Keep the Rust/JavaScript boundary small and testable; streaming can follow a demonstrated need. |
-| Exact dependency pins and both lockfiles | Make the scaffold's tested dependency graph reproducible. |
+| Both lockfiles, exact example pins, and caret library requirements | Reproduce the tested graph here without forcing consumers into resolution conflicts; `deno_core` stays exact. |
 | ABI 1 and a verified server/browser manifest | Reject unsupported interfaces and mixed files; use one digest for browser URLs, SRI, and CSP. |
-| MIT license and unpublished packages | Match Gyral's license; use reviewed source/path distribution before publication. |
+| MIT license and crates.io publication | Match Gyral's license; publish the four crates together through a reviewed [release workflow](../releasing.md). |
 
 The owner asked what untrusted bundles mean. The initial scope remains reviewed
 code shipped with an application. Uploaded plugins or customer-supplied

@@ -9,8 +9,8 @@ use axum::{
     response::{IntoResponse, Response},
     routing::get,
 };
-use gyral_axum::DocumentPolicy;
-use gyral_renderer::{AppArtifacts, AppBundle, BundleManifest, PageId, RenderRequest, Renderer};
+use gyral::axum::DocumentPolicy;
+use gyral::{AppArtifacts, AppBundle, BundleManifest, PageId, RenderRequest, Renderer};
 use serde_json::json;
 use std::{
     io::Read,
@@ -38,15 +38,15 @@ enum StartupError {
     #[error("a build metadata/source file is not UTF-8")]
     ArtifactUtf8(#[from] std::string::FromUtf8Error),
     #[error(transparent)]
-    Bundle(#[from] gyral_renderer::BundleError),
+    Bundle(#[from] gyral::BundleError),
     #[error(transparent)]
-    Manifest(#[from] gyral_renderer::ManifestError),
+    Manifest(#[from] gyral::ManifestError),
     #[error(transparent)]
-    Artifacts(#[from] gyral_renderer::ArtifactError),
+    Artifacts(#[from] gyral::ArtifactError),
     #[error(transparent)]
-    Policy(#[from] gyral_axum::PolicyError),
+    Policy(#[from] gyral::axum::PolicyError),
     #[error(transparent)]
-    Worker(#[from] gyral_renderer::WorkerError),
+    Worker(#[from] gyral::WorkerError),
     #[error(transparent)]
     Operations(#[from] operations::OperationsError),
     #[error("could not start the HTTP server")]
@@ -67,7 +67,7 @@ async fn home(
     let request = PageId::try_from("home".to_owned())
         .and_then(|page| RenderRequest::try_new(page, json!({"name": name})));
     let response = match request {
-        Ok(request) => gyral_axum::render_page(&state.renderer, request)
+        Ok(request) => gyral::axum::render_page(&state.renderer, request)
             .await
             .into_response(),
         Err(_) => opaque(StatusCode::BAD_REQUEST, "The supplied name is too large."),
@@ -79,7 +79,7 @@ async fn failure(State(state): State<AppState>) -> Response {
     let request = PageId::try_from("broken".to_owned())
         .and_then(|page| RenderRequest::try_new(page, json!({})));
     let response = match request {
-        Ok(request) => gyral_axum::render_page(&state.renderer, request)
+        Ok(request) => gyral::axum::render_page(&state.renderer, request)
             .await
             .into_response(),
         Err(_) => opaque(
@@ -91,7 +91,7 @@ async fn failure(State(state): State<AppState>) -> Response {
 }
 
 async fn client(State(state): State<AppState>) -> Response {
-    gyral_axum::client_asset(&state.artifacts)
+    gyral::axum::client_asset(&state.artifacts)
 }
 
 fn opaque(status: StatusCode, text: &'static str) -> Response {

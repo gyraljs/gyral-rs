@@ -1106,6 +1106,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 
 [[package]]
+name = "gyral"
+version = "0.1.0"
+dependencies = [
+ "gyral-axum",
+ "gyral-renderer",
+ "serde_json",
+]
+
+[[package]]
 name = "gyral-askama-client-example"
 version = "0.1.0"
 dependencies = [
@@ -1150,8 +1159,7 @@ version = "0.1.0"
 dependencies = [
  "axum",
  "getrandom 0.4.3",
- "gyral-axum",
- "gyral-renderer",
+ "gyral",
  "metrics",
  "metrics-exporter-prometheus",
  "opentelemetry",

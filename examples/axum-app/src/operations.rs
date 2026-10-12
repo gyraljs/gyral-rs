@@ -6,7 +6,7 @@ use axum::{
     middleware::Next,
     response::{IntoResponse, Response},
 };
-use gyral_renderer::{PageId, RenderRequest, Renderer};
+use gyral::{PageId, RenderRequest, Renderer};
 use metrics_exporter_prometheus::{PrometheusBuilder, PrometheusHandle};
 use opentelemetry::{propagation::Extractor, trace::TracerProvider};
 use opentelemetry_otlp::{WithExportConfig, WithHttpConfig};
@@ -183,7 +183,7 @@ impl Operations {
             }
             Err(error) => {
                 // Temporary queue saturation does not erase a recent successful probe.
-                if !matches!(error, gyral_renderer::RenderError::Busy) {
+                if !matches!(error, gyral::RenderError::Busy) {
                     *self.probe.lock().unwrap_or_else(PoisonError::into_inner) = Probe::Failed;
                 }
                 Err(OperationsError::Probe {
@@ -362,7 +362,7 @@ mod tests {
 
     #[tokio::test]
     async fn readiness_requires_recent_probe_live_worker_and_open_host_admission() {
-        let bundle = gyral_renderer::AppBundle::try_from(
+        let bundle = gyral::AppBundle::try_from(
             "globalThis.gyralBundleVersion=1;globalThis.gyralRender=()=>'<p>ready</p>';".to_owned(),
         )
         .expect("invariant: bundle bounded");
@@ -402,7 +402,7 @@ mod tests {
 
     #[tokio::test]
     async fn drain_fails_readiness_before_renderer_admission_closes() {
-        let bundle = gyral_renderer::AppBundle::try_from(
+        let bundle = gyral::AppBundle::try_from(
             "globalThis.gyralBundleVersion=1;globalThis.gyralRender=()=>'<p>ready</p>';".to_owned(),
         )
         .expect("invariant: bundle bounded");

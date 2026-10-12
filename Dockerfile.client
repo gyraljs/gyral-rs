@@ -22,7 +22,7 @@ COPY examples/askama-client-app/templates ./examples/askama-client-app/templates
 COPY examples/askama-client-app/migrations ./examples/askama-client-app/migrations
 COPY examples/notes-domain ./examples/notes-domain
 COPY examples/notes-app ./examples/notes-app
-RUN cargo tree --locked -p gyral-askama-client-example --edges normal > /tmp/client-dependencies && if grep -E '(deno_core|v8 v|gyral-renderer v|gyral-axum v)' /tmp/client-dependencies; then exit 1; fi
+RUN cargo tree --locked -p gyral-askama-client-example --edges normal > /tmp/client-dependencies && if grep -E '(deno_core|v8 v|gyral v|gyral-renderer v|gyral-axum v)' /tmp/client-dependencies; then exit 1; fi
 RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/build/client-target CARGO_TARGET_DIR=/build/client-target cargo build --release --locked -p gyral-askama-client-example && cp client-target/release/gyral-askama-client-example /usr/local/bin/gyral-askama-client-example
 
 FROM debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251 AS app
