@@ -46,7 +46,7 @@ class BuildInputs(unittest.TestCase):
         bom = release.npm_bom()
         self.assertEqual({item['name'] for item in bom['components']}, {'@gyral/core', '@gyral/ssr', '@standard-schema/spec'})
         core = next(item for item in bom['components'] if item['name'] == '@gyral/core')
-        self.assertEqual(core['version'], '0.3.1')
+        self.assertEqual(core['version'], '0.3.2')
         self.assertEqual(core['hashes'][0]['alg'], 'SHA-512')
         self.assertEqual(next(edge for edge in bom['dependencies'] if edge['ref'] == core['bom-ref'])['dependsOn'], ['pkg:npm/%40standard-schema/spec@1.1.0'])
 

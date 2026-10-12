@@ -4,7 +4,7 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { build } from 'esbuild';
 
 const root = 'examples/askama-client-app';
-const release = '0.3.1';
+const release = '0.3.2';
 assert.equal(JSON.parse(await readFile('node_modules/@gyral/core/package.json', 'utf8')).version, release);
 const browser = await build({
   entryPoints: [`${root}/web/client.mjs`], outfile: 'client.js',

@@ -8,7 +8,7 @@ been selected.
 
 ## Candidate and boundaries
 
-The test binary can prepare the Gyral `0.3.1` SSR bundle with
+The test binary can prepare the pinned Gyral SSR bundle with
 `JsRuntimeForSnapshot`, then restore a new isolate from that prepared state for
 each render. The pinned runtime's [upstream snapshot tests](https://github.com/denoland/deno/blob/0c071246a412575e07423263404a5d13e7ed6aa2/libs/core/runtime/tests/snapshot.rs)
 provide the creation/restoration pattern. Preparation evaluates only the reviewed
@@ -60,7 +60,7 @@ that a reused isolate could be reset safely. No isolate-reuse candidate exists.
 ## Measurement method
 
 Run `make evaluate-runtime` on the supported Linux x86_64 host after installing
-the frozen JavaScript dependencies. It builds the published `0.3.1` fixture,
+the frozen JavaScript dependencies. It builds the pinned published Gyral fixture,
 checks the snapshot behavior, and compiles a release library test binary. The
 driver launches eighteen separate processes: three repetitions of fresh and
 snapshot startup with one, two, or four workers. Configuration order reverses
@@ -102,7 +102,7 @@ reports. The durable measurements and decision belong here and in
 
 ## Observed results and decision
 
-The completed October 11, 2026 run produced 6,161 successful concurrent-window
+The completed October 11, 2026 run, on the Gyral 0.3.1 fixture, produced 6,161 successful concurrent-window
 renders across eighteen processes. No sampled render failed or exceeded the
 unchanged two-second deadline. The twelve-CPU shared host remained busy: the
 recorded one-minute load averages ranged from 20.69 to 24.96. This is local

@@ -31,20 +31,20 @@ so the runtime requires no filesystem module loader. Dynamic imports, unresolved
 package names, TypeScript compilation at request time, and arbitrary downloads
 are outside this contract. Build the browser bundle from the same components
 and exact Gyral version as the server bundle. ABI 1's verified artifact manifest
-accepts Gyral `0.3.1` and one self-contained browser entry.
+accepts Gyral `0.3.2` and one self-contained browser entry.
 
 The example passes the Gyral SSR result through unchanged. It uses Declarative
 Shadow DOM and Gyral's hydration seeds. Do not handcraft those seeds in Rust or
 put server authentication secrets into client-visible props.
 
-## Gyral 0.3.1 server rendering inside the bundle
+## Gyral server rendering inside the bundle
 
 Render with `renderToString` from `@gyral/ssr` and return its string. Gyral's
 `renderPage` returns a Fetch `Response`; ABI 1 expects a string, and the
 embedded runtime provides no Fetch API. The bundle therefore writes its own
 document shell, including the `<head>` elements that `renderPage` would manage.
 
-Gyral 0.3.1 isolates component failures during server rendering: a component
+Since 0.3.1, Gyral isolates component failures during server rendering: a component
 whose `init` or view throws renders its `error` view (or nothing), is marked
 `data-gyral-error`, and the rest of the page still renders. In that case
 `renderToString` resolves, and Rust receives a successful page. Pass
@@ -64,7 +64,7 @@ avoids a circular build hash while keeping both outputs in one artifact set.
 | Manifest field | Meaning |
 | --- | --- |
 | `abi` | Required unsigned interface version, currently 1. |
-| `gyral` | Exact verified framework release, currently `0.3.1`. |
+| `gyral` | Exact verified framework release, currently `0.3.2`. |
 | `server_sha256` | Digest of the UTF-8 bytes in `server.js`. |
 | `client.path` | `/assets/client.<client.sha256>.js`, with no alternate path or query. |
 | `client.sha256` | Digest of the browser bytes, also used for SRI and CSP. |

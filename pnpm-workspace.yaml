@@ -4,5 +4,5 @@ allowBuilds:
 # The owner-approved release was verified before this dependency refresh.
 # Keep pnpm's age gate for every other package and future Gyral release.
 minimumReleaseAgeExclude:
-  - '@gyral/core@0.3.1'
-  - '@gyral/ssr@0.3.1'
+  - '@gyral/core@0.3.2'
+  - '@gyral/ssr@0.3.2'

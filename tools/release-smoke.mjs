@@ -37,7 +37,7 @@ assert.equal(npm.components.length, 3);
 for (const component of npm.components) {
   assert.equal(component.hashes[0].alg, 'SHA-512');
   assert.match(component.hashes[0].content, /^[a-f0-9]{128}$/);
-  if (component.name.startsWith('@gyral/')) assert.equal(component.version, '0.3.1');
+  if (component.name.startsWith('@gyral/')) assert.equal(component.version, '0.3.2');
 }
 const sourceName = descriptor.artifacts.find(name => name.endsWith('-source.tar.gz'));
 const binaryName = descriptor.artifacts.find(name => name.endsWith('.tar.gz') && name !== sourceName);
@@ -60,7 +60,7 @@ try {
   const binary = join(directory, `gyral-rs-${descriptor.version}`);
   const license = await readFile(join(binary, 'licenses/webpki-root-certs-1.0.9/LICENSE'), 'utf8');
   assert.ok(license.includes('Community Data License Agreement'));
-  for (const name of ['@gyral-core-0.3.1', '@gyral-ssr-0.3.1']) {
+  for (const name of ['@gyral-core-0.3.2', '@gyral-ssr-0.3.2']) {
     assert.ok((await readFile(join(binary, 'licenses', name, 'LICENSE'), 'utf8')).includes('MIT'));
   }
   process = await startExample({ binary: resolve(binary, 'gyral-axum-example'), env: { GYRAL_EXAMPLE_DIST: resolve(binary, 'dist') } });
