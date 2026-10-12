@@ -6,7 +6,7 @@ telemetry-label change increases the minor version; compatible fixes increase
 the patch version. The [release runbook](docs/releasing.md) describes how an
 entry becomes a crates.io release.
 
-## [0.1.0] - Unreleased
+## [0.1.0] - 2026-10-12
 
 The first crates.io release.
 
