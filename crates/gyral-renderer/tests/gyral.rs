@@ -45,7 +45,7 @@ fn actual_gyral_bundle_renders_components_and_hydration_seeds() {
         let output = renderer
             .render(request)
             .await
-            .expect("invariant: exact 0.3.2 fixture renders in deno_core");
+            .expect("invariant: exact 0.3.3 fixture renders in deno_core");
         assert!(
             output
                 .as_str()

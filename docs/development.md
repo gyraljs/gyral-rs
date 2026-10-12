@@ -46,7 +46,7 @@ than forcing an incompatible override.
 
 pnpm 12 reads build permissions from [pnpm-workspace.yaml](../pnpm-workspace.yaml).
 Only esbuild may run an installation script. Its default one-day release-age
-gate remains enabled; the two exact Gyral 0.3.2 versions are exempt because
+gate remains enabled; the two exact Gyral 0.3.3 versions are exempt because
 their owner-approved npm release was already verified. Future Gyral versions
 still pass through that gate. Docker builds, source distributions, and the
 release fingerprint include this configuration.

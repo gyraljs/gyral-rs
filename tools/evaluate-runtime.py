@@ -66,7 +66,7 @@ def main():
         summary.append({'mode': mode, 'workers': workers, 'median_of_three_runs': {field: statistics.median(report[field] for report in group) for field in fields}, 'snapshot_bytes': group[0]['snapshot_bytes']})
     evidence = {
         'scope': 'Synthetic Gyral fixture, release test binary, fresh isolate per request, one closed-loop client per worker, three separate five-second windows per configuration. No HTTP, queued load, application SLO, isolate reuse, leak proof, or capacity claim.',
-        'gyral': '0.3.2', 'deno_core': '0.412.0', 'v8': '150.4.0',
+        'gyral': '0.3.3', 'deno_core': '0.412.0', 'v8': '150.4.0',
         'rustc': subprocess.check_output(['rustc', '--version'], cwd=ROOT, text=True).strip(),
         'cpu_count': os.cpu_count(), 'architecture': os.uname().machine,
         'manifest_sha256': hashlib.sha256((ROOT / 'examples/axum-app/dist/manifest.json').read_bytes()).hexdigest(),

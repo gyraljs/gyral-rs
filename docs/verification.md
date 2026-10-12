@@ -1,5 +1,23 @@
 # Verification evidence
 
+## Gyral 0.3.3 update — October 12, 2026
+
+Gyral 0.3.3 changes only `@gyral/mcp` (one `gyral-mcp` bin); the core and SSR code that
+the examples bundle is unchanged from 0.3.2. This update pins npm `@gyral/core` and
+`@gyral/ssr` to `0.3.3`, which npm serves with provenance, and moves the pnpm release-age
+exemption from the two 0.3.2 versions to these two. The regenerated lockfile changes only
+the two Gyral entries, and their SHA-512 integrity matches the registry. The domain
+manifest's `GYRAL_VERSION`, both example builds, the policy check, and the release tools
+now require 0.3.3.
+
+`make ci` passed: **65 nextest tests**, **four doctests**, strict Clippy, formatting,
+Rust docs, frozen npm installation, policy, artifact, client-artifact and operating
+checks, four release-tool regressions, all Chromium/WebKit SSR, client and notes
+suites, the notes schema check, `cargo deny`, and `cargo audit`. The explicit
+runtime-measurement test was skipped as usual. The Askama client entry is still 77,003
+bytes, with 5,267 bytes of external CSS. Container images, release evidence, and the
+runtime evaluation were not rerun; the figures recorded below for them describe 0.3.1.
+
 ## Gyral 0.3.2 update — October 12, 2026
 
 This update pins npm `@gyral/core` and `@gyral/ssr` to `0.3.2`, which npm serves with
@@ -115,7 +133,7 @@ purpose are documented in [development](development.md).
 
 This evidence also predates the npm migration described under
 [published Gyral](#published-gyral-and-runtime-evaluation); the example now
-uses the published 0.3.2 release.
+uses the published 0.3.3 release.
 
 The separate `gyral-askama-client-example` pins Askama 0.16.1 and the same
 vendored Gyral release. Its browser entry is 74,926 bytes and its external page

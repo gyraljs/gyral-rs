@@ -137,7 +137,7 @@ source checkout and Cargo path dependencies. All crates retain `publish = false`
 examples are integration material, not separate published packages. A later
 crates.io release must publish the domain dependency as well as the two public
 libraries and explicitly change that policy. Gyral build inputs come from the
-published npm 0.3.2 packages, pinned with SHA-512 registry integrity in the frozen
+published npm 0.3.3 packages, pinned with SHA-512 registry integrity in the frozen
 lockfile. An empty build cache requires access to the registry.
 
 Before 1.0, incompatible public API or documented telemetry-label changes require
@@ -189,7 +189,7 @@ by this command. CI prepares the same evidence as workflow artifacts after check
 The workflow has passed on GitHub's hosted `ubuntu-24.04` runner; the
 [verification record](../verification.md) names the run.
 
-Gyral core and SSR now use the published npm release `0.3.2`. The frozen pnpm
+Gyral core and SSR now use the published npm release `0.3.3`. The frozen pnpm
 lockfile supplies SHA-512 integrity for registry archives. `npm-production.cdx.json`
 records both Gyral packages and their resolved production dependency graph,
 including the type-only Standard Schema package; inclusion does not assert that
