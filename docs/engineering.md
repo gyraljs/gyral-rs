@@ -45,7 +45,7 @@ The skill's library checklist is applied to the published libraries: public enum
 remain exhaustive across this workspace, and `RenderService` stays open for
 application fakes and alternative implementations. A published semver baseline does not exist yet. The release
 workflow runs cargo-semver-checks against each crate's latest published version
-once one exists. The validated request is also the explicit JSON wire contract;
+once it is 0.1.0 or later; the `gyral` 0.0.1 name placeholder has no API to compare. The validated request is also the explicit JSON wire contract;
 Serde deserialization routes through its constructor. There are no payment or
 WASM workflows in this scaffold. The notes example demonstrates database
 workflows with pure domain types, injected transaction ports, hand-written

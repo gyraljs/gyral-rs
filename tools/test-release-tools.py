@@ -20,6 +20,7 @@ def load(name):
 
 native = load('prepare-v8')
 release = load('release-evidence')
+crates = load('release')
 
 
 class BuildInputs(unittest.TestCase):
@@ -41,6 +42,9 @@ class BuildInputs(unittest.TestCase):
         self.assertIn(Path('Cargo.lock'), paths)
         self.assertIn(Path('pnpm-workspace.yaml'), paths)
         self.assertIn(Path('tools/v8-archive.json'), paths)
+        # tools/check.py runs inside the extracted archive and requires these documents.
+        for document in ('AGENTS.md', 'README.md', 'CHANGELOG.md', 'ARCHITECTURE.md', 'THIRD_PARTY_NOTICES.md', 'CONTRIBUTING.md', 'SECURITY.md', 'CODE_OF_CONDUCT.md'):
+            self.assertIn(Path(document), paths)
         self.assertFalse(any(set(path.parts) & {'.beads', '.git', '.local', 'target', 'node_modules', 'dist', '__pycache__'} for path in paths))
         self.assertFalse(any(path.name.endswith(('.sqlite', '.cdx.json', '.pem', '.key')) for path in paths))
         bom = release.npm_bom()
@@ -72,6 +76,20 @@ class BuildInputs(unittest.TestCase):
                 self.assertEqual(archive.getnames(), ['gyral-rs-test/input.rs'])
                 self.assertEqual(archive.extractfile(archive.getmembers()[0]).read(), b'synthetic source')
                 self.assertEqual(archive.getmembers()[0].uid, 0)
+
+
+class CratesRelease(unittest.TestCase):
+    def test_semver_checks_skip_missing_and_placeholder_baselines(self):
+        published = {'gyral-renderer-domain': [], 'gyral-renderer': ['0.0.1'], 'gyral-axum': ['0.1.0'], 'gyral': ['0.0.1', '0.0.2-rc.1']}
+        calls = []
+        original = (crates.published_versions, crates.subprocess.run)
+        crates.published_versions = published.__getitem__
+        crates.subprocess.run = lambda command, **options: calls.append(command)
+        try:
+            crates.semver()
+        finally:
+            crates.published_versions, crates.subprocess.run = original
+        self.assertEqual(calls, [['cargo', 'semver-checks', '--package', 'gyral-axum', '--all-features']])
 
 
 if __name__ == '__main__':

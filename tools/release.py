@@ -6,7 +6,9 @@
     release.py pending   Print, in publication order, crates whose workspace version
                          is not yet on crates.io. Release reruns skip the others.
     release.py semver    Run cargo-semver-checks for each crate that has a published
-                         baseline. Crates with no published version are skipped.
+                         baseline. Crates with no published version, or with only
+                         pre-0.1.0 name-holding placeholders such as gyral 0.0.1,
+                         are skipped.
 """
 import json
 import re
@@ -58,11 +60,21 @@ def pending():
             print(name)
 
 
+def release_key(version):
+    """Numeric (major, minor, patch); pre-release and build suffixes are ignored."""
+    return tuple(int(part) for part in re.match(r'(\d+)\.(\d+)\.(\d+)', version).groups())
+
+
 def semver():
     checked = 0
     for name in CRATES:
-        if not published_versions(name):
+        versions = published_versions(name)
+        if not versions:
             print(f'{name}: no published baseline yet; semver check skipped')
+            continue
+        # A 0.0.x release reserved the name and has no API to keep compatible.
+        if max(map(release_key, versions)) < (0, 1, 0):
+            print(f'{name}: only placeholder {", ".join(versions)} published; semver check skipped')
             continue
         subprocess.run(['cargo', 'semver-checks', '--package', name, '--all-features'], cwd=ROOT, check=True)
         checked += 1

@@ -15,7 +15,9 @@ building blocks. Examples set `publish = false` and never reach the registry.
 
 The [release workflow](../.github/workflows/release.yml) runs only when started by
 hand from `main`. Its `verify` job runs the complete gate, the package checks,
-cargo-semver-checks, and the release evidence build. Its `publish` job waits for
+cargo-semver-checks, and the release evidence build. cargo-semver-checks skips a
+crate until its latest published version is 0.1.0 or later, so the first release
+checks none of the four (see [the `gyral` placeholder](#the-gyral-placeholder)). Its `publish` job waits for
 approval in the `crates-io` GitHub environment, publishes every crate whose
 version is not yet on crates.io, tags `v<version>`, and creates a GitHub release
 with the evidence archives, SBOMs, and `SHA256SUMS`. A rerun skips crates that are
@@ -25,8 +27,9 @@ crates.io can authorize the workflow through
 [Trusted Publishing](https://crates.io/docs/trusted-publishing), which exchanges a
 GitHub OIDC token for a 30-minute crates.io token. As of October 2026, crates.io
 documents that a crate must already exist before Trusted Publishing can be
-configured for it. The first publish of each crate therefore needs an API token;
-every later release uses Trusted Publishing and no stored secret.
+configured for it. `gyral` already exists as a 0.0.1 placeholder, but the other
+three do not, so the first release publishes all four with one API token; every
+later release uses Trusted Publishing and no stored secret.
 
 ## One-time setup
 
@@ -43,8 +46,23 @@ every later release uses Trusted Publishing and no stored secret.
 3. Understand the namespace. crates.io has no organizations or reserved prefixes:
    anyone may publish an unrelated `gyral-something` crate, and only the names you
    publish are yours. Shared ownership comes from adding a GitHub team as an owner
-   (below), not from the prefix. This release publishes the bare `gyral` name, so
-   it is reserved as the front door rather than left for someone else.
+   (below), not from the prefix. The owner already holds the bare `gyral` name:
+   see [the `gyral` placeholder](#the-gyral-placeholder).
+
+### The `gyral` placeholder
+
+The owner published `gyral` 0.0.1 to hold the name. It has no API, and 0.1.0
+supersedes it as the front door. Two consequences follow:
+
+- **Trusted Publishing can be configured for `gyral` now**, with the values in
+  [After the first publish](#after-the-first-publish). Leave **Require trusted
+  publishing for all new versions** off until 0.1.0 is on crates.io: both paths
+  below publish all four crates with the first-publish token, and that setting
+  would make crates.io reject the token upload of `gyral` 0.1.0.
+- **cargo-semver-checks does not compare 0.1.0 with 0.0.1.** `tools/release.py
+  semver` skips a crate whose published versions are all below 0.1.0, since a
+  placeholder has no API to keep compatible. From the next release on, `gyral`
+  is checked against 0.1.0 like the other three crates.
 
 ### GitHub environment and tag ruleset
 
@@ -69,7 +87,9 @@ Create the token at [crates.io → Account Settings → API Tokens → New Token
 - **Expiration:** 7 days, or a custom date one or two days away
 - **Scopes:** `publish-new` and `publish-update` only
 - **Crates:** four exact patterns, `gyral`, `gyral-renderer`,
-  `gyral-renderer-domain`, and `gyral-axum`; avoid a `gyral*` wildcard
+  `gyral-renderer-domain`, and `gyral-axum`; avoid a `gyral*` wildcard.
+  `gyral` needs `publish-update` because its placeholder exists; the other three
+  need `publish-new`.
 
 crates.io shows the token once. Keep it in a password manager, not a file in the
 checkout, and revoke it as soon as the first release is finished.
@@ -130,9 +150,9 @@ CI-built evidence to the GitHub release.
 
 ### After the first publish
 
-1. **Configure Trusted Publishing** for each of the four crates. Open the crate on
-   crates.io, choose **Settings → Trusted Publishing → Add**, select GitHub, and
-   enter:
+1. **Configure Trusted Publishing** for each of the four crates (skip `gyral` if
+   you configured it for the placeholder). Open the crate on crates.io, choose
+   **Settings → Trusted Publishing → Add**, select GitHub, and enter:
 
    | Field | Value |
    | --- | --- |
@@ -142,7 +162,7 @@ CI-built evidence to the GitHub release.
    | Environment | `crates-io` |
 
 2. On the same page, enable **Require trusted publishing for all new versions**
-   for each crate. crates.io then rejects API-token uploads for that crate.
+   for each crate, including `gyral`, now that 0.1.0 is published. crates.io then rejects API-token uploads for that crate.
 3. **Revoke the first-publish token** in [API Tokens](https://crates.io/settings/tokens),
    and confirm `CRATES_IO_BOOTSTRAP_TOKEN` is gone from the environment.
 4. **Share ownership.** Add a second individual owner as a fallback, and add a
