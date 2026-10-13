@@ -9,7 +9,9 @@ import { promisify } from 'node:util';
 import { request, startExample } from './example-process.mjs';
 
 const execute = promisify(execFile);
-const root = '.local/release/0.1.0';
+// The evidence directory release-evidence.py wrote for the shared workspace version.
+const version = (await execute('python3', ['tools/release.py', 'version'])).stdout.trim();
+const root = `.local/release/${version}`;
 const descriptor = JSON.parse(await readFile(`${root}/release.json`, 'utf8'));
 assert.equal(descriptor.target, 'x86_64-unknown-linux-gnu');
 assert.equal(descriptor.msrv, '1.99.0');
