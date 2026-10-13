@@ -1107,7 +1107,7 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 
 [[package]]
 name = "gyral"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "gyral-axum",
  "gyral-renderer",
@@ -1116,7 +1116,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-askama-client-example"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "askama",
  "async-trait",
@@ -1142,7 +1142,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-axum"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "axum",
  "gyral-renderer",
@@ -1155,7 +1155,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-axum-example"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "axum",
  "getrandom 0.4.3",
@@ -1177,7 +1177,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-example-notes-app"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "async-trait",
  "gyral-example-notes-domain",
@@ -1188,7 +1188,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-example-notes-domain"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "proptest",
  "thiserror",
@@ -1196,7 +1196,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-renderer"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "deno_core",
  "gyral-renderer-domain",
@@ -1211,7 +1211,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-renderer-domain"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "base64 0.23.1",
  "proptest",

@@ -43,10 +43,9 @@ ordinary form submissions still reach Rust with JavaScript disabled.
 ## Status and compatibility
 
 This is an experimental, pre-1.0 workspace with executable examples and recorded
-[verification evidence](docs/verification.md). Version 0.1.0 of the four crates is
-on [crates.io](https://crates.io/crates/gyral) (`cargo add gyral`); it accepts
-bundles built with Gyral **0.3.3**. `main` targets Gyral **0.3.4** and ships in the
-next crate release. The [changelog](CHANGELOG.md) records each release. The
+[verification evidence](docs/verification.md). The four crates are on
+[crates.io](https://crates.io/crates/gyral) (`cargo add gyral`). Version 0.2.0
+accepts bundles built with Gyral **0.3.4**; 0.1.0 accepts Gyral **0.3.3**. The [changelog](CHANGELOG.md) records each release. The
 examples install the exact published `@gyral/core` and `@gyral/ssr` **0.3.4**
 packages from npm.
 
