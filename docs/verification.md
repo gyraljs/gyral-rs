@@ -12,7 +12,8 @@ installation passes the age gate with the 0.3.4 exemption alone. The regenerated
 changes only the two Gyral entries, and their SHA-512 integrity matches the registry. The
 domain manifest's `GYRAL_VERSION`, both example builds, the policy check, and the release
 tools now require 0.3.4. The published 0.1.0 crates still accept only 0.3.3 manifests;
-the new `GYRAL_VERSION` reaches crates.io with the next crate release.
+the new `GYRAL_VERSION` reaches crates.io in 0.2.0 (a minor release, because 0.3.3 manifests are
+rejected).
 
 `make ci` passed: **65 nextest tests**, **ten doctests**, strict Clippy, formatting,
 Rust docs, frozen npm installation, policy over 29 documents and four publishable crates,
