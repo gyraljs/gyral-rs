@@ -1,5 +1,27 @@
 # Verification evidence
 
+## Gyral 0.3.4 update — October 13, 2026
+
+Gyral 0.3.4 changes `@gyral/ssr`, whose `renderPage({ components })` tail no longer repeats
+links the page head already wrote, and the build-time component scan in `@gyral/core`'s
+Vite preset, which now skips `define()` calls inside comments and literals. This update
+pins npm `@gyral/core` and `@gyral/ssr` to `0.3.4`, which npm serves with provenance, and
+moves the pnpm release-age exemption from the two 0.3.3 versions to these two. The 0.3.3
+exemption was kept only while the lockfile was regenerated, then removed; the frozen
+installation passes the age gate with the 0.3.4 exemption alone. The regenerated lockfile
+changes only the two Gyral entries, and their SHA-512 integrity matches the registry. The
+domain manifest's `GYRAL_VERSION`, both example builds, the policy check, and the release
+tools now require 0.3.4. The published 0.1.0 crates still accept only 0.3.3 manifests;
+the new `GYRAL_VERSION` reaches crates.io with the next crate release.
+
+`make ci` passed: **65 nextest tests**, **ten doctests**, strict Clippy, formatting,
+Rust docs, frozen npm installation, policy over 29 documents and four publishable crates,
+artifact, client-artifact and operating checks, five release-tool regressions, all
+Chromium/WebKit SSR, client and notes suites, the notes schema check, `cargo deny`, and
+`cargo audit`. The explicit runtime-measurement test was skipped as usual. The Askama
+client entry is still 77,003 bytes, with 5,267 bytes of external CSS. Container images,
+release evidence, packaging, and the runtime evaluation were not rerun.
+
 ## crates.io release preparation — October 12, 2026
 
 The four library crates, `gyral-renderer-domain`, `gyral-renderer`, `gyral-axum`,
@@ -202,7 +224,7 @@ purpose are documented in [development](development.md).
 
 This evidence also predates the npm migration described under
 [published Gyral](#published-gyral-and-runtime-evaluation); the example now
-uses the published 0.3.3 release.
+uses the published 0.3.4 release.
 
 The separate `gyral-askama-client-example` pins Askama 0.16.1 and the same
 vendored Gyral release. Its browser entry is 74,926 bytes and its external page

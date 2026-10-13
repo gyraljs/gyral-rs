@@ -3,7 +3,7 @@
 [![CI](https://github.com/gyraljs/gyral-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gyraljs/gyral-rs/actions/workflows/ci.yml)
 [![MIT license](https://img.shields.io/github/license/gyraljs/gyral-rs)](LICENSE)
 [![Rust 1.99.0](https://img.shields.io/badge/Rust-1.99.0-orange?logo=rust)](rust-toolchain.toml)
-[![Gyral 0.3.3](https://img.shields.io/badge/Gyral-0.3.3-blue)](https://www.npmjs.com/package/@gyral/core/v/0.3.3)
+[![Gyral 0.3.4](https://img.shields.io/badge/Gyral-0.3.4-blue)](https://www.npmjs.com/package/@gyral/core/v/0.3.4)
 [![GitHub stars](https://img.shields.io/github/stars/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/forks)
 [![GitHub contributors](https://img.shields.io/github/contributors/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/graphs/contributors)
@@ -47,7 +47,7 @@ This is an experimental, pre-1.0 workspace with executable examples and recorded
 and are prepared for their first crates.io release; until the owner publishes
 them, consumers use Cargo path dependencies from a reviewed checkout. The
 [changelog](CHANGELOG.md) records each release. The examples install the exact
-published `@gyral/core` and `@gyral/ssr` **0.3.3** packages from npm.
+published `@gyral/core` and `@gyral/ssr` **0.3.4** packages from npm.
 
 The supported embedded build is **Linux x86_64 GNU**, **Rust 1.99.0**, edition
 2024, with `deno_core` **0.412.0** and V8 **150.4.0**. Other targets have no tested

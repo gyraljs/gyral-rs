@@ -13,7 +13,7 @@ use sha2::{Digest, Sha256};
 fn manifest(source: &str, client: &[u8]) -> BundleManifest {
     let hash = |bytes: &[u8]| ContentHash::from_digest(Sha256::digest(bytes).into()).hex();
     let client = hash(client);
-    let raw = json!({"abi":1,"gyral":"0.3.3","server_sha256":hash(source.as_bytes()),"client":{"path":format!("/assets/client.{client}.js"),"sha256":client},"style_hashes":[]});
+    let raw = json!({"abi":1,"gyral":"0.3.4","server_sha256":hash(source.as_bytes()),"client":{"path":format!("/assets/client.{client}.js"),"sha256":client},"style_hashes":[]});
     BundleManifest::try_from(raw.to_string().as_str())
         .expect("invariant: generated fixture is a valid manifest")
 }

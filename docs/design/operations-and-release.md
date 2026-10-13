@@ -141,7 +141,7 @@ The owner publishes with the [release runbook](../releasing.md); until 0.1.0 is
 on crates.io, consumers use a reviewed checkout and path dependencies. Published
 requirements are caret ranges, except the exact `deno_core` pin that the runbook
 justifies; `Cargo.lock` keeps this repository's builds exact. Gyral build inputs
-come from the published npm 0.3.3 packages, pinned with SHA-512 registry
+come from the published npm 0.3.4 packages, pinned with SHA-512 registry
 integrity in the frozen lockfile. An empty build cache requires access to the
 registry.
 
@@ -202,7 +202,7 @@ the release workflow attaches it to the GitHub release for each tagged version.
 The workflow has passed on GitHub's hosted `ubuntu-24.04` runner; the
 [verification record](../verification.md) names the run.
 
-Gyral core and SSR now use the published npm release `0.3.3`. The frozen pnpm
+Gyral core and SSR now use the published npm release `0.3.4`. The frozen pnpm
 lockfile supplies SHA-512 integrity for registry archives. `npm-production.cdx.json`
 records both Gyral packages and their resolved production dependency graph,
 including the type-only Standard Schema package; inclusion does not assert that
