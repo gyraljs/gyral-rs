@@ -1,5 +1,29 @@
 # Verification evidence
 
+## Gyral 0.3.5 update — October 14, 2026
+
+Gyral 0.3.5 adds template rule 15 to `@gyral/core`: a start tag that begins with a capital
+letter, has no hyphen and is not an HTML element (a JSX-style `<SignupForm>`) is a template
+error. `@gyral/ssr` has no changes of its own. This update pins npm `@gyral/core` and
+`@gyral/ssr` to `0.3.5`, which npm serves with provenance, and moves the pnpm release-age
+exemption from the two 0.3.4 versions to these two. As for 0.3.4, the old exemption was kept
+only while the lockfile was regenerated, then removed; the frozen installation passes the age
+gate with the 0.3.5 exemption alone. The regenerated lockfile changes only the two Gyral
+entries, and their SHA-512 integrity matches the registry. The domain manifest's
+`GYRAL_VERSION`, both example builds, the policy check, and the release tools now require
+0.3.5. The published 0.2.0 crates still accept only 0.3.4 manifests; the new `GYRAL_VERSION`
+reaches crates.io in 0.3.0 (a minor release, because 0.3.4 manifests are rejected).
+
+`make ci` passed: **65 nextest tests** (one skipped, the explicit runtime measurement),
+doctests, strict Clippy, formatting, Rust docs, frozen npm installation, policy over 29
+documents and four publishable crates, artifact, client-artifact and operating checks, the
+release-tool regressions, all Chromium/WebKit SSR, client and notes suites, the notes schema
+check, `cargo deny`, and `cargo audit`. The Askama client entry grows from 77,003 to **78,391
+bytes** (external CSS unchanged at 5,267 bytes): it is bundled with esbuild, without
+`@gyral/core`'s Vite preset, so it keeps the runtime template checker, which now carries rule
+15's list of HTML element names. Container images, release evidence, packaging, and the
+runtime evaluation were not rerun.
+
 ## Gyral 0.3.4 update — October 13, 2026
 
 Gyral 0.3.4 changes `@gyral/ssr`, whose `renderPage({ components })` tail no longer repeats

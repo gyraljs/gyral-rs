@@ -31,7 +31,7 @@ so the runtime requires no filesystem module loader. Dynamic imports, unresolved
 package names, TypeScript compilation at request time, and arbitrary downloads
 are outside this contract. Build the browser bundle from the same components
 and exact Gyral version as the server bundle. ABI 1's verified artifact manifest
-accepts Gyral `0.3.4` and one self-contained browser entry.
+accepts Gyral `0.3.5` and one self-contained browser entry.
 
 The example passes the Gyral SSR result through unchanged. It uses Declarative
 Shadow DOM and Gyral's hydration seeds. Do not handcraft those seeds in Rust or
@@ -64,7 +64,7 @@ avoids a circular build hash while keeping both outputs in one artifact set.
 | Manifest field | Meaning |
 | --- | --- |
 | `abi` | Required unsigned interface version, currently 1. |
-| `gyral` | Exact verified framework release, currently `0.3.4`. |
+| `gyral` | Exact verified framework release, currently `0.3.5`. |
 | `server_sha256` | Digest of the UTF-8 bytes in `server.js`. |
 | `client.path` | `/assets/client.<client.sha256>.js`, with no alternate path or query. |
 | `client.sha256` | Digest of the browser bytes, also used for SRI and CSP. |
