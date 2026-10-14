@@ -6,6 +6,16 @@ telemetry-label change increases the minor version; compatible fixes increase
 the patch version. The [release runbook](docs/releasing.md) describes how an
 entry becomes a crates.io release.
 
+## [0.3.0] - 2026-10-14
+
+### Changed
+
+- **Breaking:** the crates accept bundles built with Gyral **0.3.5** (`GYRAL_VERSION`), and
+  reject manifests that name another release, 0.3.4 included. Rebuild the server and browser
+  bundles with `@gyral/core` and `@gyral/ssr` 0.3.5, or stay on 0.2.0 for 0.3.4 bundles.
+  Gyral 0.3.5 adds a template check for JSX-style component tags; server rendering and the
+  bundle ABI (version 1) are unchanged.
+
 ## [0.2.0] - 2026-10-13
 
 ### Changed
