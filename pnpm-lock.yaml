@@ -167,11 +167,11 @@ importers:
   .:
     dependencies:
       '@gyral/core':
-        specifier: 0.3.5
-        version: 0.3.5
+        specifier: 0.3.6
+        version: 0.3.6
       '@gyral/ssr':
-        specifier: 0.3.5
-        version: 0.3.5
+        specifier: 0.3.6
+        version: 0.3.6
     devDependencies:
       esbuild:
         specifier: 0.28.2
@@ -338,8 +338,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@gyral/core@0.3.5':
-    resolution: {integrity: sha512-vBmmsRWmB5PWkZcvLhPwXiBkzWLHEtmFUS4jiAkaKLp4E/ln3u8wRoxfNcQcITyjom5Ae2BpcEDRbg7McNwHOw==}
+  '@gyral/core@0.3.6':
+    resolution: {integrity: sha512-Mk6PbELKMHgAO0C5gj0wfLfnq6+rMhLCpKSN/9lm/dNAnJFE8TXVf3vkUsORdTV5ifcMN7eHH3DWdbp4K329QQ==}
     hasBin: true
     peerDependencies:
       eslint: ^9.0.0 || ^10.0.0
@@ -353,8 +353,8 @@ packages:
       vite:
         optional: true
 
-  '@gyral/ssr@0.3.5':
-    resolution: {integrity: sha512-4qD67F0EwDySoUwvLZeBvlWbY/u8iSBCX8kunIls8LJPuGxqIU1lMMLm01asWRu1CEzUZNZEkK3lbLFSwYOswg==}
+  '@gyral/ssr@0.3.6':
+    resolution: {integrity: sha512-I3MTztmGYskcpN0MeEuwc6ptSDG/j+AYFsewZe04m/+Mb3cLEsQ8mwjkrSGdJ3RjH0gLtWMufVg1kRQIfC2agQ==}
     peerDependencies:
       vite: ^8.0.0
     peerDependenciesMeta:
@@ -459,13 +459,13 @@ snapshots:
   '@esbuild/win32-x64@0.28.2':
     optional: true
 
-  '@gyral/core@0.3.5':
+  '@gyral/core@0.3.6':
     dependencies:
       '@standard-schema/spec': 1.1.0
 
-  '@gyral/ssr@0.3.5':
+  '@gyral/ssr@0.3.6':
     dependencies:
-      '@gyral/core': 0.3.5
+      '@gyral/core': 0.3.6
       '@standard-schema/spec': 1.1.0
     transitivePeerDependencies:
       - eslint
