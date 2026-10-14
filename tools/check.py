@@ -30,9 +30,9 @@ for skill in json.loads((ROOT / "skills.lock.json").read_text())["skills"]:
 javascript = json.loads((ROOT / 'package.json').read_text())
 javascript_lock = (ROOT / 'pnpm-lock.yaml').read_text()
 for name in ('@gyral/core', '@gyral/ssr'):
-    if javascript['dependencies'].get(name) != '0.3.5':
+    if javascript['dependencies'].get(name) != '0.3.6':
         errors.append(f'{name}: pin the verified npm release exactly')
-    if not re.search(rf"  '{re.escape(name)}@0\.3\.5':\n    resolution: \{{integrity: sha512-[A-Za-z0-9+/]+=*\}}", javascript_lock):
+    if not re.search(rf"  '{re.escape(name)}@0\.3\.6':\n    resolution: \{{integrity: sha512-[A-Za-z0-9+/]+=*\}}", javascript_lock):
         errors.append(f'{name}: registry SHA-512 integrity is missing from the lockfile')
 if 'file:vendor/' in javascript_lock or 'file:vendor/' in json.dumps(javascript):
     errors.append('JavaScript dependencies still reference removed vendor archives')

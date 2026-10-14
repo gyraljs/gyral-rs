@@ -79,6 +79,16 @@ not report a runtime vulnerability. `deny.toml` permits that specific advisory;
 the lockfile pins the dependency graph. Beads issue `gyral-rs-83t` tracks removal when upstream
 replaces the dependency. All other advisory checks remain enabled.
 
+Four rustls advisories are ignored for a limited time:
+[RUSTSEC-2026-0346](https://rustsec.org/advisories/RUSTSEC-2026-0346.html),
+[0347](https://rustsec.org/advisories/RUSTSEC-2026-0347.html),
+[0348](https://rustsec.org/advisories/RUSTSEC-2026-0348.html) and
+[0349](https://rustsec.org/advisories/RUSTSEC-2026-0349.html) affect rustls 0.23.45, which
+only the unpublished axum example reaches, through its OTLP exporter (`opentelemetry-otlp` →
+`reqwest`). None of the four published crates depends on rustls. The fixed rustls 0.23.46 was
+published on October 14, 2026; dependencies are adopted two weeks after release, so
+`gyral-rs-4db` upgrades it and removes these ignores on or after October 28, 2026.
+
 The OTLP dependency graph includes target-conditional `webpki-root-certs` 1.0.9 certificate data
 under [CDLA-Permissive-2.0](https://cdla.dev/permissive-2-0/). A version-specific
 license allowance covers that data; release assembly includes its agreement.

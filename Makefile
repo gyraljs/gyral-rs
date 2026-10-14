@@ -46,7 +46,7 @@ ci:
 	cargo build -p gyral-renderer-domain --no-default-features --locked
 	cargo build -p gyral-example-notes-domain --no-default-features --locked
 	cargo deny check advisories bans licenses sources
-	cargo audit --ignore RUSTSEC-2024-0436 --deny warnings
+	cargo audit --ignore RUSTSEC-2024-0436 --ignore RUSTSEC-2026-0346 --ignore RUSTSEC-2026-0347 --ignore RUSTSEC-2026-0348 --ignore RUSTSEC-2026-0349 --deny warnings
 
 docker:
 	docker build --platform linux/amd64 --build-arg GYRAL_INPUT_SHA256=$$(python3 tools/build-inputs.py) --tag gyral-rs:example .

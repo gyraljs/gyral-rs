@@ -1,5 +1,35 @@
 # Verification evidence
 
+## Gyral 0.3.6 update — October 14, 2026
+
+Gyral 0.3.6 adds a development warning (G0014) for custom-element tags that stay undefined
+after load, runs template rule 15 in the browser only in development, and removes the empty
+`@gyral/ssr/hydrate` entry point, which the examples never imported. Server rendering and the
+bundle ABI are unchanged. This update pins npm `@gyral/core` and `@gyral/ssr` to `0.3.6`,
+which npm serves with provenance, and moves the pnpm release-age exemption from the two 0.3.5
+versions to these two. As before, the old exemption was kept only while the lockfile was
+regenerated, then removed; the frozen installation passes the age gate with the 0.3.6
+exemption alone. The regenerated lockfile changes only the two Gyral entries, and their
+SHA-512 integrity matches the registry. The domain manifest's `GYRAL_VERSION`, both example
+builds, the policy check, and the release tools now require 0.3.6. The published 0.3.0 crates
+still accept only 0.3.5 manifests; the new `GYRAL_VERSION` reaches crates.io in 0.4.0 (a
+minor release, because 0.3.5 manifests are rejected).
+
+`make ci` passed: **65 nextest tests** (one skipped, the explicit runtime measurement),
+doctests, strict Clippy, formatting, Rust docs, frozen npm installation, policy over 29
+documents and four publishable crates, artifact, client-artifact and operating checks, the
+release-tool regressions, all Chromium/WebKit SSR, client and notes suites, the notes schema
+check, `cargo deny`, and `cargo audit`. `cargo deny` and `cargo audit` first failed on four
+rustls 0.23.45 advisories (RUSTSEC-2026-0346 to 0349) published the same day; rustls is reached
+only by the unpublished axum example's OTLP exporter, and the fixed 0.23.46 is younger than the
+two-week dependency rule, so both gates ignore the four IDs until `gyral-rs-4db` upgrades it
+(see [security](security.md)). The Askama client entry grows from 78,391 to **79,169 bytes**
+(external CSS unchanged at 5,267 bytes). esbuild inlines Gyral's `DEV = false` only after tree
+shaking, so the development-only undefined-tag watcher and rule 15's element list stay in the
+bundle as code that never runs; Vite and Rollup leave them out. Gyral tracks this as
+`gyral-gpr`. Container images, release evidence, packaging, and the runtime evaluation were not
+rerun.
+
 ## Gyral 0.3.5 update — October 14, 2026
 
 Gyral 0.3.5 adds template rule 15 to `@gyral/core`: a start tag that begins with a capital
