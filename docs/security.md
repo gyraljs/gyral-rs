@@ -85,9 +85,9 @@ two-week dependency rule:
 0.103.15) and [0383](https://rustsec.org/advisories/RUSTSEC-2026-0383.html) (webpki-root-certs
 1.0.9, target-conditional) are reached only by the unpublished axum example, through its OTLP
 exporter; [0385](https://rustsec.org/advisories/RUSTSEC-2026-0385.html) (ctutils 0.4.3) is reached
-through `sha2` and `digest`, which `gyral-renderer` uses to hash build artifacts, with no secret
-comparison, and the askama example's HMAC. The published crates don't ship a lockfile, so a
-consumer resolving today gets the fixed ctutils 0.4.4. The fixes were published on October 20,
+only by the unpublished askama example, whose `hmac` enables `digest`'s optional `ctutils`
+dependency. None of the three reaches the four published crates: an application that depends on
+`gyral` resolves no ctutils at all. The fixes were published on October 20,
 19 and 23, 2026; `gyral-rs-7ww` adopts them and removes these ignores on or after November 6,
 2026 (rustls-webpki from November 3, webpki-root-certs from November 2).
 
