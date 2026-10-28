@@ -21,7 +21,7 @@ gyral-axum = { path = "crates/gyral-axum", version = "0.5.0" }
 gyral = { path = "crates/gyral", version = "0.5.0" }
 # Exact: a deno_core release fixes the deno_v8 line, and with it the V8 major and
 # the reviewed native archive. See docs/releasing.md before changing it.
-deno_core = { version = "=0.412.0", features = ["include_icu_data"] }
+deno_core = { version = "=0.413.0", features = ["include_icu_data"] }
 serde = { version = "1.0.229", features = ["derive"] }
 serde_json = "1.0.154"
 thiserror = "2.0.21"
