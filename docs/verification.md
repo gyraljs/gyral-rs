@@ -21,7 +21,8 @@ The same branch adopts rustls 0.23.46 and tokio 1.53.3, now two weeks old, which
 four rustls ignores (`gyral-rs-4db`) and fixes RUSTSEC-2026-0386 in tokio. Three advisories
 published since October 14 have fixes younger than the dependency rule and are ignored until
 `gyral-rs-7ww` adopts them (see [security](security.md)): RUSTSEC-2026-0382 and 0383, reached
-only by the unpublished axum example, and 0385 in ctutils, reached through `sha2`.
+only by the unpublished axum example, and 0385 in ctutils, reached only by the unpublished askama
+example's `hmac` (none reaches the published crates).
 
 `make ci` passed: **65 nextest tests** (one skipped, the explicit runtime measurement),
 doctests, strict Clippy, formatting, Rust docs, frozen npm installation, policy over 29
