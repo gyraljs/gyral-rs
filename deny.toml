@@ -3,10 +3,9 @@ unmaintained = "all"
 yanked = "deny"
 ignore = [
   { id = "RUSTSEC-2024-0436", reason = "V8 150.4.0 uses the unmaintained paste macro at compile time; removal is tracked in gyral-rs-83t. See docs/security.md." },
-  { id = "RUSTSEC-2026-0346", reason = "rustls 0.23.45 is reached only by the unpublished axum example's OTLP exporter; the 0.23.46 fix was published 2026-10-14 and is adopted after the two-week age rule (gyral-rs-4db). See docs/security.md." },
-  { id = "RUSTSEC-2026-0347", reason = "rustls 0.23.45 is reached only by the unpublished axum example's OTLP exporter; the 0.23.46 fix was published 2026-10-14 and is adopted after the two-week age rule (gyral-rs-4db). See docs/security.md." },
-  { id = "RUSTSEC-2026-0348", reason = "rustls 0.23.45 is reached only by the unpublished axum example's OTLP exporter; the 0.23.46 fix was published 2026-10-14 and is adopted after the two-week age rule (gyral-rs-4db). See docs/security.md." },
-  { id = "RUSTSEC-2026-0349", reason = "rustls 0.23.45 is reached only by the unpublished axum example's OTLP exporter; the 0.23.46 fix was published 2026-10-14 and is adopted after the two-week age rule (gyral-rs-4db). See docs/security.md." },
+  { id = "RUSTSEC-2026-0382", reason = "rustls-webpki 0.103.15 is reached only by the unpublished axum example's OTLP exporter; the 0.103.16 fix was published 2026-10-20 and is adopted after the two-week age rule (gyral-rs-7ww). See docs/security.md." },
+  { id = "RUSTSEC-2026-0383", reason = "webpki-root-certs 1.0.9 is reached only by the unpublished axum example's OTLP exporter, target-conditionally; the 1.0.10 fix was published 2026-10-19 and is adopted after the two-week age rule (gyral-rs-7ww). See docs/security.md." },
+  { id = "RUSTSEC-2026-0385", reason = "ctutils 0.4.3 is reached through sha2 and digest, which hash build artifacts in gyral-renderer (no secret comparison); the 0.4.4 fix was published 2026-10-23 and is adopted after the two-week age rule (gyral-rs-7ww). See docs/security.md." },
 ]
 
 [licenses]

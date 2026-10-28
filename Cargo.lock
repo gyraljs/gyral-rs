@@ -836,7 +836,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "39cab71617ae0d63f51a36d69f866391735b51691dbda63cf6f96d042b63efeb"
 dependencies = [
  "libc",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -1107,7 +1107,7 @@ checksum = "e4eba85ea1d0a966a983acd07deee566e67395d2d96b6fb39e62b5a833f1eb0b"
 
 [[package]]
 name = "gyral"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "gyral-axum",
  "gyral-renderer",
@@ -1116,7 +1116,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-askama-client-example"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "askama",
  "async-trait",
@@ -1142,7 +1142,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-axum"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "axum",
  "gyral-renderer",
@@ -1155,7 +1155,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-axum-example"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "axum",
  "getrandom 0.4.3",
@@ -1177,7 +1177,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-example-notes-app"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "async-trait",
  "gyral-example-notes-domain",
@@ -1188,7 +1188,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-example-notes-domain"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "proptest",
  "thiserror",
@@ -1196,7 +1196,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-renderer"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "deno_core",
  "gyral-renderer-domain",
@@ -1211,7 +1211,7 @@ dependencies = [
 
 [[package]]
 name = "gyral-renderer-domain"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "base64 0.23.1",
  "proptest",
@@ -1934,7 +1934,7 @@ version = "0.50.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7957b9740744892f114936ab4a57b3f487491bbeafaf8083688b16841a4240e5"
 dependencies = [
- "windows-sys 0.61.2",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -2298,7 +2298,7 @@ dependencies = [
  "once_cell",
  "socket2",
  "tracing",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -2562,14 +2562,14 @@ dependencies = [
  "errno",
  "libc",
  "linux-raw-sys 0.12.1",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
 name = "rustls"
-version = "0.23.45"
+version = "0.23.46"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d41d731c7d2f962d1ccc364cec258de3c0e93b38c2fb3ba97ac74513048d634"
+checksum = "48e13bd8c0e9365c43cfa5c9e8f9ad49d3c8444926c9aac819e0e4dc503c8fdf"
 dependencies = [
  "aws-lc-rs",
  "once_cell",
@@ -2619,7 +2619,7 @@ dependencies = [
  "security-framework",
  "security-framework-sys",
  "webpki-root-certs",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -3263,10 +3263,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "32497e9a4c7b38532efcdebeef879707aa9f794296a4f0244f6f69e9bc8574bd"
 dependencies = [
  "fastrand",
- "getrandom 0.4.3",
+ "getrandom 0.3.4",
  "once_cell",
  "rustix 1.1.5",
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]
@@ -3363,9 +3363,9 @@ checksum = "fd3ca314f692efd6c868f8408f53fe444634a845f96c028b97d35f6a1f79f0ee"
 
 [[package]]
 name = "tokio"
-version = "1.53.2"
+version = "1.53.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e95f91fcc7a621e8b030f6aa23c71fe9838ae2fb4d8118b75602a328f5144044"
+checksum = "ce3335fa71841cda333a58d7615b03901380ecf09d59b3296d21f8bbac0dde4e"
 dependencies = [
  "bytes",
  "libc",
@@ -3943,7 +3943,7 @@ version = "0.1.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c2a7b1c03c876122aa43f3020e6c3c3ee5c05081c9a00739faf7503aeba10d22"
 dependencies = [
- "windows-sys 0.61.2",
+ "windows-sys 0.52.0",
 ]
 
 [[package]]

@@ -1,5 +1,38 @@
 # Verification evidence
 
+## Gyral 0.3.7 update — October 28, 2026
+
+Gyral 0.3.7 fixes five bugs found in the apps that use it. In the browser, a component's `init`
+commands start after its first render, a light-DOM component's first render replaces children
+the page's HTML gave it, and development builds warn when a page runs two copies of core or a
+host carries a lowercased camelCase prop name. Template rule 16 rejects a camelCase attribute on
+a custom element, at build time and in server rendering; none of the examples' templates has
+one. Server rendering output for valid templates and the bundle ABI are unchanged. This update
+pins npm `@gyral/core` and `@gyral/ssr` to `0.3.7`, which npm serves with SLSA provenance, and
+moves the pnpm release-age exemption from the two 0.3.6 versions to these two; the regenerated
+lockfile changes only the two Gyral entries, whose SHA-512 integrity matches the registry, and
+the frozen installation passes the age gate with the 0.3.7 exemption alone. The domain
+manifest's `GYRAL_VERSION`, both example builds, the policy check, and the release tools now
+require 0.3.7. The published 0.4.0 crates still accept only 0.3.6 manifests; the new
+`GYRAL_VERSION` reaches crates.io in 0.5.0 (a minor release, because 0.3.6 manifests are
+rejected).
+
+The same branch adopts rustls 0.23.46 and tokio 1.53.3, now two weeks old, which removes the
+four rustls ignores (`gyral-rs-4db`) and fixes RUSTSEC-2026-0386 in tokio. Three advisories
+published since October 14 have fixes younger than the dependency rule and are ignored until
+`gyral-rs-7ww` adopts them (see [security](security.md)): RUSTSEC-2026-0382 and 0383, reached
+only by the unpublished axum example, and 0385 in ctutils, reached through `sha2`.
+
+`make ci` passed: **65 nextest tests** (one skipped, the explicit runtime measurement),
+doctests, strict Clippy, formatting, Rust docs, frozen npm installation, policy over 29
+documents and four publishable crates, artifact, client-artifact and operating checks, the
+release-tool regressions, all Chromium/WebKit SSR, client and notes suites, the notes schema
+check, `cargo deny`, and `cargo audit`. The Askama client entry grows from 79,169 to **81,503
+bytes** (external CSS unchanged at 5,267 bytes): esbuild keeps Gyral 0.3.7's new
+development-only code, the second-copy registration and the rule 16 and lowercased-attribute
+messages, as code that never runs, as it did for 0.3.6 (`gyral-gpr`). Container images,
+release evidence, packaging, and the runtime evaluation were not rerun.
+
 ## Gyral 0.3.6 update — October 14, 2026
 
 Gyral 0.3.6 adds a development warning (G0014) for custom-element tags that stay undefined

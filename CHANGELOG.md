@@ -6,6 +6,19 @@ telemetry-label change increases the minor version; compatible fixes increase
 the patch version. The [release runbook](docs/releasing.md) describes how an
 entry becomes a crates.io release.
 
+## [0.5.0] - 2026-10-28
+
+### Changed
+
+- **Breaking:** the crates accept bundles built with Gyral **0.3.7** (`GYRAL_VERSION`), and
+  reject manifests that name another release, 0.3.6 included. Rebuild the server and browser
+  bundles with `@gyral/core` and `@gyral/ssr` 0.3.7, or stay on 0.4.0 for 0.3.6 bundles.
+  Gyral 0.3.7 starts a component's `init` commands after its first render in the browser,
+  replaces a light-DOM component's page children on its first render, and adds template
+  rule 16, which rejects a camelCase attribute on a custom element at build time and in
+  server rendering; server rendering output for valid templates and the bundle ABI
+  (version 1) are unchanged.
+
 ## [0.4.0] - 2026-10-14
 
 ### Changed

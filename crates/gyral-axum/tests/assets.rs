@@ -11,7 +11,7 @@ use serde_json::json;
 fn manifest(styles: Vec<String>) -> BundleManifest {
     // SHA-256 of the literal five bytes "hello"; neither fixture is executed.
     let hash = "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824";
-    let raw = json!({"abi":1,"gyral":"0.3.6","server_sha256":hash,"client":{"path":format!("/assets/client.{hash}.js"),"sha256":hash},"style_hashes":styles});
+    let raw = json!({"abi":1,"gyral":"0.3.7","server_sha256":hash,"client":{"path":format!("/assets/client.{hash}.js"),"sha256":hash},"style_hashes":styles});
     BundleManifest::try_from(raw.to_string().as_str())
         .expect("invariant: fixture metadata is valid")
 }
