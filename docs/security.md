@@ -79,6 +79,18 @@ not report a runtime vulnerability. `deny.toml` permits that specific advisory;
 the lockfile pins the dependency graph. Beads issue `gyral-rs-83t` tracks removal when upstream
 replaces the dependency. All other advisory checks remain enabled.
 
+Three advisories are ignored for a limited time, because their fixes are younger than the
+two-week dependency rule:
+[RUSTSEC-2026-0382](https://rustsec.org/advisories/RUSTSEC-2026-0382.html) (rustls-webpki
+0.103.15) and [0383](https://rustsec.org/advisories/RUSTSEC-2026-0383.html) (webpki-root-certs
+1.0.9, target-conditional) are reached only by the unpublished axum example, through its OTLP
+exporter; [0385](https://rustsec.org/advisories/RUSTSEC-2026-0385.html) (ctutils 0.4.3) is reached
+through `sha2` and `digest`, which `gyral-renderer` uses to hash build artifacts, with no secret
+comparison, and the askama example's HMAC. The published crates don't ship a lockfile, so a
+consumer resolving today gets the fixed ctutils 0.4.4. The fixes were published on October 20,
+19 and 23, 2026; `gyral-rs-7ww` adopts them and removes these ignores on or after November 6,
+2026 (rustls-webpki from November 3, webpki-root-certs from November 2).
+
 The OTLP dependency graph includes target-conditional `webpki-root-certs` 1.0.9 certificate data
 under [CDLA-Permissive-2.0](https://cdla.dev/permissive-2-0/). A version-specific
 license allowance covers that data; release assembly includes its agreement.
