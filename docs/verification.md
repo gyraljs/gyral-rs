@@ -40,6 +40,22 @@ message texts. The rest runs: the comparison of a view's inputs that skips a ren
 axum example's server bundle grows by 3,787 bytes, to 116,473. The local cargo-nextest is still
 0.9.143 and SQLx CLI 0.8.3, older than the versions listed in [development](development.md).
 
+On the 0.6.0 release commit, `make ci` passed again with the same counts.
+`make client-docker-smoke` passed: native CRUD, SQLite persistence and cookie ownership across
+container replacement, verified assets and CSP, UID 10001, no Node, Deno, or V8, and SIGTERM.
+`make release-evidence` passed the SSR container smoke, assembled 290 SSR inventory components
+and three npm production inputs (both Gyral packages at 0.3.8), and ran the extracted binary on
+the Ubuntu 24.04 host (glibc 2.39). `make package` dry-ran the four 0.6.0 crates (11.3, 37.1,
+20.4, and 18.8 KiB compressed) and the docs.rs build; nothing was uploaded. Cargo's dry run
+refuses an uncommitted manifest, so it ran after the commit. `make load` passed its budgets:
+**2,567 successful requests** over 60.09 seconds, **42.72 requests/second**, **158.07 ms p95**,
+**201.46 ms p99**, **40.73 MiB peak RSS**, **0.66 MiB growth**, and at most four of sixteen
+queue positions; other containers were running on the host. The SSR image is
+`sha256:6daaceebc99084edf7787c25da5074de5205c87f85d28859496cbe070e20cd64` and the client image
+`sha256:53640b03667eb148e2418bd0c3e84c1ea97ca13345f037e91e9a7e17ce19df59`. cargo-semver-checks
+is not installed locally; the release workflow runs it against 0.5.0. The runtime evaluation
+and mutation checks were not rerun, and no workflow ran on GitHub.
+
 ## Dependency update — October 29, 2026
 
 This update applies the two-week release-age rule (Gyral's ADR 0032, [security](security.md))
