@@ -11,8 +11,8 @@ issues provide public reports and design discussion.
 
 ## Set up a checkout
 
-The tested embedded target is Linux x86_64 GNU. Install Rust 1.99.0, Node
-24.21.0, pnpm 12.11.2, Python 3.11 or later, and Make. The
+The tested embedded target is Linux x86_64 GNU. Install Rust 1.99.1, Node
+24.22.0, pnpm 12.14.0, Python 3.11 or later, and Make. The
 [development guide](docs/development.md) lists exact versions and installation
 commands for nextest, cargo-deny, cargo-audit, cargo-cyclonedx, SQLx CLI, and
 browser dependencies required by the complete gate.
@@ -22,7 +22,7 @@ Run these commands at its root:
 
 ```sh
 corepack enable
-corepack prepare pnpm@12.11.2 --activate
+corepack prepare pnpm@12.14.0 --activate
 pnpm install --frozen-lockfile
 pnpm exec playwright install --with-deps chromium webkit
 make prepare-native

@@ -176,7 +176,7 @@ def main():
                         destination = stage / 'licenses' / f'{component["name"].replace("/", "-")}-{component["version"]}' / text.name
                         destination.parent.mkdir(parents=True, exist_ok=True)
                         shutil.copyfile(text, destination)
-        (stage / 'RUN.md').write_text('Run on Linux x86_64 with glibc 2.36+, libstdc++ and CA certificates.\n\nGYRAL_EXAMPLE_BIND=127.0.0.1:3037 GYRAL_EXAMPLE_DIST=./dist ./gyral-axum-example\n\nUse /livez for liveness and /readyz for readiness. This synthetic trusted-code example provides no application authentication.\n')
+        (stage / 'RUN.md').write_text('Run on Linux x86_64 with glibc 2.38+ and CA certificates.\n\nGYRAL_EXAMPLE_BIND=127.0.0.1:3037 GYRAL_EXAMPLE_DIST=./dist ./gyral-axum-example\n\nUse /livez for liveness and /readyz for readiness. This synthetic trusted-code example provides no application authentication.\n')
         binary_name = f'gyral-rs-{version}-{TARGET}.tar.gz'
         archive(output / binary_name, [path for path in stage.rglob('*') if path.is_file()], f'gyral-rs-{version}', stage)
     source_name = f'gyral-rs-{version}-source.tar.gz'
