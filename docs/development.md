@@ -1,7 +1,7 @@
 # Local development
 
 Run commands from the repository root. Rust is pinned to 1.99.0, edition 2024;
-Node 24.21.0 and pnpm 12.11.2 build the example bundles. Python 3.11+ runs policy
+Node 24.22.0 and pnpm 12.14.0 build the example bundles. Python 3.11+ runs policy
 checks. Install cargo-nextest 0.9.148, cargo-deny 0.20.2, cargo-audit 0.22.2,
 cargo-cyclonedx 0.5.9, and SQLx CLI 0.9.0 for
 the full gate. The CLI and query macros use the same SQLx 0.9.0 release.
@@ -9,7 +9,7 @@ the full gate. The CLI and query macros use the same SQLx 0.9.0 release.
 ```sh
 rustup show
 corepack enable
-corepack prepare pnpm@12.11.2 --activate
+corepack prepare pnpm@12.14.0 --activate
 cargo install cargo-nextest --version 0.9.148 --locked
 cargo install cargo-deny --version 0.20.2 --locked
 cargo install sqlx-cli --version 0.9.0 --locked --no-default-features --features sqlite
@@ -39,7 +39,14 @@ the manifests, refresh both lockfiles, then run `make ci`, `make client-docker-s
 Dependabot checks Cargo and npm weekly and CI actions monthly, and proposes a version only once
 it is two weeks old (its `cooldown`); pnpm's `minimumReleaseAge` refuses younger npm versions.
 Cargo has no age gate, so check crates.io publish dates before a lockfile refresh
-([security](security.md)). Related packages
+([security](security.md)). The same two weeks apply to the Rust, Node, and pnpm
+toolchains, CI actions, and the Dockerfiles' base images. Date a toolchain by its
+release on static.rust-lang.org or in nodejs.org's `index.json`, not by the commit
+date in its version string. Official image tags are rebuilt in place, so a tag's
+current digest can be younger than its version; pin the digest of a push that is two
+weeks old, which the history of
+[docker-library/repo-info](https://github.com/docker-library/repo-info) records for
+each tag, or a dated Debian tag. Related packages
 share a proposal: SHA-2 with HMAC, the Serde family, the embedded runtime, and
 the Gyral packages. CI actions also share a proposal. SHA-2 and HMAC must use
 compatible digest traits; an isolated major upgrade can fail even when the
@@ -51,8 +58,8 @@ upstream package; use `cargo tree --invert <package>` to find its owner rather
 than forcing an incompatible override.
 
 pnpm 12 reads build permissions from [pnpm-workspace.yaml](../pnpm-workspace.yaml).
-Only esbuild may run an installation script. Its default one-day release-age
-gate remains enabled; the two exact Gyral 0.3.7 versions are exempt because
+Only esbuild may run an installation script. Its `minimumReleaseAge` holds every
+version for two weeks; the two exact Gyral 0.3.7 versions are exempt because
 their owner-approved npm release was already verified. Future Gyral versions
 still pass through that gate. Docker builds, source distributions, and the
 release fingerprint include this configuration.

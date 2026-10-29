@@ -128,7 +128,9 @@ application-specific evidence. Reports stay in `.local/load-evidence.json`.
 The initial supported target is `x86_64-unknown-linux-gnu`. The tested minimum
 Rust version is **1.99.0**, edition 2024; CI uses that exact toolchain. Earlier
 compilers, musl, ARM, Windows, and macOS have no support claim. The reference
-container builds against Debian bookworm and runs with glibc 2.36 and libstdc++.
+container builds and runs on Debian 13 (trixie), with glibc 2.41. Its SSR binary
+requires glibc 2.38 or later, because C dependencies compiled against trixie's
+headers use the C23 `strtol` and `sscanf` symbols; it links no libstdc++.
 Local binaries can inherit a newer host ABI; release evidence extracts its binary
 from the tested container rather than distributing the local compiler's output.
 

@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:24.21.0-bookworm-slim@sha256:d6aa754f16b3197301076f047b5def2f02ea1dbbc2ca920407d46d7ec7f87b20 AS web
+FROM node:24.22.0-trixie-slim@sha256:7f486cabe892bff8fef04c0f7da8dba84a560be3e4e2740b7a86afc57ebec315 AS web
 WORKDIR /build
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -8,7 +8,7 @@ COPY tools/build-client-example.mjs ./tools/build-client-example.mjs
 COPY examples/askama-client-app/web ./examples/askama-client-app/web
 RUN pnpm build:client-example
 
-FROM rust:1.99.0-bookworm@sha256:59037199c44290f2befcdd58dcc540164763fc296950255aaefeef096a1866b0 AS rust
+FROM rust:1.99.0-trixie@sha256:81015672d6939b0265f09adf96d5de125482bb1330106076956b0518e74edc90 AS rust
 WORKDIR /build
 COPY Cargo.toml Cargo.lock rust-toolchain.toml ./
 COPY .cargo ./.cargo
@@ -25,7 +25,7 @@ COPY examples/notes-app ./examples/notes-app
 RUN cargo tree --locked -p gyral-askama-client-example --edges normal > /tmp/client-dependencies && if grep -E '(deno_core|v8 v|gyral v|gyral-renderer v|gyral-axum v)' /tmp/client-dependencies; then exit 1; fi
 RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/build/client-target CARGO_TARGET_DIR=/build/client-target cargo build --release --locked -p gyral-askama-client-example && cp client-target/release/gyral-askama-client-example /usr/local/bin/gyral-askama-client-example
 
-FROM debian:bookworm-slim@sha256:3783cc01769c7b2b1b83a5c5ad96c815348e28ed7da68e2e3687004faa906251 AS app
+FROM debian:trixie-20261005-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS app
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/* && groupadd --gid 10001 gyral && useradd --uid 10001 --gid gyral --no-create-home gyral
 WORKDIR /app
 RUN mkdir /app/data && chown 10001:10001 /app/data
