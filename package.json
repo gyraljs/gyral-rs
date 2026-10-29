@@ -12,8 +12,8 @@
     "test:client-browser": "node tools/client-browser-smoke.mjs"
   },
   "dependencies": {
-    "@gyral/core": "0.3.7",
-    "@gyral/ssr": "0.3.7"
+    "@gyral/core": "0.3.8",
+    "@gyral/ssr": "0.3.8"
   },
   "devDependencies": {
     "esbuild": "0.28.2",
