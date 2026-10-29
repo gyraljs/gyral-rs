@@ -13,10 +13,11 @@ October 15 waits. These moved:
 | Cargo lockfile | SHA-2 0.11.0 → 0.11.1, syn 3.0.8 → 3.0.9, unicode-ident 1.0.26 → 1.0.27, aws-lc-rs 1.18.1 → 1.18.2 with aws-lc-sys 0.45.0 → 0.46.0 (October 12); equivalent 1.0.2 → 1.0.3, rustls-native-certs 0.8.4 → 0.8.5, zerocopy and zerocopy-derive 0.8.62 → 0.8.63 (October 13); generator 0.8.10 → 0.8.11 (October 14); combine 4.6.8 → 4.6.9 (October 15) |
 | npm | Playwright and playwright-core 1.64.0 → 1.64.1 (October 14); pnpm 12.11.2 → 12.14.0 (October 15) |
 | Node | 24.21.0 → 24.22.0 (October 14), in `.node-version` and both images' build stage |
-| Base images | `node:24.22.0-trixie-slim`, `rust:1.99.0-trixie` and `debian:trixie-20261027-slim` (Debian 13.7) replace their bookworm counterparts, each pinned by the index digest of its tag's newest rebuild. The two-week rule applies to the software an image carries (Node 24.22.0 of October 14, Rust 1.99.0, Debian 13.7), not to Docker's rebuild date, so the base keeps Debian's security updates (Gyral ADR 0032, owner's decision of 2026-10-29) |
+| Rust | 1.99.0 → 1.99.1 (October 15, 17:39), in `rust-toolchain.toml`, CI, the release workflow and both images' build stage, adopted once it turned two weeks old at 17:39 UTC on October 29. The `2026-10-13` in its version string is the commit date; the toolchain and its image move together. The MSRV stays 1.99 |
+| Base images | `node:24.22.0-trixie-slim`, `rust:1.99.1-trixie` and `debian:trixie-20261027-slim` (Debian 13.7) replace their bookworm counterparts, each pinned by the index digest of its tag's newest rebuild. The two-week rule applies to the software an image carries (Node 24.22.0 of October 14, Rust 1.99.1 of October 15, Debian 13.7), not to Docker's rebuild date, so the base keeps Debian's security updates (Gyral ADR 0032, owner's decision of 2026-10-29) |
 | CI actions | download-artifact 8.0.1 → 8.0.2 (October 7), pinned to its commit |
 
-The Rust moves change only `Cargo.lock`; the published crates' caret lower bounds stay where
+The crate moves change only `Cargo.lock`; the published crates' caret lower bounds stay where
 they were verified, so consumers see no new requirement. The other 22 direct crate
 dependencies, esbuild 0.28.2, and the checkout, setup-node, cache, and upload-artifact
 actions were already at their newest releases. Gyral stays at 0.3.7, whose two exact exemptions age out on November 11.
@@ -25,7 +26,6 @@ These wait, with the date each becomes two weeks old:
 
 | Waiting | Published → eligible (UTC) |
 | --- | --- |
-| Rust 1.99.1 and `rust:1.99.1-trixie` | October 15, 17:39 → October 29, 17:39. The `2026-10-13` in its version string is the commit date. Its first image index with linux/amd64 was pushed by 23:54 the same day; the toolchain and its image move together. |
 | `deno_core` 0.413.0, with `deno_ops` 0.289.0, `serde_v8` 0.322.0, and `deno_v8` 0.5.0 | October 21 → November 4; reviewed with the V8 archive, as [development](development.md) requires |
 | Tokio 1.54.1 (1.54.0 is yanked) | October 21 → November 4 |
 | rustls-webpki 0.103.16, webpki-root-certs 1.0.10, ctutils 0.4.4 | October 20, 19, and 23 → November 3, 2, and 6. The three dated ignores in `deny.toml`, the Makefile, and [security](security.md) stay until `gyral-rs-7ww` adopts them. |
@@ -41,7 +41,7 @@ release archive needed 2.34, because C dependencies compiled against trixie's he
 `__isoc23_strtol` and `__isoc23_sscanf`; the release `RUN.md` now says so. The client binary
 needs 2.34.
 
-`make ci` passed with Rust 1.99.0, Node 24.22.0, and pnpm 12.14.0: **65 nextest tests** (one
+`make ci` passed with Rust 1.99.1, Node 24.22.0, and pnpm 12.14.0: **65 nextest tests** (one
 skipped, the explicit runtime measurement), ten doctests, strict Clippy, formatting, Rust docs,
 frozen npm installation, policy over 29 documents and four publishable crates, artifact,
 client-artifact and operating checks, the release-tool regressions, all Chromium/WebKit SSR,

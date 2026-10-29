@@ -1,6 +1,6 @@
 # Local development
 
-Run commands from the repository root. Rust is pinned to 1.99.0, edition 2024;
+Run commands from the repository root. Rust is pinned to 1.99.1, edition 2024;
 Node 24.22.0 and pnpm 12.14.0 build the example bundles. Python 3.11+ runs policy
 checks. Install cargo-nextest 0.9.148, cargo-deny 0.20.2, cargo-audit 0.22.2,
 cargo-cyclonedx 0.5.9, and SQLx CLI 0.9.0 for
@@ -90,7 +90,7 @@ release fingerprint include this configuration.
 | `make client-docker` | Build the separate non-root Askama client example image. |
 | `make client-docker-smoke` | Check pages, CRUD, persisted ownership across container replacement, assets, runtime contents, and graceful SIGTERM. |
 
-The supported embedded build is Linux x86_64 GNU with Rust 1.99.0. Run
+The supported embedded build is Linux x86_64 GNU with Rust 1.99.1. Run
 `make prepare-native` before a raw Cargo command that builds V8. Root Make targets
 prepare automatically. The reviewed size/SHA-256 pin lives in `tools/v8-archive.json`;
 Cargo consumes the verified local archive through root configuration. A corrupt

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/gyraljs/gyral-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gyraljs/gyral-rs/actions/workflows/ci.yml)
 [![MIT license](https://img.shields.io/github/license/gyraljs/gyral-rs)](LICENSE)
-[![Rust 1.99.0](https://img.shields.io/badge/Rust-1.99.0-orange?logo=rust)](rust-toolchain.toml)
+[![Rust 1.99.1](https://img.shields.io/badge/Rust-1.99.1-orange?logo=rust)](rust-toolchain.toml)
 [![Gyral 0.3.7](https://img.shields.io/badge/Gyral-0.3.7-blue)](https://www.npmjs.com/package/@gyral/core/v/0.3.7)
 [![GitHub stars](https://img.shields.io/github/stars/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/forks)
@@ -50,7 +50,7 @@ release each earlier version accepts. The
 examples install the exact published `@gyral/core` and `@gyral/ssr` **0.3.7**
 packages from npm.
 
-The supported embedded build is **Linux x86_64 GNU**, **Rust 1.99.0**, edition
+The supported embedded build is **Linux x86_64 GNU**, **Rust 1.99.1**, edition
 2024, with `deno_core` **0.412.0** and V8 **150.4.0**. Other targets have no tested
 support claim. The examples use synthetic data; complete application compatibility
 and workload-specific deployment targets still need application-level evidence.
@@ -87,7 +87,7 @@ it links V8, so pin and verify the native archive as the
 
 ## Quick start
 
-Install Rust 1.99.0, Node 24.22.0, pnpm 12.14.0, Python 3.11 or later, and GNU
+Install Rust 1.99.1, Node 24.22.0, pnpm 12.14.0, Python 3.11 or later, and GNU
 Make. Use the [development guide](docs/development.md) for the additional tools
 required by the full test gate.
 

@@ -104,7 +104,7 @@ of a local first publish. Path B builds the uploaded packages in CI.
 ### Path A: publish from your machine (recommended)
 
 Use a fresh clone so no local edits reach the packages. The toolchain file
-selects Rust 1.99.0.
+selects Rust 1.99.1.
 
 ```sh
 git clone https://github.com/gyraljs/gyral-rs.git gyral-rs-release
