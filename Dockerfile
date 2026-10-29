@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM node:24.22.0-trixie-slim@sha256:7f486cabe892bff8fef04c0f7da8dba84a560be3e4e2740b7a86afc57ebec315 AS web
+FROM node:24.22.0-trixie-slim@sha256:a6155384446670e9719bdc4fd0ebe4d4b29fb32a8d6aa523da3547a6cfbcf22c AS web
 WORKDIR /build
 RUN corepack enable
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
@@ -26,7 +26,7 @@ COPY examples/notes-domain ./examples/notes-domain
 COPY examples/notes-app ./examples/notes-app
 RUN --mount=type=cache,target=/usr/local/cargo/registry --mount=type=cache,target=/build/target --mount=type=cache,target=/build/.local/v8 python3 tools/prepare-v8.py && cargo build --release --locked -p gyral-axum-example && cp target/release/gyral-axum-example /usr/local/bin/gyral-axum-example
 
-FROM debian:trixie-20261005-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d765c46aea49f11f AS app
+FROM debian:trixie-20261027-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4 AS app
 ARG GYRAL_INPUT_SHA256
 LABEL org.gyral-rs.input-sha256=$GYRAL_INPUT_SHA256
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl && rm -rf /var/lib/apt/lists/* && groupadd --gid 10001 gyral && useradd --uid 10001 --gid gyral --no-create-home gyral

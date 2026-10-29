@@ -13,7 +13,7 @@ October 15 waits. These moved:
 | Cargo lockfile | SHA-2 0.11.0 → 0.11.1, syn 3.0.8 → 3.0.9, unicode-ident 1.0.26 → 1.0.27, aws-lc-rs 1.18.1 → 1.18.2 with aws-lc-sys 0.45.0 → 0.46.0 (October 12); equivalent 1.0.2 → 1.0.3, rustls-native-certs 0.8.4 → 0.8.5, zerocopy and zerocopy-derive 0.8.62 → 0.8.63 (October 13); generator 0.8.10 → 0.8.11 (October 14); combine 4.6.8 → 4.6.9 (October 15) |
 | npm | Playwright and playwright-core 1.64.0 → 1.64.1 (October 14); pnpm 12.11.2 → 12.14.0 (October 15) |
 | Node | 24.21.0 → 24.22.0 (October 14), in `.node-version` and both images' build stage |
-| Base images | `node:24.22.0-trixie-slim` (pushed October 14), `rust:1.99.0-trixie` (October 12), and `debian:trixie-20261005-slim` (October 6) replace their bookworm counterparts, each pinned by that push's index digest |
+| Base images | `node:24.22.0-trixie-slim`, `rust:1.99.0-trixie` and `debian:trixie-20261027-slim` (Debian 13.7) replace their bookworm counterparts, each pinned by the index digest of its tag's newest rebuild. The two-week rule applies to the software an image carries (Node 24.22.0 of October 14, Rust 1.99.0, Debian 13.7), not to Docker's rebuild date, so the base keeps Debian's security updates (Gyral ADR 0032, owner's decision of 2026-10-29) |
 | CI actions | download-artifact 8.0.1 → 8.0.2 (October 7), pinned to its commit |
 
 The Rust moves change only `Cargo.lock`; the published crates' caret lower bounds stay where
