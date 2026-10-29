@@ -120,7 +120,7 @@ for cleanup; cancelling the shutdown future has the same fallback behavior.
 The bundle contract is [versioned separately](docs/design/bundle-contract.md)
 from HTTP. JavaScript receives JSON data and returns a string or a promise of a
 string. After bundle evaluation the runtime requires `gyralBundleVersion = 1`
-before invoking the entrypoint. The example bundles Gyral `0.3.7`, renders through its own SSR
+before invoking the entrypoint. The example bundles Gyral `0.3.8`, renders through its own SSR
 implementation, and builds a matching hydration bundle. Rust does not reproduce
 Gyral's HTML escaping, component serialization, or hydration protocol.
 

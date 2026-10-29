@@ -1,5 +1,61 @@
 # Verification evidence
 
+## Gyral 0.3.8 update — October 29, 2026
+
+Gyral 0.3.8 changes when a browser component renders and how Gyral's packages share core. A
+component now renders only when its state, a declared prop, or a declared store's value
+changes; every example view reads only those, so none stops refreshing. `@gyral/ssr` takes
+`@gyral/core` as a peer at its exact version, no longer as a dependency, and checks core's
+version when it loads (G0016), so an app must install both at the same release, as the
+examples already do. The release also adds typed driver provision (`token.provide(run)` and
+driver lists) and the `gyral()` Vite plugin. Neither reaches the examples: the Askama
+example's `subscription()` takes a string name, which 0.3.8 still accepts, and esbuild, not
+Vite, builds both bundles. Server rendering output and the bundle ABI are unchanged. Bundled
+against 0.3.7 and against 0.3.8, the axum example's server entry renders byte-identical HTML
+for two home-page requests and fails the broken fixture with the same message.
+
+This update pins npm `@gyral/core` and `@gyral/ssr` to `0.3.8`, which npm serves with SLSA
+provenance, and moves the pnpm release-age exemption from the two 0.3.7 versions to these two,
+until November 12, when they turn two weeks old. pnpm 12 checks the existing lockfile against
+the policy before it resolves, so with only the new exemption it refused the 0.3.7 entries.
+Both sets stayed for one installation; then the 0.3.7 set was removed, and the frozen
+installation passes the age gate with the 0.3.8 exemption alone. The regenerated lockfile
+changes only the two Gyral entries, whose SHA-512 integrity matches the registry; it now
+records core as `@gyral/ssr`'s resolved peer, so SSR no longer inherits core's optional
+`eslint` and `parse5` peers. The domain manifest's `GYRAL_VERSION`, both example builds, the
+policy check, and the release tools now require 0.3.8. The published 0.5.0 crates still accept
+only 0.3.7 manifests; the new `GYRAL_VERSION` reaches crates.io in 0.6.0 (a minor release,
+because 0.3.7 manifests are rejected).
+
+`make ci` passed with Rust 1.99.1, Node 24.22.0, and pnpm 12.14.0: **65 nextest tests** (one
+skipped, the explicit runtime measurement), ten doctests, strict Clippy, formatting, Rust docs,
+frozen npm installation, policy over 29 documents and four publishable crates, artifact,
+client-artifact and operating checks, the release-tool regressions, all Chromium/WebKit SSR,
+client and notes suites, the notes schema check, `cargo deny`, and `cargo audit` with the same
+four ignores. The Askama client entry grows from 81,503 to **85,707 bytes** (external CSS
+unchanged at 5,267 bytes). Of the 4,204 new bytes, 1,332 are Gyral's development-only check of
+skipped renders, which esbuild keeps as code that never runs (`gyral-gpr`), and 936 are new
+message texts. The rest runs: the comparison of a view's inputs that skips a render,
+`subscription()`'s `select`, `equals`, and `coalesce`, `each`'s `equals`, and driver lists. The
+axum example's server bundle grows by 3,787 bytes, to 116,473. The local cargo-nextest is still
+0.9.143 and SQLx CLI 0.8.3, older than the versions listed in [development](development.md).
+
+On the 0.6.0 release commit, `make ci` passed again with the same counts.
+`make client-docker-smoke` passed: native CRUD, SQLite persistence and cookie ownership across
+container replacement, verified assets and CSP, UID 10001, no Node, Deno, or V8, and SIGTERM.
+`make release-evidence` passed the SSR container smoke, assembled 290 SSR inventory components
+and three npm production inputs (both Gyral packages at 0.3.8), and ran the extracted binary on
+the Ubuntu 24.04 host (glibc 2.39). `make package` dry-ran the four 0.6.0 crates (11.3, 37.1,
+20.4, and 18.8 KiB compressed) and the docs.rs build; nothing was uploaded. Cargo's dry run
+refuses an uncommitted manifest, so it ran after the commit. `make load` passed its budgets:
+**2,567 successful requests** over 60.09 seconds, **42.72 requests/second**, **158.07 ms p95**,
+**201.46 ms p99**, **40.73 MiB peak RSS**, **0.66 MiB growth**, and at most four of sixteen
+queue positions; other containers were running on the host. The SSR image is
+`sha256:6daaceebc99084edf7787c25da5074de5205c87f85d28859496cbe070e20cd64` and the client image
+`sha256:53640b03667eb148e2418bd0c3e84c1ea97ca13345f037e91e9a7e17ce19df59`. cargo-semver-checks
+is not installed locally; the release workflow runs it against 0.5.0. The runtime evaluation
+and mutation checks were not rerun, and no workflow ran on GitHub.
+
 ## Dependency update — October 29, 2026
 
 This update applies the two-week release-age rule (Gyral's ADR 0032, [security](security.md))

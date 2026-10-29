@@ -3,7 +3,7 @@
 [![CI](https://github.com/gyraljs/gyral-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gyraljs/gyral-rs/actions/workflows/ci.yml)
 [![MIT license](https://img.shields.io/github/license/gyraljs/gyral-rs)](LICENSE)
 [![Rust 1.99.1](https://img.shields.io/badge/Rust-1.99.1-orange?logo=rust)](rust-toolchain.toml)
-[![Gyral 0.3.7](https://img.shields.io/badge/Gyral-0.3.7-blue)](https://www.npmjs.com/package/@gyral/core/v/0.3.7)
+[![Gyral 0.3.8](https://img.shields.io/badge/Gyral-0.3.8-blue)](https://www.npmjs.com/package/@gyral/core/v/0.3.8)
 [![GitHub stars](https://img.shields.io/github/stars/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/forks)
 [![GitHub contributors](https://img.shields.io/github/contributors/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/graphs/contributors)
@@ -44,10 +44,10 @@ ordinary form submissions still reach Rust with JavaScript disabled.
 
 This is an experimental, pre-1.0 workspace with executable examples and recorded
 [verification evidence](docs/verification.md). The four crates are on
-[crates.io](https://crates.io/crates/gyral) (`cargo add gyral`). Version 0.5.0
-accepts bundles built with Gyral **0.3.7**; the [changelog](CHANGELOG.md) names the Gyral
+[crates.io](https://crates.io/crates/gyral) (`cargo add gyral`). Version 0.6.0
+accepts bundles built with Gyral **0.3.8**; the [changelog](CHANGELOG.md) names the Gyral
 release each earlier version accepts. The
-examples install the exact published `@gyral/core` and `@gyral/ssr` **0.3.7**
+examples install the exact published `@gyral/core` and `@gyral/ssr` **0.3.8**
 packages from npm.
 
 The supported embedded build is **Linux x86_64 GNU**, **Rust 1.99.1**, edition

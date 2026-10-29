@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 /// Rust/JavaScript bundle interface understood by this renderer.
 pub const BUNDLE_ABI_VERSION: u32 = 1;
 /// Gyral release covered by the current artifact and hydration contract.
-pub const GYRAL_VERSION: &str = "0.3.7";
+pub const GYRAL_VERSION: &str = "0.3.8";
 
 /// Invalid build metadata. Digest mismatches in actual files are renderer errors.
 #[derive(Debug, thiserror::Error)]
