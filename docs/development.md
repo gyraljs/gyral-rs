@@ -36,7 +36,10 @@ themselves when new versions appear. Review current registry releases, update
 the manifests, refresh both lockfiles, then run `make ci`, `make client-docker-smoke`,
 `make release-evidence`, and `make load` before adopting the new set.
 
-Dependabot checks Cargo and npm weekly and CI actions monthly. Related packages
+Dependabot checks Cargo and npm weekly and CI actions monthly, and proposes a version only once
+it is two weeks old (its `cooldown`); pnpm's `minimumReleaseAge` refuses younger npm versions.
+Cargo has no age gate, so check crates.io publish dates before a lockfile refresh
+([security](security.md)). Related packages
 share a proposal: SHA-2 with HMAC, the Serde family, the embedded runtime, and
 the Gyral packages. CI actions also share a proposal. SHA-2 and HMAC must use
 compatible digest traits; an isolated major upgrade can fail even when the
