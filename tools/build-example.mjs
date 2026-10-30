@@ -4,7 +4,7 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { build } from 'esbuild';
 
 const root = 'examples/axum-app/dist';
-const release = '0.3.8';
+const release = '0.3.9';
 for (const pkg of ['core', 'ssr']) {
   const info = JSON.parse(await readFile(`node_modules/@gyral/${pkg}/package.json`, 'utf8'));
   assert.equal(info.version, release, 'Server and browser must use the pinned Gyral release');
