@@ -1,5 +1,47 @@
 # Verification evidence
 
+## Gyral 0.3.9 update — October 30, 2026
+
+Gyral 0.3.9 fixes what migrating apps to 0.3.8 found, mostly in development-time checks,
+testing, and tooling. Apps that install `@gyral/core` from npm now run its development build in
+`vite dev` and Vitest's browser mode. G0017 compares a skipped view with what it rendered by
+value, not identity, and says where the two differ. Development messages end with their code,
+`parse()` from `@gyral/testing` tests `on()` parsers without a DOM, and `gyralDevMiddleware`
+renders an edited component without a restart. In the browser, `ctx.props` stays the same
+object while no declared prop's value changes. None of this reaches the examples: esbuild, not
+Vite, builds both bundles in production mode, no example test matches a development message,
+and every example view reads its props without changing them. Server rendering output and the
+bundle ABI are unchanged. Bundled against 0.3.8 and against 0.3.9, the axum example's server
+entry renders byte-identical HTML for two home-page requests and fails the broken fixture with
+the same message (G0078).
+
+This update pins npm `@gyral/core` and `@gyral/ssr` to `0.3.9`, which npm serves with SLSA
+provenance, and moves the pnpm release-age exemption from the two 0.3.8 versions to these two,
+until November 13, when they turn two weeks old. As for 0.3.8, pnpm refused the old entries
+with only the new exemption, so both sets stayed for one installation; then the 0.3.8 set was
+removed, and the frozen installation passes the age gate with the 0.3.9 exemption alone. The
+regenerated lockfile changes only the two Gyral entries, whose SHA-512 integrity matches the
+registry. The domain manifest's `GYRAL_VERSION`, both example builds, the policy check, and the
+release tools now require 0.3.9. The published 0.6.0 crates still accept only 0.3.8 manifests;
+the new `GYRAL_VERSION` reaches crates.io in 0.7.0 (a minor release, because 0.3.8 manifests
+are rejected).
+
+`make ci` passed with Rust 1.99.1, Node 24.22.0, and pnpm 12.14.0: **65 nextest tests** (one
+skipped, the explicit runtime measurement), ten doctests, strict Clippy, formatting, Rust docs,
+frozen npm installation, policy over 29 documents and four publishable crates, artifact,
+client-artifact and operating checks, the release-tool regressions, all Chromium/WebKit SSR,
+client and notes suites, the notes schema check, `cargo deny`, and `cargo audit` with the same
+four ignores. The Askama client entry grows from 85,707 to **86,958 bytes** (external CSS
+unchanged at 5,267 bytes). Of the 1,251 new bytes, 1,138 are development-only code that esbuild
+keeps but never runs: G0017's comparison by value and the text that says where a view differs.
+Gyral 0.3.9 leaves `gyral-gpr` as it was: core still selects its development code through the
+`#view-dev` import condition, and esbuild inlines the resulting `DEV = false` only after tree
+shaking. Rebuilt with `DEV` replaced by `false` in core's modules, so that esbuild can drop the
+development code, the entry is 16,546 bytes smaller at 0.3.8 and 17,684 bytes smaller at 0.3.9.
+The other 113 new bytes run: the stable `ctx.props` reference and `on()` parsing without a DOM.
+The axum example's server bundle grows by 1,357 bytes, to 117,830. The local cargo-nextest is
+still 0.9.143 and SQLx CLI 0.8.3, older than the versions listed in [development](development.md).
+
 ## Gyral 0.3.8 update — October 29, 2026
 
 Gyral 0.3.8 changes when a browser component renders and how Gyral's packages share core. A

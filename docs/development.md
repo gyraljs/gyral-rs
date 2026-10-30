@@ -59,8 +59,8 @@ than forcing an incompatible override.
 
 pnpm 12 reads build permissions from [pnpm-workspace.yaml](../pnpm-workspace.yaml).
 Only esbuild may run an installation script. Its `minimumReleaseAge` holds every
-version for two weeks; the two exact Gyral 0.3.8 versions are exempt until
-November 12, 2026, because their owner-approved npm release was already verified.
+version for two weeks; the two exact Gyral 0.3.9 versions are exempt until
+November 13, 2026, because their owner-approved npm release was already verified.
 The next dependency update after that date removes the exemption. Future Gyral
 versions still pass through that gate. Docker builds, source distributions, and the
 release fingerprint include this configuration.

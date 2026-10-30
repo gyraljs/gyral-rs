@@ -27,7 +27,7 @@ fn set(value: &mut Value, path: &[&str], replacement: Value) {
 
 fn raw(server: ContentHash, client: ContentHash, styles: &[ContentHash]) -> Value {
     json!({
-        "abi": 1, "gyral": "0.3.8", "server_sha256": server.hex(),
+        "abi": 1, "gyral": "0.3.9", "server_sha256": server.hex(),
         "client": {"path": format!("/assets/client.{}.js", client.hex()), "sha256": client.hex()},
         "style_hashes": styles.iter().map(|hash| hash.hex()).collect::<Vec<_>>(),
     })
@@ -94,7 +94,7 @@ fn only_canonical_hashes_can_be_constructed_and_integrity_uses_standard_base64()
 fn manifest_rejects_versions_paths_unknown_fields_and_oversized_headers() {
     assert_eq!(BundleManifest::MAX_BYTES, 16 * 1024);
     assert_eq!(BUNDLE_ABI_VERSION, 1);
-    assert_eq!(GYRAL_VERSION, "0.3.8");
+    assert_eq!(GYRAL_VERSION, "0.3.9");
     let hash = ContentHash::from_digest([0; 32]);
     let valid = raw(hash, hash, &[]);
     for abi in [0, 2, u32::MAX] {
