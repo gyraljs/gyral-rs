@@ -4,10 +4,15 @@ allowBuilds:
 # Adopt a version only once it is two weeks old (Gyral's ADR 0032, docs/security.md).
 minimumReleaseAge: 20160
 
-# The owner approved and verified Gyral 0.3.9, published on 2026-10-30, so its two
-# exact versions are exempt until 2026-11-13, when they turn two weeks old; the next
-# dependency update after that removes them. The age gate still holds every other
-# package and every later Gyral release.
+# The owner approved and verified Gyral 0.3.8 and 0.3.9, published on 2026-10-29 and
+# 2026-10-30. The examples adopt 0.3.9; the Gyral canary (tools/gyral-canary.mjs) also
+# installs 0.3.8, protocol 1's minimum release. Each release's two exact versions are
+# exempt until it turns two weeks old, and the next dependency update after that date
+# removes them. The age gate still holds every other package and every later Gyral release.
 minimumReleaseAgeExclude:
+  # Until 2026-11-12.
+  - '@gyral/core@0.3.8'
+  - '@gyral/ssr@0.3.8'
+  # Until 2026-11-13.
   - '@gyral/core@0.3.9'
   - '@gyral/ssr@0.3.9'

@@ -4,8 +4,9 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { build } from 'esbuild';
 
 const root = 'examples/askama-client-app';
-const release = '0.3.9';
-assert.equal(JSON.parse(await readFile('node_modules/@gyral/core/package.json', 'utf8')).version, release);
+// The manifest names the installed release; tools/check.py pins the adopted one exactly.
+const release = JSON.parse(await readFile('node_modules/@gyral/core/package.json', 'utf8')).version;
+assert.match(release, /^\d+\.\d+\.\d+$/, 'Build from a stable Gyral release');
 const browser = await build({
   entryPoints: [`${root}/web/client.mjs`], outfile: 'client.js',
   bundle: true, write: false, minify: true, target: 'es2022',

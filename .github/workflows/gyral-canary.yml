@@ -1,0 +1,51 @@
+name: gyral-canary
+# Builds and renders the example with each supported SSR protocol's minimum and newest
+# Gyral release (Gyral ADR 0034). Start it by hand with a newly published release to
+# test it before adoption; testing a release does not adopt it. See docs/releasing.md.
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      gyral:
+        description: A newer Gyral release to test as well, without the two-week age gate
+        required: false
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: gyral-canary-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: canary-${{ runner.os }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+      - run: corepack enable
+      - run: rustup toolchain install 1.99.1 --profile minimal --component rustfmt --component clippy
+      - run: cargo install cargo-nextest --version 0.9.148 --locked
+      - run: pnpm install --frozen-lockfile && pnpm exec playwright install --with-deps chromium webkit
+      # The Makefile lists protocol 1's minimum (0.3.8) and newest (0.3.9) releases.
+      - run: make gyral-canary
+      - if: inputs.gyral != ''
+        env:
+          GYRAL: ${{ inputs.gyral }}
+        run: |
+          if ! [[ "$GYRAL" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Give a stable Gyral release such as 0.3.10"
+            exit 1
+          fi
+          make gyral-canary GYRAL_CANARY="$GYRAL" GYRAL_CANARY_AGE_GATE=off

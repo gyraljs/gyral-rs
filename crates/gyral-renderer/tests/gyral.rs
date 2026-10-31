@@ -5,17 +5,22 @@
 )]
 use gyral_renderer::{
     AppArtifacts, BundleManifest, ContentHash, PageId, RenderError, RenderRequest, Renderer,
+    SsrProtocol,
 };
 use serde_json::json;
 use sha2::{Digest, Sha256};
 
+/// The example build, or another build of it named by `GYRAL_EXAMPLE_DIST` (the Gyral canary).
 fn artifacts() -> AppArtifacts {
-    let root =
-        std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/axum-app/dist");
+    let root = std::env::var_os("GYRAL_EXAMPLE_DIST").map_or_else(
+        || std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../../examples/axum-app/dist"),
+        std::path::PathBuf::from,
+    );
     let metadata = std::fs::read_to_string(root.join("manifest.json"))
         .expect("invariant: run pnpm build:example before integration tests");
-    let manifest =
-        BundleManifest::try_from(metadata.as_str()).expect("invariant: build metadata uses ABI 1");
+    let manifest = BundleManifest::try_from(metadata.as_str())
+        .expect("invariant: build metadata uses a supported protocol and Gyral release");
+    assert_eq!(manifest.protocol(), SsrProtocol::V1);
     let source = std::fs::read_to_string(root.join("server.js"))
         .expect("invariant: the build emits server source");
     let client = std::fs::read(
@@ -45,7 +50,7 @@ fn actual_gyral_bundle_renders_components_and_hydration_seeds() {
         let output = renderer
             .render(request)
             .await
-            .expect("invariant: exact 0.3.9 fixture renders in deno_core");
+            .expect("invariant: the protocol 1 fixture renders in deno_core");
         assert!(
             output
                 .as_str()

@@ -112,6 +112,10 @@ try {
   assert.equal(localPage.status, 200); await localPage.text();
   const localOutput = await process.stop();
   assert.ok(!localOutput.includes('trace parent not attached'));
+  const logs = localOutput.split('\n').flatMap(line => { try { return [JSON.parse(line)]; } catch { return []; } });
+  const verified = logs.find(log => log.fields?.message === 'Gyral bundle verified');
+  assert.equal(verified?.fields.gyral, manifest.gyral, 'Startup must log the bundle\'s Gyral release');
+  assert.equal(verified?.fields.ssr_protocol, manifest.abi, 'Startup must log the bundle\'s SSR protocol');
   process = undefined;
   // Verified bytes are necessary but insufficient: an executable probe must pass.
   for (const [label, body] of [['throw', "throw new Error('PRIVATE_STARTUP_71')"], ['deadline', 'while(true){}']]) {
@@ -125,7 +129,7 @@ try {
       return true;
     });
   }
-  console.log('Operating: real readiness probes, finite metrics, generated IDs, redacted JSON/OTLP with W3C correlation, and active-request SIGTERM/SIGINT drain + worker joins passed.');
+  console.log('Operating: logged Gyral release and protocol, real readiness probes, finite metrics, generated IDs, redacted JSON/OTLP with W3C correlation, and active-request SIGTERM/SIGINT drain + worker joins passed.');
 } finally {
   if (process) await process.cleanup();
   collector.closeAllConnections();

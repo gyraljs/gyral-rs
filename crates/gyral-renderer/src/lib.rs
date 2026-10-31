@@ -27,8 +27,9 @@ pub use artifacts::{AppArtifacts, ArtifactError};
 pub use telemetry::{RenderErrorCategory, RendererPhase, RendererStatus};
 
 pub use gyral_renderer_domain::{
-    BUNDLE_ABI_VERSION, BundleManifest, ContentHash, ContractError, GYRAL_VERSION, LimitsError,
-    ManifestError, PageId, RenderLimits, RenderRequest, RenderedHtml,
+    BUNDLE_ABI_VERSION, BundleManifest, ContentHash, ContractError, GyralVersion, LimitsError,
+    ManifestError, PageId, RenderLimits, RenderRequest, RenderedHtml, SUPPORTED_PROTOCOLS,
+    SsrProtocol,
 };
 use std::{fmt, sync::Arc};
 use thiserror::Error;
@@ -52,7 +53,8 @@ impl RenderService for Renderer {
     }
 }
 
-/// Compiled, trusted JavaScript exposing `gyralBundleVersion = 1` and `gyralRender(request)`.
+/// Compiled, trusted JavaScript that declares a supported SSR protocol in
+/// `gyralBundleVersion` and exposes `gyralRender(request)`.
 ///
 /// This parser bounds source size. Use `AppArtifacts` to also verify source and
 /// browser bytes against a validated build manifest before starting the renderer.
@@ -126,8 +128,12 @@ pub enum WorkerError {
 /// Typed failures crossing the rendering boundary.
 #[derive(Debug, Error)]
 pub enum RenderError {
-    /// The bundle did not declare the supported interface before the render call.
-    #[error("unsupported bundle ABI {received:?}; expected {BUNDLE_ABI_VERSION}")]
+    /// The bundle's `gyralBundleVersion` was absent, malformed, or not a supported SSR protocol.
+    #[error(
+        "the bundle declared gyralBundleVersion {received:?}, which is not a supported SSR protocol; \
+         expected one of {}",
+        SupportedVersions
+    )]
     UnsupportedBundleAbi {
         /// Declared unsigned integer version, or absence/malformed metadata.
         received: Option<u32>,
@@ -180,6 +186,19 @@ pub enum RenderError {
     /// Returned HTML violated the contract.
     #[error(transparent)]
     Contract(#[from] ContractError),
+}
+
+/// Lists the supported protocol numbers for the declaration error.
+struct SupportedVersions;
+
+impl fmt::Display for SupportedVersions {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for (index, protocol) in SUPPORTED_PROTOCOLS.iter().enumerate() {
+            let separator = if index == 0 { "" } else { ", " };
+            write!(f, "{separator}{protocol}")?;
+        }
+        Ok(())
+    }
 }
 
 impl RenderError {

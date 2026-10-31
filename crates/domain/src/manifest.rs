@@ -1,10 +1,16 @@
 use base64::{Engine as _, engine::general_purpose::STANDARD};
 use serde::{Deserialize, Serialize};
+use std::fmt;
 
-/// Rust/JavaScript bundle interface understood by this renderer.
-pub const BUNDLE_ABI_VERSION: u32 = 1;
-/// Gyral release covered by the current artifact and hydration contract.
-pub const GYRAL_VERSION: &str = "0.3.9";
+/// Newest SSR protocol this renderer supports: the `gyralBundleVersion` a bundle
+/// written for it declares. [`SUPPORTED_PROTOCOLS`] lists every supported protocol.
+pub const BUNDLE_ABI_VERSION: u32 = SsrProtocol::V1.get();
+
+/// SSR protocols this renderer accepts, oldest first, each with its minimum Gyral release.
+pub const SUPPORTED_PROTOCOLS: &[SsrProtocol] = &[SsrProtocol::V1];
+
+/// Where the supported protocols and the gyral-rs releases that accept them are listed.
+const PROTOCOLS_URL: &str = "https://github.com/gyraljs/gyral-rs/blob/main/docs/design/bundle-contract.md#supported-protocols";
 
 /// Invalid build metadata. Digest mismatches in actual files are renderer errors.
 #[derive(Debug, thiserror::Error)]
@@ -18,17 +24,39 @@ pub enum ManifestError {
     /// A SHA-256 digest must use exactly 64 lowercase hexadecimal characters.
     #[error("a content hash must be 64 lowercase hexadecimal characters")]
     InvalidHash,
-    /// The build expects an unsupported renderer interface.
-    #[error("unsupported bundle ABI {received}; expected {BUNDLE_ABI_VERSION}")]
-    UnsupportedAbi {
-        /// Version declared by the build.
+    /// The manifest's `abi` names an SSR protocol this renderer does not support.
+    #[error(
+        "the bundle uses SSR protocol {received} (the manifest's `abi`), but gyral-rs {} supports {}; \
+         see {} for the gyral-rs release that supports each protocol",
+        env!("CARGO_PKG_VERSION"),
+        Supported,
+        PROTOCOLS_URL
+    )]
+    UnsupportedProtocol {
+        /// Protocol declared by the build.
         received: u32,
     },
-    /// The build uses a Gyral release outside the verified contract.
-    #[error("unsupported Gyral release {received}; expected {GYRAL_VERSION}")]
-    UnsupportedGyral {
-        /// Release declared by the build.
+    /// The manifest's `gyral` is not a stable `MAJOR.MINOR.PATCH` release.
+    #[error(
+        "the bundle names Gyral {received:?}, which is not a stable MAJOR.MINOR.PATCH release; \
+         gyral-rs accepts no prerelease or build metadata, so rebuild with a stable Gyral release"
+    )]
+    InvalidGyralVersion {
+        /// Release text declared by the build.
         received: String,
+    },
+    /// The build's Gyral release predates its protocol's minimum release.
+    #[error(
+        "the bundle names Gyral {received}, but SSR protocol {protocol} needs Gyral {minimum} or newer; \
+         rebuild the server and browser bundles with a newer Gyral release"
+    )]
+    GyralTooOld {
+        /// Release declared by the build.
+        received: GyralVersion,
+        /// Oldest release the protocol accepts.
+        minimum: GyralVersion,
+        /// Protocol declared by the build.
+        protocol: SsrProtocol,
     },
     /// The browser URL does not match its digest and canonical asset location.
     #[error("the client path must be /assets/client.<SHA-256>.js")]
@@ -36,6 +64,144 @@ pub enum ManifestError {
     /// Style hash count exceeded the bounded document header policy.
     #[error("a manifest can contain at most 32 style hashes")]
     TooManyStyles,
+}
+
+/// Lists the supported protocols and their minimum releases for error messages.
+struct Supported;
+
+impl fmt::Display for Supported {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        for (index, protocol) in SUPPORTED_PROTOCOLS.iter().enumerate() {
+            let separator = if index == 0 { "" } else { ", " };
+            write!(
+                f,
+                "{separator}protocol {protocol} (Gyral {} or newer)",
+                protocol.minimum_gyral()
+            )?;
+        }
+        Ok(())
+    }
+}
+
+/// A stable Gyral release, `MAJOR.MINOR.PATCH`, ordered numerically.
+///
+/// Parsing rejects prereleases (`0.3.10-next.0`), build metadata, leading zeros,
+/// and any other text, so a release that compares as newer is a real release.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct GyralVersion {
+    major: u64,
+    minor: u64,
+    patch: u64,
+}
+
+impl GyralVersion {
+    /// Construct a release from its three numbers.
+    #[must_use]
+    pub const fn new(major: u64, minor: u64, patch: u64) -> Self {
+        Self {
+            major,
+            minor,
+            patch,
+        }
+    }
+
+    /// Major release number.
+    #[must_use]
+    pub const fn major(self) -> u64 {
+        self.major
+    }
+
+    /// Minor release number.
+    #[must_use]
+    pub const fn minor(self) -> u64 {
+        self.minor
+    }
+
+    /// Patch release number.
+    #[must_use]
+    pub const fn patch(self) -> u64 {
+        self.patch
+    }
+}
+
+impl TryFrom<&str> for GyralVersion {
+    type Error = ManifestError;
+
+    fn try_from(text: &str) -> Result<Self, Self::Error> {
+        let invalid = || ManifestError::InvalidGyralVersion {
+            received: text.to_owned(),
+        };
+        let mut parts = text.split('.').map(release_number);
+        match (parts.next(), parts.next(), parts.next(), parts.next()) {
+            (Some(Some(major)), Some(Some(minor)), Some(Some(patch)), None) => {
+                Ok(Self::new(major, minor, patch))
+            }
+            _ => Err(invalid()),
+        }
+    }
+}
+
+/// One release number: ASCII digits without a sign or a leading zero.
+fn release_number(text: &str) -> Option<u64> {
+    let canonical = !text.is_empty()
+        && text.bytes().all(|byte| byte.is_ascii_digit())
+        && (text == "0" || !text.starts_with('0'));
+    if canonical { text.parse().ok() } else { None }
+}
+
+impl fmt::Display for GyralVersion {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}.{}.{}", self.major, self.minor, self.patch)
+    }
+}
+
+/// A supported version of the SSR protocol between a Gyral bundle and this renderer.
+///
+/// The manifest's `abi` field and the bundle's `gyralBundleVersion` both carry it.
+/// Only the protocols in [`SUPPORTED_PROTOCOLS`] can be constructed, and each knows
+/// the oldest Gyral release that implements it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct SsrProtocol {
+    version: u32,
+    minimum_gyral: GyralVersion,
+}
+
+impl SsrProtocol {
+    /// Protocol 1: the original bundle interface, implemented by Gyral 0.3.8 and newer.
+    pub const V1: Self = Self {
+        version: 1,
+        minimum_gyral: GyralVersion::new(0, 3, 8),
+    };
+
+    /// The protocol number, as written in the manifest's `abi` and `gyralBundleVersion`.
+    #[must_use]
+    pub const fn get(self) -> u32 {
+        self.version
+    }
+
+    /// The oldest Gyral release whose bundles this protocol accepts.
+    #[must_use]
+    pub const fn minimum_gyral(self) -> GyralVersion {
+        self.minimum_gyral
+    }
+}
+
+impl TryFrom<u32> for SsrProtocol {
+    type Error = ManifestError;
+
+    fn try_from(received: u32) -> Result<Self, Self::Error> {
+        SUPPORTED_PROTOCOLS
+            .iter()
+            .copied()
+            .find(|protocol| protocol.version == received)
+            .ok_or(ManifestError::UnsupportedProtocol { received })
+    }
+}
+
+impl fmt::Display for SsrProtocol {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.version)
+    }
 }
 
 /// A SHA-256 digest. Every 32-byte array is valid; text input is parsed once.
@@ -110,11 +276,13 @@ struct RawManifest {
 
 /// Validated metadata shared by the server and browser build.
 ///
-/// Decode bounded JSON with `TryFrom<&str>`. All fields are private; the ABI,
-/// release, asset location, digest syntax, and style count are checked together.
+/// Decode bounded JSON with `TryFrom<&str>`. All fields are private; the protocol,
+/// Gyral release, asset location, digest syntax, and style count are checked together.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize)]
 #[serde(try_from = "RawManifest")]
 pub struct BundleManifest {
+    protocol: SsrProtocol,
+    gyral: GyralVersion,
     server: ContentHash,
     client: ContentHash,
     client_path: String,
@@ -125,12 +293,14 @@ impl TryFrom<RawManifest> for BundleManifest {
     type Error = ManifestError;
 
     fn try_from(raw: RawManifest) -> Result<Self, Self::Error> {
-        if raw.abi != BUNDLE_ABI_VERSION {
-            return Err(ManifestError::UnsupportedAbi { received: raw.abi });
-        }
-        if raw.gyral != GYRAL_VERSION {
-            return Err(ManifestError::UnsupportedGyral {
-                received: raw.gyral,
+        // The minimum release depends on the protocol, so the protocol is checked first.
+        let protocol = SsrProtocol::try_from(raw.abi)?;
+        let gyral = GyralVersion::try_from(raw.gyral.as_str())?;
+        if gyral < protocol.minimum_gyral() {
+            return Err(ManifestError::GyralTooOld {
+                received: gyral,
+                minimum: protocol.minimum_gyral(),
+                protocol,
             });
         }
         if raw.client.path != format!("/assets/client.{}.js", raw.client.sha256.hex()) {
@@ -140,6 +310,8 @@ impl TryFrom<RawManifest> for BundleManifest {
             return Err(ManifestError::TooManyStyles);
         }
         Ok(Self {
+            protocol,
+            gyral,
             server: raw.server_sha256,
             client: raw.client.sha256,
             client_path: raw.client.path,
@@ -163,6 +335,18 @@ impl TryFrom<&str> for BundleManifest {
 impl BundleManifest {
     /// Maximum metadata size accepted by the bounded JSON entrypoint.
     pub const MAX_BYTES: usize = 16 * 1024;
+
+    /// SSR protocol the bundles implement, from the manifest's `abi`.
+    #[must_use]
+    pub const fn protocol(&self) -> SsrProtocol {
+        self.protocol
+    }
+
+    /// Gyral release that built both bundles, from the manifest's `gyral`.
+    #[must_use]
+    pub const fn gyral_version(&self) -> GyralVersion {
+        self.gyral
+    }
 
     /// Expected digest of the compiled server source.
     #[must_use]

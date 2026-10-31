@@ -181,11 +181,13 @@ def main():
         archive(output / binary_name, [path for path in stage.rglob('*') if path.is_file()], f'gyral-rs-{version}', stage)
     source_name = f'gyral-rs-{version}-source.tar.gz'
     archive(output / source_name, source_files(), f'gyral-rs-{version}', ROOT)
+    bundle = json.loads((ROOT / 'examples/axum-app/dist/manifest.json').read_text())
     descriptor = {
         'version': version, 'target': TARGET, 'msrv': '1.99.0', 'distribution': 'local review artifacts; no publication',
         'reference_image': image, 'build_input_sha256': input_hash, 'rustc': run('rustc', '--version'), 'native_archive_sha256': pin['sha256'],
         'cargo_lock_sha256': digest(ROOT / 'Cargo.lock'), 'pnpm_lock_sha256': digest(ROOT / 'pnpm-lock.yaml'),
         'bundle_manifest_sha256': digest(ROOT / 'examples/axum-app/dist/manifest.json'),
+        'bundle_gyral': bundle['gyral'], 'bundle_ssr_protocol': bundle['abi'],
         'scope': 'Rust dependency/build inputs, native V8 archive, and Gyral inputs. OS packages and JavaScript build/test tools require separate container/toolchain inventories.',
         'artifacts': [binary_name, source_name, 'ssr.cdx.json', 'npm-production.cdx.json', 'v8-archive.json', 'Cargo.lock', 'pnpm-lock.yaml'],
     }

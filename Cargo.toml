@@ -3,7 +3,7 @@ members = ["crates/domain", "crates/gyral-renderer", "crates/gyral-axum", "crate
 resolver = "3"
 
 [workspace.package]
-version = "0.7.0"
+version = "0.8.0"
 edition = "2024"
 rust-version = "1.99"
 license = "MIT"
@@ -15,10 +15,10 @@ publish = false
 [workspace.dependencies]
 # Libraries publish these requirements. Ordinary dependencies use caret ranges whose
 # lower bound is the verified version; Cargo.lock still pins this repository's builds.
-gyral-renderer-domain = { path = "crates/domain", version = "0.7.0" }
-gyral-renderer = { path = "crates/gyral-renderer", version = "0.7.0" }
-gyral-axum = { path = "crates/gyral-axum", version = "0.7.0" }
-gyral = { path = "crates/gyral", version = "0.7.0" }
+gyral-renderer-domain = { path = "crates/domain", version = "0.8.0" }
+gyral-renderer = { path = "crates/gyral-renderer", version = "0.8.0" }
+gyral-axum = { path = "crates/gyral-axum", version = "0.8.0" }
+gyral = { path = "crates/gyral", version = "0.8.0" }
 # Exact: a deno_core release fixes the deno_v8 line, and with it the V8 major and
 # the reviewed native archive. See docs/releasing.md before changing it.
 deno_core = { version = "=0.412.0", features = ["include_icu_data"] }
@@ -43,8 +43,8 @@ opentelemetry-otlp = { version = "=0.33.1", default-features = false, features =
 tracing-opentelemetry = "=0.34.0"
 proptest = "=1.12.0"
 askama = { version = "=0.16.1", default-features = false, features = ["derive", "std"] }
-gyral-example-notes-domain = { path = "examples/notes-domain", version = "=0.7.0" }
-gyral-example-notes-app = { path = "examples/notes-app", version = "=0.7.0" }
+gyral-example-notes-domain = { path = "examples/notes-domain", version = "=0.8.0" }
+gyral-example-notes-app = { path = "examples/notes-app", version = "=0.8.0" }
 sqlx = { version = "=0.9.0", default-features = false, features = ["runtime-tokio", "sqlite", "macros", "migrate"] }
 getrandom = { version = "=0.4.3", features = ["std"] }
 hmac = "=0.13.0"

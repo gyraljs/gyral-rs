@@ -1,6 +1,5 @@
 use crate::{
-    AppBundle, BUNDLE_ABI_VERSION, RenderError, RenderLimits, RenderRequest, RenderedHtml,
-    WorkerError,
+    AppBundle, RenderError, RenderLimits, RenderRequest, RenderedHtml, SsrProtocol, WorkerError,
     supervision::{Control, Registration, RequestSignal, StopReason},
 };
 use deno_core::{JsRuntime, PollEventLoopOptions, RuntimeOptions, v8};
@@ -490,7 +489,12 @@ async fn render(
             } else {
                 None
             };
-            if received != Some(BUNDLE_ABI_VERSION) {
+            // With one supported protocol, a supported declaration is also the manifest's
+            // protocol. A second protocol must also compare it with the manifest's `abi`.
+            if received
+                .and_then(|version| SsrProtocol::try_from(version).ok())
+                .is_none()
+            {
                 return Err(RenderError::UnsupportedBundleAbi { received });
             }
         }

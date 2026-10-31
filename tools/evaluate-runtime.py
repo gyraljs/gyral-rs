@@ -64,9 +64,10 @@ def main():
         group = [report for report in reports if report['mode'] == mode and report['workers'] == workers]
         fields = ['responses_per_second', 'p50_us', 'p95_us', 'p99_us', 'sequential_p50_us', 'sequential_p95_us', 'preparation_us', 'first_render_us', 'mean_create_us', 'mean_initialize_us', 'mean_render_us', 'mean_dispose_us', 'sampled_peak_rss_mib']
         summary.append({'mode': mode, 'workers': workers, 'median_of_three_runs': {field: statistics.median(report[field] for report in group) for field in fields}, 'snapshot_bytes': group[0]['snapshot_bytes']})
+    bundle = json.loads((ROOT / 'examples/axum-app/dist/manifest.json').read_text())
     evidence = {
         'scope': 'Synthetic Gyral fixture, release test binary, fresh isolate per request, one closed-loop client per worker, three separate five-second windows per configuration. No HTTP, queued load, application SLO, isolate reuse, leak proof, or capacity claim.',
-        'gyral': '0.3.9', 'deno_core': '0.412.0', 'v8': '150.4.0',
+        'gyral': bundle['gyral'], 'ssr_protocol': bundle['abi'], 'deno_core': '0.412.0', 'v8': '150.4.0',
         'rustc': subprocess.check_output(['rustc', '--version'], cwd=ROOT, text=True).strip(),
         'cpu_count': os.cpu_count(), 'architecture': os.uname().machine,
         'manifest_sha256': hashlib.sha256((ROOT / 'examples/axum-app/dist/manifest.json').read_bytes()).hexdigest(),

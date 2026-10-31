@@ -151,6 +151,11 @@ fn main() -> Result<(), StartupError> {
         AppArtifacts::MAX_CLIENT_BYTES,
     )?;
     let artifacts = Arc::new(AppArtifacts::try_new(manifest, source, browser)?);
+    tracing::info!(
+        gyral = %artifacts.manifest().gyral_version(),
+        ssr_protocol = artifacts.manifest().protocol().get(),
+        "Gyral bundle verified"
+    );
     let policy = DocumentPolicy::try_new(artifacts.manifest())?;
     // V8 platform initialization happens before the Tokio executor and renderer worker start.
     let (renderer, worker) = Renderer::start(artifacts.bundle().clone())?;

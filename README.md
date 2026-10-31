@@ -3,7 +3,7 @@
 [![CI](https://github.com/gyraljs/gyral-rs/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gyraljs/gyral-rs/actions/workflows/ci.yml)
 [![MIT license](https://img.shields.io/github/license/gyraljs/gyral-rs)](LICENSE)
 [![Rust 1.99.1](https://img.shields.io/badge/Rust-1.99.1-orange?logo=rust)](rust-toolchain.toml)
-[![Gyral 0.3.9](https://img.shields.io/badge/Gyral-0.3.9-blue)](https://www.npmjs.com/package/@gyral/core/v/0.3.9)
+[![Gyral 0.3.8+, protocol 1](https://img.shields.io/badge/Gyral-0.3.8%2B%2C%20protocol%201-blue)](docs/design/bundle-contract.md#supported-protocols)
 [![GitHub stars](https://img.shields.io/github/stars/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/forks)
 [![GitHub contributors](https://img.shields.io/github/contributors/gyraljs/gyral-rs)](https://github.com/gyraljs/gyral-rs/graphs/contributors)
@@ -44,11 +44,12 @@ ordinary form submissions still reach Rust with JavaScript disabled.
 
 This is an experimental, pre-1.0 workspace with executable examples and recorded
 [verification evidence](docs/verification.md). The four crates are on
-[crates.io](https://crates.io/crates/gyral) (`cargo add gyral`). Version 0.7.0
-accepts bundles built with Gyral **0.3.9**; the [changelog](CHANGELOG.md) names the Gyral
-release each earlier version accepts. The
+[crates.io](https://crates.io/crates/gyral) (`cargo add gyral`). Version 0.8.0
+accepts [protocol 1](docs/design/bundle-contract.md) bundles from Gyral **0.3.8 or newer**,
+so a Gyral release that keeps the protocol needs no new gyral-rs release; the
+[changelog](CHANGELOG.md) names the Gyral release each earlier version accepts. The
 examples install the exact published `@gyral/core` and `@gyral/ssr` **0.3.9**
-packages from npm.
+packages from npm, and the Gyral canary also builds and renders them with 0.3.8.
 
 The supported embedded build is **Linux x86_64 GNU**, **Rust 1.99.1**, edition
 2024, with `deno_core` **0.412.0** and V8 **150.4.0**. Other targets have no tested
@@ -227,9 +228,11 @@ Install the pinned test tools and Chromium/WebKit as described in
 | `make load` | Bounded release fixture regression profile; not an application capacity claim. |
 | `make evaluate-runtime` | Test-only startup snapshot and worker comparisons. |
 | `make release-evidence` | Tested container plus local archives, inventories, descriptor, and checksums. |
+| `make gyral-canary` | The SSR example built and rendered with protocol 1's minimum and newest Gyral releases. |
 
 [GitHub Actions](.github/workflows/ci.yml) runs the local gate, container checks,
-release assembly, fixture load profile, and package checks. The owner publishes
+release assembly, fixture load profile, and package checks; a separate
+[canary workflow](.github/workflows/gyral-canary.yml) runs `make gyral-canary`. The owner publishes
 to crates.io through a manually started [release workflow](.github/workflows/release.yml)
 described in [releasing](docs/releasing.md). Recorded results and their limits are
 in [verification](docs/verification.md). Snapshot measurements live in

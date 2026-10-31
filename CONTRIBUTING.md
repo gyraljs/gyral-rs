@@ -85,8 +85,9 @@ Dependency upgrades preserve lockfile integrity. Published libraries use caret
 requirements, except the exact `deno_core` pin; examples and tools keep exact
 pins. The [release runbook](docs/releasing.md) explains why. A native upgrade
 also needs a reviewed V8 archive size/digest and compatible target evidence.
-Changing the Gyral version requires matching server/browser artifacts and a
-compatibility fixture. Update documentation when behavior or architecture changes.
+Adopting a new Gyral release in the examples follows the two-week age rule and
+needs a passing `make gyral-canary`; supporting a new SSR protocol requires matching
+server/browser artifacts and a compatibility fixture. Update documentation when behavior or architecture changes.
 
 ## Submit a pull request
 

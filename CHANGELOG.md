@@ -6,6 +6,42 @@ telemetry-label change increases the minor version; compatible fixes increase
 the patch version. The [release runbook](docs/releasing.md) describes how an
 entry becomes a crates.io release.
 
+## [0.8.0] - 2026-10-31
+
+### Changed
+
+- **Breaking:** the crates accept bundles by SSR protocol rather than by one exact Gyral
+  release (Gyral's ADR 0034). The manifest's existing `abi` field names the protocol, and its
+  `gyral` field must name a stable release no older than that protocol's minimum. 0.8.0
+  supports **protocol 1** with **Gyral 0.3.8 or newer**: 0.3.8, 0.3.9, and every later
+  release, a new minor included, that keeps protocol 1. It rejects Gyral 0.3.7 and older,
+  prereleases such as `0.3.10-next.0`, and every other protocol before any JavaScript runs,
+  with a message that names what it supports. The server bundle, browser bundle, digests, and
+  every other manifest check are unchanged, and unknown manifest fields are still rejected.
+- **Breaking:** `GYRAL_VERSION` is removed. `ManifestError::UnsupportedAbi` becomes
+  `UnsupportedProtocol`, and `UnsupportedGyral` becomes `InvalidGyralVersion` (not a stable
+  `MAJOR.MINOR.PATCH` release) or `GyralTooOld`. `RenderError::UnsupportedBundleAbi` keeps its
+  field and its `bundle_abi` category; its message now names the supported protocol.
+
+### Added
+
+- `SUPPORTED_PROTOCOLS`, `SsrProtocol` (with `SsrProtocol::V1` and its
+  `minimum_gyral()`), and `GyralVersion`. `BundleManifest::protocol()` and `gyral_version()`
+  report a bundle's protocol and Gyral release; the SSR example logs both at startup, and
+  the release descriptor records them.
+- The Gyral canary, `make gyral-canary` and its workflow, builds the SSR example with
+  protocol 1's minimum and newest releases, 0.3.8 and 0.3.9, and renders each through the
+  renderer test, the artifact checks, and the Chromium and WebKit suites.
+
+### Migration
+
+0.3.8 and 0.3.9 manifests already declare `abi: 1`, so 0.8.0 accepts existing bundles
+without a rebuild, and an app can upgrade the crates before it rebuilds its JavaScript.
+Replace `GYRAL_VERSION` with `SsrProtocol::V1.minimum_gyral()` or a manifest's
+`gyral_version()`, and match the renamed `ManifestError` variants. From now on, a Gyral release
+that keeps protocol 1 needs no gyral-rs release; a Gyral release that changes the protocol
+needs a gyral-rs minor that supports the new one. The examples still pin Gyral 0.3.9.
+
 ## [0.7.0] - 2026-10-30
 
 ### Changed

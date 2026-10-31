@@ -1,4 +1,4 @@
-.PHONY: policy package check test build demo browser ci docker docker-smoke measure client-build client-demo client-browser client-docker client-docker-smoke prepare-native operating load release-evidence evaluate-runtime
+.PHONY: policy package check test build demo browser ci docker docker-smoke measure client-build client-demo client-browser client-docker client-docker-smoke prepare-native operating load release-evidence evaluate-runtime gyral-canary
 
 prepare-native:
 	python3 tools/prepare-v8.py
@@ -70,6 +70,13 @@ load: prepare-native
 	pnpm build:example
 	cargo build --release --locked -p gyral-axum-example
 	node tools/load-smoke.mjs
+
+# Protocol 1's minimum and newest Gyral releases, each built and rendered in a throwaway
+# copy. Add GYRAL_CANARY_AGE_GATE=off to test a release younger than the two-week gate.
+GYRAL_CANARY ?= 0.3.8 0.3.9
+gyral-canary: prepare-native
+	cargo build --locked -p gyral-axum-example
+	node tools/gyral-canary.mjs $(if $(filter off,$(GYRAL_CANARY_AGE_GATE)),--without-age-gate) $(GYRAL_CANARY)
 
 release-evidence: docker-smoke
 	python3 tools/release-evidence.py

@@ -28,6 +28,7 @@ const cases = [
   ['CSS digest', dir => writeFile(join(dir, cssPath), Buffer.concat([css, Buffer.from(' ')]))],
   ['manifest format', dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, format: 2 }))],
   ['Gyral version', dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, gyral: '0.0.0' }))],
+  ['Gyral prerelease', dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, gyral: '0.3.10-next.0' }))],
   ['hash syntax', dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, script_sha256: '../server' }))],
   ['unknown field', dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, server: 'server.js' }))],
   ['oversized manifest', dir => writeFile(join(dir, 'manifest.json'), ' '.repeat(4097))],
