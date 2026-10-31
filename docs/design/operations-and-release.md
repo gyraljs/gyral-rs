@@ -147,11 +147,26 @@ come from the published npm 0.3.9 packages, pinned with SHA-512 registry
 integrity in the frozen lockfile. An empty build cache requires access to the
 registry.
 
+The crates accept Gyral bundles by [SSR protocol](bundle-contract.md#supported-protocols):
+0.8.0 accepts protocol 1 from any stable Gyral 0.3.8 or newer. Accepting a release is
+separate from adopting it. The examples still pin one exact Gyral release and move to a
+new one under the two-week age rule ([development](../development.md)), while the crates
+already accept any release that keeps a supported protocol. The Gyral canary,
+`make gyral-canary` and its [workflow](../../.github/workflows/gyral-canary.yml), builds
+the SSR example with each supported protocol's minimum and newest releases, now 0.3.8
+and 0.3.9, each in a throwaway copy, and renders it through the renderer test, the
+artifact checks, and the browser suites. Started by hand with a newly published
+release, it tests that release with the age gate off, without adopting it. Releases
+between the minimum and the newest rest on the protocol holding rather than on a
+tested pair.
+
 Before 1.0, incompatible public API or documented telemetry-label changes require
 a minor version increase. Compatible fixes use a patch increase. Package versions
-move together. The JavaScript bundle ABI and artifact format have separate explicit
-versions: a Rust release must not silently reinterpret old metadata. Gyral release
-changes require a new compatibility fixture and matching server/client artifacts.
+move together. The SSR protocol and the artifact format have separate explicit
+versions: a Rust release must not silently reinterpret old metadata. A Gyral release
+that keeps a supported protocol needs no gyral-rs release. Supporting a new protocol,
+dropping one, or raising a protocol's minimum Gyral release changes what the crates
+accept, so it is a minor release with matching server/client artifacts and canary runs.
 There is no published baseline yet. The release workflow runs cargo-semver-checks
 for each crate whose latest published version is 0.1.0 or later and skips the
 others: three crates are unpublished, and `gyral` has only the owner's 0.0.1
@@ -204,8 +219,10 @@ the release workflow attaches it to the GitHub release for each tagged version.
 The workflow has passed on GitHub's hosted `ubuntu-24.04` runner; the
 [verification record](../verification.md) names the run.
 
-Gyral core and SSR now use the published npm release `0.3.9`. The frozen pnpm
-lockfile supplies SHA-512 integrity for registry archives. `npm-production.cdx.json`
+The examples use the published npm Gyral core and SSR release `0.3.9`. The frozen pnpm
+lockfile supplies SHA-512 integrity for registry archives. The release descriptor records
+the bundle's Gyral release and SSR protocol, and the release smoke checks that the extracted
+binary logs the same values at startup. `npm-production.cdx.json`
 records both Gyral packages and their resolved production dependency graph,
 including the type-only Standard Schema package; inclusion does not assert that
 every dependency contributes executable bytes to the bundles. Binary archives

@@ -161,15 +161,16 @@ component source without importing the components into Node or rendering them.
 It creates no server JavaScript bundle.
 
 The Rust example uses Axum and Askama directly, plus the domain's pure
-`ContentHash` type. Its normal dependency graph excludes `gyral-renderer`,
+`ContentHash` and `GyralVersion` types. Its normal dependency graph excludes `gyral-renderer`,
 `gyral-axum`, `deno_core`, and V8. The shared workspace still contains SSR
 packages; building the whole workspace also builds those packages.
 
-Client manifest format 1 records the exact Gyral version and SHA-256 digests of
-JavaScript and external CSS. It has no SSR ABI. Startup bounds metadata to
+Client manifest format 1 records the installed Gyral release and SHA-256 digests of
+JavaScript and external CSS. It has no SSR protocol, so it accepts the same releases as
+gyral-rs's oldest protocol: a stable Gyral 0.3.8 or newer. Startup bounds metadata to
 4 KiB, script bytes to 8 MiB, and CSS to 128 KiB; it rejects empty artifacts,
-unknown fields, invalid hashes, unsupported versions, and mismatched bytes before
-HTTP binds. Asset URLs are derived from validated digests. Only the two exact
+unknown fields, invalid hashes, unsupported format versions, older or prerelease Gyral
+releases, and mismatched bytes before HTTP binds. Asset URLs are derived from validated digests. Only the two exact
 URLs are served from memory. The manifest and server files are not public.
 Hashes require a trusted build and manifest; they do not authenticate a publisher.
 

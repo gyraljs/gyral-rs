@@ -18,7 +18,10 @@
 mod limits;
 pub use limits::{LimitsError, RenderLimits};
 mod manifest;
-pub use manifest::{BUNDLE_ABI_VERSION, BundleManifest, ContentHash, GYRAL_VERSION, ManifestError};
+pub use manifest::{
+    BUNDLE_ABI_VERSION, BundleManifest, ContentHash, GyralVersion, ManifestError,
+    SUPPORTED_PROTOCOLS, SsrProtocol,
+};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;

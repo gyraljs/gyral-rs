@@ -96,3 +96,47 @@ fn bundle_parser_rejects_empty_and_oversized_source() {
         Err(gyral_renderer::BundleError::TooLarge)
     ));
 }
+
+/// Protocol 1's host environment (docs/design/bundle-contract.md). A runtime upgrade that
+/// drops a promised global breaks bundles; one that adds a global changes the documented
+/// profile. Either needs a reviewed contract change.
+#[test]
+fn protocol_1_host_environment_matches_the_documented_profile() {
+    let source = r#"
+      globalThis.gyralBundleVersion = 1;
+      globalThis.gyralRender = () => {
+        const promised = ['queueMicrotask', 'console', 'Intl', 'Temporal', 'WebAssembly']
+          .filter(name => typeof globalThis[name] === 'undefined');
+        const absent = ['TextEncoder', 'TextDecoder', 'btoa', 'atob', 'setTimeout', 'setInterval',
+          'fetch', 'Response', 'Request', 'Headers', 'URL', 'URLSearchParams', 'crypto',
+          'structuredClone', 'performance', 'AbortController', 'EventTarget', 'Blob',
+          'window', 'self', 'document', 'navigator', 'process', 'require']
+          .filter(name => typeof globalThis[name] !== 'undefined');
+        return JSON.stringify({ promised, absent, deno: Object.keys(globalThis.Deno ?? {}) });
+      };
+    "#;
+    let bundle = AppBundle::try_from(source.to_owned()).expect("invariant: the probe is bounded");
+    let (renderer, worker) =
+        Renderer::start(bundle).expect("invariant: test environment supports renderer threads");
+    let executor = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .expect("invariant: test environment supports Tokio");
+    executor.block_on(async {
+        let output = renderer
+            .render(request("profile", json!({})))
+            .await
+            .expect("invariant: the probe returns a string");
+        // Missing promised globals and present unpromised ones are both listed here.
+        // deno_core's internal `Deno.core` exists but is not part of the protocol.
+        assert_eq!(
+            serde_json::from_str::<serde_json::Value>(output.as_str())
+                .expect("invariant: the probe emits JSON"),
+            json!({"promised": [], "absent": [], "deno": ["core"]})
+        );
+        worker
+            .shutdown()
+            .await
+            .expect("invariant: completed worker can be joined");
+    });
+}

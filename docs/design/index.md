@@ -19,7 +19,7 @@ The scaffold uses these defaults:
 | Configurable deadlines, a managed-heap budget, and a dedicated watchdog | Interrupt JavaScript faults while preserving a fresh isolate for the next request. |
 | Complete HTML strings initially | Keep the Rust/JavaScript boundary small and testable; streaming can follow a demonstrated need. |
 | Both lockfiles, exact example pins, and caret library requirements | Reproduce the tested graph here without forcing consumers into resolution conflicts; `deno_core` stays exact. |
-| ABI 1 and a verified server/browser manifest | Reject unsupported interfaces and mixed files; use one digest for browser URLs, SRI, and CSP. |
+| SSR protocol 1 and a verified server/browser manifest | Accept any stable Gyral release of a supported protocol, so Gyral patches need no gyral-rs release; reject unknown protocols and mixed files; use one digest for browser URLs, SRI, and CSP. |
 | MIT license and crates.io publication | Match Gyral's license; publish the four crates together through a reviewed [release workflow](../releasing.md). |
 
 The owner asked what untrusted bundles mean. The initial scope remains reviewed

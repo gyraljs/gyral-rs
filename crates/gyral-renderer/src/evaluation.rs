@@ -47,7 +47,7 @@ fn app() -> AppArtifacts {
     let manifest_text = std::fs::read_to_string(root.join("manifest.json"))
         .expect("invariant: pnpm builds fixture first");
     let manifest = BundleManifest::try_from(manifest_text.as_str())
-        .expect("invariant: fixture uses verified ABI/release");
+        .expect("invariant: fixture uses a supported protocol and release");
     let source =
         std::fs::read_to_string(root.join("server.js")).expect("invariant: fixture source exists");
     let browser = std::fs::read(
@@ -267,7 +267,8 @@ fn measure_runtime_configuration() {
         .parse::<usize>()
         .expect("invariant: worker count is numeric");
     assert!([1, 2, 4].contains(&worker_count));
-    let bundle = app().bundle().clone();
+    let app = app();
+    let bundle = app.bundle().clone();
     let starting = Instant::now();
     let source = match mode.as_str() {
         "fresh" => RuntimeSource::Bundle(bundle),
@@ -350,7 +351,7 @@ fn measure_runtime_configuration() {
         assert_eq!(u128::from(stages.count), u128::try_from(count).expect("invariant: count fits"));
         let stage_count = u128::from(stages.count);
         let report: Value = json!({
-            "mode":mode,"workers":worker_count,"clients":worker_count,"gyral":crate::GYRAL_VERSION,
+            "mode":mode,"workers":worker_count,"clients":worker_count,"gyral":app.manifest().gyral_version().to_string(),"ssr_protocol":app.manifest().protocol().get(),
             "preparation_us":preparation_us,"snapshot_bytes":snapshot_bytes,"worker_start_us":worker_start_us,"first_render_us":first_render_us,
             "sequential_p50_us":sequential_p50_us,"sequential_p95_us":sequential_p95_us,
             "samples":count,"elapsed_us":elapsed_us,"p50_us":p50_us,"p95_us":p95_us,"p99_us":p99_us,

@@ -59,10 +59,12 @@ than forcing an incompatible override.
 
 pnpm 12 reads build permissions from [pnpm-workspace.yaml](../pnpm-workspace.yaml).
 Only esbuild may run an installation script. Its `minimumReleaseAge` holds every
-version for two weeks; the two exact Gyral 0.3.9 versions are exempt until
-November 13, 2026, because their owner-approved npm release was already verified.
-The next dependency update after that date removes the exemption. Future Gyral
-versions still pass through that gate. Docker builds, source distributions, and the
+version for two weeks. Two owner-approved, already verified Gyral releases are exempt
+by exact version: 0.3.8 until November 12, 2026, which only the Gyral canary installs,
+and 0.3.9, which the examples pin, until November 13. The next dependency update after
+each date removes that exemption. Future Gyral versions still pass through that gate;
+`make gyral-canary GYRAL_CANARY=x.y.z GYRAL_CANARY_AGE_GATE=off` tests a younger release
+in a throwaway copy without adopting it. Docker builds, source distributions, and the
 release fingerprint include this configuration.
 
 ## Commands
@@ -73,6 +75,7 @@ release fingerprint include this configuration.
 | `make operating` | Isolated startup readiness, metrics/IDs, JSON/OTLP redaction, W3C parent correlation, and active-request SIGTERM/SIGINT shutdown. |
 | `make load` | Release fixture: ten-second warmup, sixty-second four-client profile, RSS/latency/queue budgets, burst shedding, and recovery. |
 | `make release-evidence` | Build/check the reference container and prepare local source/binary archives, SBOMs, lockfiles, descriptor, and checksums. |
+| `make gyral-canary` | Install protocol 1's minimum and newest Gyral releases (0.3.8 and 0.3.9) into throwaway copies, then build and render the SSR example with each: renderer test, artifact checks, and Chromium/WebKit suites. Needs registry access. |
 | `make policy` | Pinned skill hashes, registry lockfile integrity, local doc links, crate boundaries, and publishing metadata. |
 | `make package` | `cargo publish --dry-run` for the four crates in dependency order, package content and size bounds, and an offline docs.rs build without the native archive. |
 | `make check` | Policy, Rust formatting, and strict Clippy across every target. |

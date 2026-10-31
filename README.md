@@ -227,9 +227,11 @@ Install the pinned test tools and Chromium/WebKit as described in
 | `make load` | Bounded release fixture regression profile; not an application capacity claim. |
 | `make evaluate-runtime` | Test-only startup snapshot and worker comparisons. |
 | `make release-evidence` | Tested container plus local archives, inventories, descriptor, and checksums. |
+| `make gyral-canary` | The SSR example built and rendered with protocol 1's minimum and newest Gyral releases. |
 
 [GitHub Actions](.github/workflows/ci.yml) runs the local gate, container checks,
-release assembly, fixture load profile, and package checks. The owner publishes
+release assembly, fixture load profile, and package checks; a separate
+[canary workflow](.github/workflows/gyral-canary.yml) runs `make gyral-canary`. The owner publishes
 to crates.io through a manually started [release workflow](.github/workflows/release.yml)
 described in [releasing](docs/releasing.md). Recorded results and their limits are
 in [verification](docs/verification.md). Snapshot measurements live in

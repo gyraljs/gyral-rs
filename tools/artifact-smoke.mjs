@@ -24,7 +24,9 @@ try {
   for (const [name, corrupt] of [
     ['server digest', async dir => writeFile(join(dir, 'server.js'), Buffer.concat([server, Buffer.from(' ')]))],
     ['client digest', async dir => writeFile(join(dir, manifest.client.path.slice(1)), Buffer.concat([client, Buffer.from(' ')]))],
-    ['manifest ABI', async dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, abi: 2 }))],
+    ['manifest protocol', async dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, abi: 2 }))],
+    ['Gyral below protocol minimum', async dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, gyral: '0.3.7' }))],
+    ['Gyral prerelease', async dir => writeFile(join(dir, 'manifest.json'), JSON.stringify({ ...manifest, gyral: '0.3.10-next.0' }))],
     ['oversized manifest', async dir => writeFile(join(dir, 'manifest.json'), ' '.repeat(16 * 1024 + 1))],
     ['missing manifest', async dir => rm(join(dir, 'manifest.json'))],
   ]) {
@@ -43,5 +45,5 @@ try {
       },
     );
   }
-  console.log('Artifacts: repeatable build, matching digests, and five corrupt/missing artifact sets rejected before HTTP startup passed.');
+  console.log('Artifacts: repeatable build, matching digests, and seven corrupt, unsupported, or missing artifact sets rejected before HTTP startup passed.');
 } finally { await rm(root, { recursive: true, force: true }); }

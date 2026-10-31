@@ -50,10 +50,10 @@ tags and fallback text. Gyral registers those elements and performs their first
 render in the browser. No component contents are prerendered or hydrated.
 
 This application depends directly on Axum, Askama, and the domain's pure
-`ContentHash` type. It does not use the renderer or HTTP rendering adapter.
+`ContentHash` and `GyralVersion` types. It does not use the renderer or HTTP rendering adapter.
 Its host-owned asset loader verifies a client manifest and JavaScript/CSS
 bytes before HTTP binds. It serves only the two derived asset URLs from memory.
-The client manifest has its own format version, without a server bundle or SSR ABI.
+The client manifest has its own format version, without a server bundle or SSR protocol.
 
 The notes application uses normal GET pages and URL-encoded POST forms. Two
 unpublished example crates demonstrate the application boundary:
@@ -117,10 +117,12 @@ for cleanup; cancelling the shutdown future has the same fallback behavior.
 
 ## Rendering and hydration
 
-The bundle contract is [versioned separately](docs/design/bundle-contract.md)
-from HTTP. JavaScript receives JSON data and returns a string or a promise of a
-string. After bundle evaluation the runtime requires `gyralBundleVersion = 1`
-before invoking the entrypoint. The example bundles Gyral `0.3.9`, renders through its own SSR
+The bundle contract is a [versioned SSR protocol](docs/design/bundle-contract.md),
+separate from HTTP and from Gyral's release numbers. JavaScript receives JSON data and
+returns a string or a promise of a string. The manifest names the protocol and the Gyral
+release; startup accepts protocol 1 from any stable Gyral 0.3.8 or newer. After bundle
+evaluation the runtime requires `gyralBundleVersion` to name a supported protocol before
+invoking the entrypoint. The example bundles Gyral `0.3.9`, renders through its own SSR
 implementation, and builds a matching hydration bundle. Rust does not reproduce
 Gyral's HTML escaping, component serialization, or hydration protocol.
 

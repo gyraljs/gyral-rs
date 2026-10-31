@@ -1,4 +1,4 @@
-//! Byte-pair integrity and bundle ABI rejection.
+//! Byte-pair integrity and rejection of unsupported protocol declarations.
 #![allow(
     clippy::expect_used,
     reason = "fixtures establish byte and runtime invariants"
@@ -66,7 +66,9 @@ fn unsupported_or_absent_bundle_versions_fail_before_invoking_app_code() {
             let source = format!("{declaration} globalThis.gyralRender = () => {{ throw new Error('entrypoint must not run'); }};");
             let (renderer, worker) = Renderer::start(AppBundle::try_from(source).expect("invariant: fixture source is bounded")).expect("invariant: environment supports native threads");
             let request = RenderRequest::try_new(PageId::try_from("home".to_owned()).expect("invariant: home is valid"), json!({})).expect("invariant: fixture props are valid");
-            assert!(matches!(renderer.render(request).await, Err(RenderError::UnsupportedBundleAbi {received}) if received == expected));
+            let error = renderer.render(request).await.expect_err("invariant: the declaration is unsupported");
+            assert!(error.to_string().contains("not a supported SSR protocol; expected one of 1"), "{error}");
+            assert!(matches!(error, RenderError::UnsupportedBundleAbi {received} if received == expected));
             worker.shutdown().await.expect("invariant: rejected bundle still shuts down");
         }
     });

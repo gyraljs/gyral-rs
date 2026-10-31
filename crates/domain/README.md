@@ -29,9 +29,11 @@ fn main() -> Result<(), ContractError> {
 ```
 
 `BundleManifest` parses the build metadata that binds a server bundle, a
-browser entry, and their SHA-256 digests. `RenderLimits` validates the render
-deadline, managed heap budget, and shutdown deadline. `RenderedHtml` bounds the
-renderer's output.
+browser entry, and their SHA-256 digests. It accepts a supported SSR protocol
+(`SUPPORTED_PROTOCOLS`, `SsrProtocol`) from a stable Gyral release at or above
+that protocol's minimum (`GyralVersion`): protocol 1 from Gyral 0.3.8 or newer.
+`RenderLimits` validates the render deadline, managed heap budget, and shutdown
+deadline. `RenderedHtml` bounds the renderer's output.
 
 ## Compatibility
 

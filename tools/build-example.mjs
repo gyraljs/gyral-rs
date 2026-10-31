@@ -4,11 +4,11 @@ import { mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { build } from 'esbuild';
 
 const root = 'examples/axum-app/dist';
-const release = '0.3.9';
-for (const pkg of ['core', 'ssr']) {
-  const info = JSON.parse(await readFile(`node_modules/@gyral/${pkg}/package.json`, 'utf8'));
-  assert.equal(info.version, release, 'Server and browser must use the pinned Gyral release');
-}
+// The manifest names the installed release; tools/check.py pins the adopted one exactly.
+const installed = async pkg => JSON.parse(await readFile(`node_modules/@gyral/${pkg}/package.json`, 'utf8')).version;
+const release = await installed('core');
+assert.equal(await installed('ssr'), release, 'Server and browser must come from one Gyral release');
+assert.match(release, /^\d+\.\d+\.\d+$/, 'Build bundles from a stable Gyral release');
 const common = {
   bundle: true, write: false, minify: true, target: 'es2022',
   define: { 'process.env.NODE_ENV': '"production"' },
@@ -18,7 +18,7 @@ const client = await build({
   ...common, entryPoints: ['examples/axum-app/web/client.mjs'],
   outfile: 'client.js', format: 'esm', platform: 'browser',
 });
-assert.equal(client.outputFiles.length, 1, 'ABI 1 uses one self-contained browser entry');
+assert.equal(client.outputFiles.length, 1, 'Protocol 1 uses one self-contained browser entry');
 const clientBytes = client.outputFiles[0].contents;
 const clientHash = digest(clientBytes);
 const path = `/assets/client.${clientHash}.js`;
@@ -31,14 +31,16 @@ const server = await build({
 assert.equal(server.outputFiles.length, 1);
 // Register the same static component specs using the exact published server APIs.
 await import('../examples/axum-app/web/components.mjs');
-const { styleHashes } = await import('@gyral/ssr');
+// Gyral 0.3.10 exports its SSR protocol; earlier releases implement protocol 1.
+const { styleHashes, SSR_PROTOCOL: protocol = 1 } = await import('@gyral/ssr');
+assert.equal(protocol, 1, 'web/server.mjs declares protocol 1; update it with the new protocol');
 const { documentCss } = await import('../examples/axum-app/web/styles.mjs');
 const styles = (await styleHashes()).map(source => {
   assert.match(source, /^'sha256-[A-Za-z0-9+/]{43}='$/);
   return Buffer.from(source.slice(8, -1), 'base64').toString('hex');
 });
 const manifest = {
-  abi: 1, gyral: release, server_sha256: digest(server.outputFiles[0].contents),
+  abi: protocol, gyral: release, server_sha256: digest(server.outputFiles[0].contents),
   client: { path, sha256: clientHash },
   style_hashes: [...new Set([...styles, digest(documentCss)])].sort(),
 };
@@ -47,4 +49,4 @@ await mkdir(`${root}/assets`, { recursive: true });
 await writeFile(`${root}${path}`, clientBytes);
 await writeFile(`${root}/server.js`, server.outputFiles[0].contents);
 await writeFile(`${root}/manifest.json`, `${JSON.stringify(manifest, null, 2)}\n`);
-console.log(`Built ABI 1 server/browser pair, immutable client ${clientHash}, and ${manifest.style_hashes.length} static style hashes.`);
+console.log(`Built Gyral ${release} protocol ${protocol} server/browser pair, immutable client ${clientHash}, and ${manifest.style_hashes.length} static style hashes.`);

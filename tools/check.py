@@ -29,11 +29,17 @@ for skill in json.loads((ROOT / "skills.lock.json").read_text())["skills"]:
 
 javascript = json.loads((ROOT / 'package.json').read_text())
 javascript_lock = (ROOT / 'pnpm-lock.yaml').read_text()
+# The examples adopt one exact Gyral release; the crates accept any release of a supported protocol.
+adopted = '0.3.9'
 for name in ('@gyral/core', '@gyral/ssr'):
-    if javascript['dependencies'].get(name) != '0.3.9':
+    if javascript['dependencies'].get(name) != adopted:
         errors.append(f'{name}: pin the verified npm release exactly')
-    if not re.search(rf"  '{re.escape(name)}@0\.3\.9':\n    resolution: \{{integrity: sha512-[A-Za-z0-9+/]+=*\}}", javascript_lock):
+    if not re.search(rf"  '{re.escape(name)}@{re.escape(adopted)}':\n    resolution: \{{integrity: sha512-[A-Za-z0-9+/]+=*\}}", javascript_lock):
         errors.append(f'{name}: registry SHA-512 integrity is missing from the lockfile')
+minimum = re.search(r"minimum_gyral: GyralVersion::new\((\d+), (\d+), (\d+)\)", (ROOT / 'crates/domain/src/manifest.rs').read_text())
+canary = re.search(r"^GYRAL_CANARY \?= (.+)$", (ROOT / 'Makefile').read_text(), re.MULTILINE)
+if not minimum or not canary or not {'.'.join(minimum.groups()), adopted} <= set(canary.group(1).split()):
+    errors.append("Makefile: GYRAL_CANARY must test protocol 1's minimum Gyral release and the adopted one")
 if 'file:vendor/' in javascript_lock or 'file:vendor/' in json.dumps(javascript):
     errors.append('JavaScript dependencies still reference removed vendor archives')
 
@@ -120,4 +126,4 @@ for name in sorted(library_dependencies - {"deno_core"}):
 if errors:
     print("\n".join(errors), file=sys.stderr)
     raise SystemExit(1)
-print(f"Policy passed: 3 pinned skills, 2 pinned Gyral npm packages, {len(documents)} documents, {links} local links, crate boundaries, and {len(published)} publishable crates.")
+print(f"Policy passed: 3 pinned skills, 2 pinned Gyral npm packages, the Gyral canary releases, {len(documents)} documents, {links} local links, crate boundaries, and {len(published)} publishable crates.")

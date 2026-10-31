@@ -194,13 +194,22 @@ CI-built evidence to the GitHub release.
    (`gyral-renderer-domain`, `gyral-renderer`, `gyral-axum`, `gyral`) to the same
    `version = "x.y.z"`, then run `cargo update --workspace` to refresh
    `Cargo.lock`.
-3. **Compatibility inputs.** A new Gyral npm release needs matching server and
-   browser artifacts, a new compatibility fixture, and an updated
-   `GYRAL_VERSION`. A `deno_core` or V8 change needs a reviewed
+3. **Compatibility inputs.** The crates accept Gyral bundles by
+   [SSR protocol](design/bundle-contract.md#supported-protocols), so a new Gyral
+   release that keeps a supported protocol needs **no gyral-rs release**. Start the
+   [`gyral-canary` workflow](../.github/workflows/gyral-canary.yml) by hand with its
+   version to test it, and adopt it in the examples later, under the two-week rule,
+   as an ordinary dependency update. A Gyral release that declares a **new protocol**
+   needs a gyral-rs **minor** that supports it, released before that Gyral release:
+   add the protocol and its minimum Gyral release to `SUPPORTED_PROTOCOLS`, with
+   matching server and browser artifacts, a compatibility fixture, and canary runs
+   of the protocol's minimum and newest releases. Dropping a protocol or raising a
+   minimum is also a minor. A `deno_core` or V8 change needs a reviewed
    `tools/v8-archive.json` entry and the same version, size, and digest in the
-   [renderer guide](../crates/gyral-renderer/README.md#pin-the-native-v8-archive).
-4. **Local gate.** Run `make ci` and `make package`, open the release pull request,
-   and merge it after CI passes.
+   [renderer guide](../crates/gyral-renderer/README.md#pin-the-native-v8-archive),
+   and must keep the host environment that each supported protocol promises.
+4. **Local gate.** Run `make ci`, `make gyral-canary`, and `make package`, open the
+   release pull request, and merge it after CI passes.
 5. **Run the workflow.** Open **Actions → release →
    Run workflow**, keep the branch `main`, and start it. The `verify` job takes
    most of the time. cargo-semver-checks compares each crate with its latest

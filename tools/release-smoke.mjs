@@ -65,13 +65,16 @@ try {
   for (const name of ['@gyral-core-0.3.9', '@gyral-ssr-0.3.9']) {
     assert.ok((await readFile(join(binary, 'licenses', name, 'LICENSE'), 'utf8')).includes('MIT'));
   }
+  const bundle = JSON.parse(await readFile(join(binary, 'dist/manifest.json'), 'utf8'));
+  assert.deepEqual([bundle.gyral, bundle.abi], [descriptor.bundle_gyral, descriptor.bundle_ssr_protocol]);
   process = await startExample({ binary: resolve(binary, 'gyral-axum-example'), env: { GYRAL_EXAMPLE_DIST: resolve(binary, 'dist') } });
   assert.equal((await request(process.origin, '/readyz')).status, 200);
   const response = await request(process.origin, '/?name=Release%20artifact');
   assert.equal(response.status, 200);
   assert.ok((await response.text()).includes('Hello, Release artifact'));
-  await process.stop();
-  console.log('Release: checksums, connected SBOM refs/native pin, private-data exclusion, source policy, agreement text, and extracted binary SSR/readiness/SIGTERM passed.');
+  const output = await process.stop();
+  assert.ok(output.includes(`"gyral":"${bundle.gyral}","ssr_protocol":${bundle.abi}`), 'The binary must log the bundle it verified');
+  console.log(`Release: checksums, connected SBOM refs/native pin, private-data exclusion, source policy, agreement text, and extracted binary SSR (Gyral ${bundle.gyral}, protocol ${bundle.abi})/readiness/SIGTERM passed.`);
 } finally {
   if (process) await process.cleanup();
   await rm(directory, { recursive: true, force: true });

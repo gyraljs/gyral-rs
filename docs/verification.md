@@ -1,5 +1,69 @@
 # Verification evidence
 
+## SSR protocol 1 — October 31, 2026
+
+gyral-rs now accepts Gyral bundles by SSR protocol rather than by one exact release (Gyral's
+ADR 0034, with the owner's decisions of October 31). The manifest's existing `abi` field names
+the protocol, and its `gyral` field must be a stable `MAJOR.MINOR.PATCH` release no older than
+the protocol's minimum. Protocol 1 is the ABI 1 that every earlier release used, unchanged; its
+minimum is Gyral 0.3.8. `SUPPORTED_PROTOCOLS`, `SsrProtocol`, and `GyralVersion` replace
+`GYRAL_VERSION`, and the release parser needs no new dependency. The digest, path, style-count,
+size, and unknown-field checks are unchanged. The renderer still requires the bundle's
+`gyralBundleVersion` to name a supported protocol before it calls `gyralRender`. The SSR example
+logs the bundle's release and protocol at startup ("Gyral bundle verified"), the operating
+smoke checks that line, and the runtime evaluation and the release descriptor record both
+values. The Askama client manifest has no protocol and accepts the same stable releases.
+
+The two acceptance tests ran first against the exact-version code and failed for the expected
+reasons: `protocol_1_accepts_every_stable_gyral_release_from_0_3_8` because 0.3.8 was
+rejected, and `rejections_name_the_supported_protocol_and_minimum_release` because the 0.3.7
+message read "unsupported Gyral release 0.3.7; expected 0.3.9". With the change, they and three
+new tests pass. Protocol 1 accepts 0.3.8, 0.3.9, 0.3.10, 0.4.0, 0.10.0, and 1.0.0; 0.3.10 and
+0.10.0 sort below 0.3.8 as text, so they prove numeric comparison. A property test (128
+fixed-seed releases between 0.0.0 and 2.11.11) accepts exactly those at or above 0.3.8. The
+domain rejects 0.3.7, 0.2.99, and 0.0.0 with `GyralTooOld`; `0.3.10-next.0`, `0.3.9-rc.1`,
+`0.3.9+build.5`, and eleven malformed strings with `InvalidGyralVersion`; and `abi` 0, 2, and
+`u32::MAX` with `UnsupportedProtocol`, even when the release is also too old. Each message
+names the value it received and protocol 1's minimum. The artifact smoke adds 0.3.7 and
+`0.3.10-next.0` manifests to the sets the SSR example refuses before HTTP binds, and the client
+artifact smoke adds the prerelease.
+
+The [bundle contract](design/bundle-contract.md) now states protocol 1's host environment. A
+probe rendered in the embedded runtime found `queueMicrotask`, `console`, `Intl`, `Temporal`,
+and `WebAssembly`, none of 24 common web and Node globals (`TextEncoder`, `btoa`, timers,
+`fetch`, `URL`, `crypto`, `structuredClone`, and others), and `deno_core`'s internal
+`Deno.core`, which the contract names as outside the protocol. That probe is now a renderer
+test, and adding `TextEncoder` to its promised globals makes it fail.
+
+Both example builds now read the installed Gyral release, require core and SSR to match, and
+take `abi` from `@gyral/ssr`'s `SSR_PROTOCOL`, which 0.3.9 does not export, so they fall back to
+protocol 1. Rebuilt this way, both examples' manifests are byte-identical to the 0.7.0 builds.
+`tools/check.py` still pins the adopted 0.3.9 exactly, and now requires the canary list to hold
+protocol 1's minimum, read from the Rust constant, and the adopted release; dropping 0.3.8
+from it fails the check.
+
+`make gyral-canary` passed for **0.3.8 and 0.3.9**. Each release went into a throwaway copy of
+the JavaScript inputs with pnpm's age gate on. The copy for 0.3.8 needs that release's two exact
+versions exempt, so the exemption list gains 0.3.8 until November 12 beside 0.3.9 until
+November 13; the frozen installation still passes and the lockfile is unchanged. Each copy
+built protocol 1 bundles (browser entries `53fb3cd7…` for 0.3.8 and `e4ac3e70…` for 0.3.9),
+then passed the renderer's two `gyral` tests, the artifact smoke with its seven rejected sets,
+and the Chromium and WebKit SSR suites. The suites fetched each build's own client digest, so
+neither run could have served the checkout's build. The new
+[canary workflow](../.github/workflows/gyral-canary.yml) runs the same target on push and pull
+requests; it has not run on GitHub. Releases between a protocol's minimum and newest rest on the
+protocol holding, not on a tested pair.
+
+`make ci` passed with Rust 1.99.1, Node 24.22.0, and pnpm 12.14.0: **71 nextest tests** (one
+skipped, the explicit runtime measurement), ten doctests, strict Clippy, formatting, Rust docs,
+frozen npm installation, policy over 29 documents and four publishable crates, artifact,
+client-artifact and operating checks, the release-tool regressions, all Chromium/WebKit SSR,
+client and notes suites, the notes schema check, `cargo deny`, and `cargo audit` with the same
+four ignores. The six new tests are the five manifest tests and the host probe. The Askama
+client entry stays at 86,958 bytes and the axum example's server bundle at 117,830. The local
+cargo-nextest is still 0.9.143 and SQLx CLI 0.8.3, older than the versions listed in
+[development](development.md).
+
 ## Gyral 0.3.9 update — October 30, 2026
 
 Gyral 0.3.9 fixes what migrating apps to 0.3.8 found, mostly in development-time checks,

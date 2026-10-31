@@ -1,6 +1,6 @@
-//! Bounded, verified client assets; no server JavaScript artifact or SSR ABI.
+//! Bounded, verified client assets; no server JavaScript artifact or SSR protocol.
 use axum::{body::Bytes, http::HeaderValue};
-use gyral_renderer_domain::{ContentHash, GYRAL_VERSION};
+use gyral_renderer_domain::{ContentHash, GyralVersion, SsrProtocol};
 use serde::Deserialize;
 use sha2::{Digest as _, Sha256};
 use std::{io::Read, path::Path};
@@ -15,7 +15,7 @@ pub(crate) enum AssetError {
     Json(#[from] serde_json::Error),
     #[error("unsupported client manifest format {received}")]
     Format { received: u32 },
-    #[error("unsupported Gyral release {received}")]
+    #[error("unsupported Gyral release {received:?}; use a stable Gyral {MINIMUM_GYRAL} or newer")]
     Release { received: String },
     #[error("client artifact digest mismatch")]
     Digest {
@@ -25,6 +25,9 @@ pub(crate) enum AssetError {
     #[error("invalid document policy header")]
     Policy(#[from] axum::http::header::InvalidHeaderValue),
 }
+
+/// The browser-only build has no SSR protocol; it shares gyral-rs's oldest supported release.
+const MINIMUM_GYRAL: GyralVersion = SsrProtocol::V1.minimum_gyral();
 
 #[derive(Debug, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -51,7 +54,9 @@ impl TryFrom<RawManifest> for ClientManifest {
                 received: raw.format,
             });
         }
-        if raw.gyral != GYRAL_VERSION {
+        let supported = GyralVersion::try_from(raw.gyral.as_str())
+            .is_ok_and(|release| release >= MINIMUM_GYRAL);
+        if !supported {
             return Err(AssetError::Release {
                 received: raw.gyral,
             });
