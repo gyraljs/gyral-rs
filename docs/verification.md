@@ -64,6 +64,29 @@ client entry stays at 86,958 bytes and the axum example's server bundle at 117,8
 cargo-nextest is still 0.9.143 and SQLx CLI 0.8.3, older than the versions listed in
 [development](development.md).
 
+On the 0.8.0 release commit, before this paragraph was added to it, `make ci` passed again with
+the same counts. `make client-docker-smoke` passed: native CRUD, SQLite persistence and cookie
+ownership across container replacement, verified assets and CSP, UID 10001, no Node, Deno, or
+V8, and SIGTERM. `make release-evidence` passed the SSR container smoke, assembled 290 SSR
+inventory components and three npm production inputs (both Gyral packages at 0.3.9), and ran
+the extracted binary on the Ubuntu 24.04 host (glibc 2.39). Its descriptor records the bundle's
+Gyral 0.3.9 and protocol 1, and the extracted binary logged both at startup. `make package`
+dry-ran the four 0.8.0 crates (12.9, 37.4, 20.4, and 18.8 KiB compressed) and the docs.rs
+build; nothing was uploaded. Cargo's dry run refuses an uncommitted manifest, so it ran after
+the commit. `make load` passed its budgets: **2,844 successful requests** over 60.09 seconds,
+**47.33 requests/second**, **102.81 ms p95**, **124.06 ms p99**, **41.41 MiB peak RSS**,
+**1.18 MiB growth**, and at most four of sixteen queue positions; other containers were running
+on the host. `make gyral-canary` passed again for 0.3.8 and 0.3.9. Gyral's
+`scripts/verify-rust-compatibility.mjs` refuses this branch with its own fixture, which names
+`394ab9f`; an unchanged copy with a scratch fixture naming the release commit, npm 0.3.9, and
+ABI 1 passed its installation, build, renderer `gyral` and `budgets` tests, artifact smoke, and
+both browser suites. The SSR image is
+`sha256:b51a7ac8c95b9d5a7ea729cbbf32d36acad3379607026bd2fe038c0bb24aab42` and the client image
+`sha256:e0de547ee6c998d17374ecc6f43db5b6fd4fe792bce6a35dc48ff03f47573dc1`. cargo-semver-checks
+is not installed locally; the release workflow runs it against 0.7.0, and a 0.x minor allows
+the removed `GYRAL_VERSION` and the changed `ManifestError` variants. The runtime evaluation
+and mutation checks were not rerun, and no workflow ran on GitHub.
+
 ## Gyral 0.3.9 update — October 30, 2026
 
 Gyral 0.3.9 fixes what migrating apps to 0.3.8 found, mostly in development-time checks,
